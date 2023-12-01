@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 import conversion
+import preprocessing
 from handlers import ErrorHandler
 error_handler = ErrorHandler().error_handler
 
@@ -25,9 +26,8 @@ def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
         output_mat_file: path to output mat file - type: os.PathLike
         ds_factor: downsample factor - type: int
     output:
-        output_mat_file: no return value
     """
-    
+
     print('\n\n--- Converting RHD files to MAT files...')
     conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
     print('\n\n--- Conversion complete.')
@@ -46,10 +46,41 @@ def convert_mat_to_npz(ctx, mat_file, output_npz_folder, notch_filter_freq):
         output_npz_folder: path to output npz folder - type: os.PathLike
         notch_filter_freq: notch filter frequency - type: int
     output:
-        output_npz_folder: no return value
     """
     
     print('\n\n--- Converting MAT files to NPZ files...')
     conversion.convert_mat_to_npz(mat_file, output_npz_folder, notch_filter_freq)
     print('\n\n--- Conversion complete.')
 
+
+@cli.command('zscore_normalize_npz')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=os.PathLike, default='output_npz', show_default=True)
+@click.pass_context
+@error_handler
+def zscore_normalize_npz(ctx, input_npz_folder, output_npz_folder):
+    """ Z-score normalizes NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder - type: os.PathLike
+    output:
+    """
+    print('\n\n--- Z-score normalizing NPZ files...')
+    preprocessing.zscore_normalize_npz(input_npz_folder, output_npz_folder)
+    print('\n\n--- Normalization complete.')
+
+@cli.command('normalize_npz')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=os.PathLike, default='output_npz', show_default=True)
+@click.pass_context
+@error_handler
+def normalize_npz(ctx, input_npz_folder, output_npz_folder):
+    """ Normalizes NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder - type: os.PathLike
+    output:
+    """
+    print('\n\n--- Normalizing NPZ files...')
+    preprocessing.normalize_npz(input_npz_folder, output_npz_folder)
+    print('\n\n--- Normalization complete.')

@@ -1,8 +1,58 @@
+import os
 import numpy as np
 from scipy import signal
 
 def apply_notch(_LFP_chan, _args):
+    """ Applies notch filter to LFP channel
+    input:
+        _LFP_chan: LFP channel - type: numpy.ndarray
+        _args: dictionary containing notch filter parameters - type: dict
+    output:
+        _LFP_chan: LFP channel with notch filter applied - type: numpy.ndarray
+    """
     for f0 in np.arange(_args['f0'],300,_args['f0']):
         b_notch, a_notch = signal.iirnotch(f0, _args['Q'], _args['fs'])
         _LFP_chan = signal.filtfilt(b_notch, a_notch, _LFP_chan)
     return _LFP_chan
+
+def zscore_normalize_npz(input_npz_folder, output_npz_folder):
+    """ Z-score normalizes NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder - type: os.PathLike
+    output:
+    """
+    if not os.path.exists(output_npz_folder):
+        os.makedirs(output_npz_folder)
+    else:
+        Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
+    
+    for npz_file in os.listdir(input_npz_folder):
+        if npz_file.endswith('.npz'):
+            npz_file_path = os.path.join(input_npz_folder, npz_file)
+            npz_file_contents = np.load(npz_file_path)
+            data = npz_file_contents['data']
+            fs = npz_file_contents['fs']
+            data_zscore = (data - np.mean(data))/np.std(data)
+            np.savez(os.path.join(output_npz_folder, npz_file), data=data_zscore, fs=fs)
+
+def normalize_npz(input_npz_folder, output_npz_folder):
+    """ Normalizes NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder - type: os.PathLike
+    output:
+    """
+    if not os.path.exists(output_npz_folder):
+        os.makedirs(output_npz_folder)
+    else:
+        Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
+    
+    for npz_file in os.listdir(input_npz_folder):
+        if npz_file.endswith('.npz'):
+            npz_file_path = os.path.join(input_npz_folder, npz_file)
+            npz_file_contents = np.load(npz_file_path)
+            data = npz_file_contents['data']
+            fs = npz_file_contents['fs']
+            data_normalized = data/np.max(np.abs(data))
+            np.savez(os.path.join(output_npz_folder, npz_file), data=data_normalized, fs=fs)
