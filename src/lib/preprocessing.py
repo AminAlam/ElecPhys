@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from scipy import signal
+from tqdm import tqdm
 
 def apply_notch(_LFP_chan, _args):
     """ Applies notch filter to LFP channel
@@ -27,7 +28,8 @@ def zscore_normalize_npz(input_npz_folder, output_npz_folder):
     else:
         Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
     
-    for npz_file in os.listdir(input_npz_folder):
+    print(f'Z-score normalizing NPZ files in {input_npz_folder} and saving to {output_npz_folder}...')
+    for npz_file in tqdm(os.listdir(input_npz_folder)):
         if npz_file.endswith('.npz'):
             npz_file_path = os.path.join(input_npz_folder, npz_file)
             npz_file_contents = np.load(npz_file_path)
@@ -48,7 +50,8 @@ def normalize_npz(input_npz_folder, output_npz_folder):
     else:
         Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
     
-    for npz_file in os.listdir(input_npz_folder):
+    print(f'Normalizing NPZ files in {input_npz_folder} and saving to {output_npz_folder}...')
+    for npz_file in tqdm(os.listdir(input_npz_folder)):
         if npz_file.endswith('.npz'):
             npz_file_path = os.path.join(input_npz_folder, npz_file)
             npz_file_contents = np.load(npz_file_path)
