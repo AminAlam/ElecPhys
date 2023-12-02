@@ -30,7 +30,7 @@ def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
         ds_factor: downsample factor - type: int
     output:
     """
-
+    Warning('** This command requires MATLAB to be installed on your system.\n')
     print('\n\n--- Converting RHD files to MAT files...')
     conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
     print('\n\n--- Conversion complete.')
