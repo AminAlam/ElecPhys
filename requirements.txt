@@ -1,5 +1,5 @@
 click
 mat73
-matlabengine
 matplotlib
-
+scipy
+tqdm
