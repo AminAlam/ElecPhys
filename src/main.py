@@ -168,6 +168,5 @@ def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_
     print('\n\n--- Plotting signals...')
     visualization.plot_signal(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
     print('\n\n--- Plotting complete.')
-
 ### Visualization ###
 

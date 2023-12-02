@@ -89,7 +89,7 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
         signal_chan = signal_chan[desired_time_index_low:desired_time_index_high]
         t = t[desired_time_index_low:desired_time_index_high]
-        ax[channel-1].plot(t, signal_chan)
+        ax[channel-1].plot(t, signal_chan, color='k')
         ax[channel-1].set_ylabel(f'Channel {channel}')
         ax[channel-1].spines['top'].set_visible(False)
         ax[channel-1].spines['right'].set_visible(False)
