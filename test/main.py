@@ -68,8 +68,29 @@ class TestCases_fourier_analysis(unittest.TestCase):
 
 
 class TestCases_visualization(unittest.TestCase):
-    def plot_stft():
-        pass
+    def test_plot_stft(self):
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
+        npz_files = os.listdir(npz_files_folder)
+        npz_file = npz_files[0]
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'plot.png')
+        
+        f_min = None
+        f_max = None
+        t_min = None
+        t_max = None
+        db_min = None
+        db_max = None
+
+        for f_min in [None, 50]:
+            for f_max in [None, 200]:
+                for t_min in [None, 2]:
+                    for t_max in [None, 10]:
+                        for db_min in [None, -50]:
+                            for db_max in [None, 50]:
+                                if os.path.exists(output_plot_file):
+                                    os.remove(output_plot_file)
+                                visualization.plot_stft_from_npz(os.path.join(npz_files_folder, npz_file), output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
+                                self.assertTrue(os.path.exists(output_plot_file))
 
 
 class TestCases_utils(unittest.TestCase):

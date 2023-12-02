@@ -2,7 +2,9 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
+import data_loading
+
+def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file
     input:
         input_npz_file: path to input npz file - type: os.PathLike
@@ -15,10 +17,7 @@ def plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_m
         db_max: maximum dB to plot - type: float
     output:
     """
-    npz_file_contents = np.load(input_npz_file)
-    f = npz_file_contents['f']
-    t = npz_file_contents['t']
-    Zxx = npz_file_contents['Zxx']
+    f, t, Zxx = data_loading.load_npz_stft(input_npz_file)
     Zxx_plot = 10*np.log10(np.abs(Zxx))
     
     if f_min is None:
@@ -46,7 +45,12 @@ def plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_m
     plt.xlabel('Time (s)')
     plt.ylabel('Frequency (Hz)')
     plt.clim(db_min, db_max)    
+    plt.text(1.01, 0.5, 'Power (dB)', va='center', rotation=-90, transform=plt.gca().transAxes)
     if output_plot_file is None:
         plt.show()
     else:
+        if not os.path.exists(os.path.dirname(output_plot_file)):
+            os.makedirs(os.path.dirname(output_plot_file))
+        plt.tight_layout()
         plt.savefig(output_plot_file)
+        plt.close()

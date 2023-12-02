@@ -162,3 +162,4 @@ cython_debug/
 
 # data files
 test/data/npz*
+test/data/plots
