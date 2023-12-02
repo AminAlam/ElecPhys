@@ -14,8 +14,6 @@ function convertRHD2Mat(files_path, save_file_name, ds_ratio)
         path = path;
         % [file, path, filterindex] = ...
         %     uigetfile('*.rhd', 'Select an RHD2000 Data File', 'MultiSelect', 'off');
-        disp(file)
-        disp(path)
         if (file == 0)
             return;
         end
@@ -512,7 +510,10 @@ function convertRHD2Mat(files_path, save_file_name, ds_ratio)
      end
      fs = sample_rate/ds_ratio;
      data = mat_all;
-     save([save_file_name, '.mat'], 'data', 'fs', '-v7.3')
+        if ~contains(save_file_name, '.mat')
+            save_file_name = [save_file_name, '.mat'];
+        end
+     save(save_file_name, 'data', 'fs', '-v7.3')
     
     return
     

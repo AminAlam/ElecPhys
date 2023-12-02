@@ -3,18 +3,18 @@ import numpy as np
 from scipy import signal
 from tqdm import tqdm
 
-def apply_notch(_LFP_chan, _args):
-    """ Applies notch filter to LFP channel
+def apply_notch(_signal_chan, _args):
+    """ Applies notch filter to given signal
     input:
-        _LFP_chan: LFP channel - type: numpy.ndarray
+        _signal_chan: signal channel - type: numpy.ndarray
         _args: dictionary containing notch filter parameters - type: dict
     output:
-        _LFP_chan: LFP channel with notch filter applied - type: numpy.ndarray
+        _signal_chan: signal channel with notch filter applied - type: numpy.ndarray
     """
     for f0 in np.arange(_args['f0'],300,_args['f0']):
         b_notch, a_notch = signal.iirnotch(f0, _args['Q'], _args['fs'])
-        _LFP_chan = signal.filtfilt(b_notch, a_notch, _LFP_chan)
-    return _LFP_chan
+        _signal_chan = signal.filtfilt(b_notch, a_notch, _signal_chan)
+    return _signal_chan
 
 def zscore_normalize_npz(input_npz_folder, output_npz_folder):
     """ Z-score normalizes NPZ files

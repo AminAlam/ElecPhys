@@ -1,9 +1,8 @@
 import os
 import numpy as np
 import mat73
-import matlab.engine
-
 import preprocessing
+import utils
 
 def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
     """Converts RHD files to mat files using RHD to MAT converter written in MATLAB
@@ -14,9 +13,14 @@ def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
     output:
         output_mat_file: no return value
     """
-    eng = matlab.engine.start_matlab()
+    output_mat_file_folder = os.path.dirname(output_mat_file)
+    if not os.path.exists(output_mat_file_folder):
+        os.makedirs(output_mat_file_folder)
+    else:
+        Warning(f'{output_mat_file_folder} already exists. Files will be overwritten.')
+    eng = utils.get_matlab_engine()
     eng.addpath(os.path.join(os.path.dirname(__file__), 'matlab_scripts'))
-    eng.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
+    eng.convertRHD2Mat(folder_path, output_mat_file, ds_factor, nargout=0)
     eng.quit()
 
 
