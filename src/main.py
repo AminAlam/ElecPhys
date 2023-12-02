@@ -144,5 +144,30 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
     print('\n\n--- Plotting STFT...')
     visualization.plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
     print('\n\n--- Plotting complete.')
+
+@cli.command('plot_signal')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
+@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
+@click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized', required=False, type=bool, default=False, show_default=True)
+@click.pass_context
+@error_handler
+def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize):
+    """ Plots signals from NPZ file
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        channels_list: list of channels to plot - type: list
+        normalize: normalize signals - type: bool
+    output:
+    """
+    print('\n\n--- Plotting signals...')
+    visualization.plot_signal(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
+    print('\n\n--- Plotting complete.')
+
 ### Visualization ###
 

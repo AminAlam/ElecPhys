@@ -72,7 +72,7 @@ class TestCases_visualization(unittest.TestCase):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
         npz_files = os.listdir(npz_files_folder)
         npz_file = npz_files[0]
-        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'plot.png')
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'stft_plot.png')
         
         f_min = None
         f_max = None
@@ -91,6 +91,16 @@ class TestCases_visualization(unittest.TestCase):
                                     os.remove(output_plot_file)
                                 visualization.plot_stft_from_npz(os.path.join(npz_files_folder, npz_file), output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
                                 self.assertTrue(os.path.exists(output_plot_file))
+    
+    def test_plot_signal(self):
+        npz_folder_path = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'signal_plot.png')
+        t_min = None
+        t_max = None
+        channels_list = None
+        if os.path.exists(output_plot_file):
+            os.remove(output_plot_file)
+        visualization.plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list)
 
 
 class TestCases_utils(unittest.TestCase):
