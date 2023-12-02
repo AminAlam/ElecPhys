@@ -159,3 +159,8 @@ cython_debug/
 #.idea/
 
 .vscode
+
+# data files
+data/npz*
+data/mat 
+data/

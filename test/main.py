@@ -29,9 +29,6 @@ class TestCases_conversion(unittest.TestCase):
             conversion.convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq)
             self.assertTrue(os.path.exists(output_npz_folder))
 
-
-    
-
 class TestCases_preprocessing(unittest.TestCase):
     def test_apply_notch(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
@@ -42,18 +39,32 @@ class TestCases_preprocessing(unittest.TestCase):
         self.assertTrue(output.shape == _signal_chan.shape)
 
     def test_zscore_normalize_npz(self):
-        pass
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_zscore')
+        if os.path.exists(output_npz_folder):
+            shutil.rmtree(output_npz_folder)
+        preprocessing.zscore_normalize_npz(npz_files_folder, output_npz_folder)
+        self.assertTrue(os.path.exists(output_npz_folder))
 
     def test_normalize_npz(self):
-        pass
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_normalized')
+        if os.path.exists(output_npz_folder):
+            shutil.rmtree(output_npz_folder)
+        preprocessing.normalize_npz(npz_files_folder, output_npz_folder)
+        self.assertTrue(os.path.exists(output_npz_folder))
 
 
 class TestCases_fourier_analysis(unittest.TestCase):
     def test_stft_numeric_output_from_npz(self):
-        pass
-
-    def test_stft_from_array(self):
-        pass
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
+        if os.path.exists(output_npz_folder):
+            shutil.rmtree(output_npz_folder)
+        window_size = 1
+        overlap = 0.5
+        for window_type in ['hann', 'kaiser 5']:
+            fourier_analysis.stft_numeric_output_from_npz(npz_files_folder, output_npz_folder, window_size, overlap, window_type)
 
 
 class TestCases_visualization(unittest.TestCase):

@@ -32,8 +32,8 @@ def stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_siz
     
 
 def stft_from_array(signal_array, fs, window_size, overlap, window_type='hann', nfft=None):
-    if np.ndim(signal_array) == 2 and signal_array.shape[0] == 1 or signal_array.shape[1] == 1:
-        signal_array = signal_array[0]
+    if np.ndim(signal_array) == 2:
+        signal_array = np.squeeze(signal_array)
         Warning('Signal array is 2D but only one channel. Using first channel.')
     if np.ndim(signal_array) != 1:
         raise ValueError(f'Signal array must be 1D array but has {np.ndim(signal_array)} dimensions')

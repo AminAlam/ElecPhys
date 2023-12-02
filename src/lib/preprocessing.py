@@ -35,8 +35,18 @@ def zscore_normalize_npz(input_npz_folder, output_npz_folder):
             npz_file_contents = np.load(npz_file_path)
             data = npz_file_contents['data']
             fs = npz_file_contents['fs']
-            data_zscore = (data - np.mean(data))/np.std(data)
+            data_zscore = zscore_normalize(data)
             np.savez(os.path.join(output_npz_folder, npz_file), data=data_zscore, fs=fs)
+
+def zscore_normalize(data):
+    """ Z-score normalizes data
+    input:
+        data: data to be normalized - type: numpy.ndarray
+    output:
+        data_zscore: normalized data - type: numpy.ndarray
+    """
+    data_zscore = (data - np.mean(data))/np.std(data)
+    return data_zscore
 
 def normalize_npz(input_npz_folder, output_npz_folder):
     """ Normalizes NPZ files
@@ -57,5 +67,15 @@ def normalize_npz(input_npz_folder, output_npz_folder):
             npz_file_contents = np.load(npz_file_path)
             data = npz_file_contents['data']
             fs = npz_file_contents['fs']
-            data_normalized = data/np.max(np.abs(data))
+            data_normalized = normalize(data)
             np.savez(os.path.join(output_npz_folder, npz_file), data=data_normalized, fs=fs)
+
+def normalize(data):
+    """ Normalizes data
+    input:
+        data: data to be normalized - type: numpy.ndarray
+    output:
+        data_normalized: normalized data - type: numpy.ndarray
+    """
+    data_normalized = data/np.max(np.abs(data))
+    return data_normalized
