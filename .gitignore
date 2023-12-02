@@ -161,6 +161,4 @@ cython_debug/
 .vscode
 
 # data files
-data/npz*
-data/mat 
-data/
+test/data/npz*
