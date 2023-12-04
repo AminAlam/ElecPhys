@@ -4,6 +4,7 @@ import mat73
 import preprocessing
 import utils
 import shutil
+from tqdm import tqdm
 
 def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
     """Converts RHD files to mat files using RHD to MAT converter written in MATLAB
@@ -57,7 +58,8 @@ def convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq):
     data = mat_file_contents['data']
     fs = mat_file_contents['fs']
     
-    for ch_num in range(data.shape[0]):
+    print(f'--- Converting MAT files to NPZ files...')
+    for ch_num in tdqm(range(data.shape[0])):
         ch_name = f'Ch{ch_num+1}'
         if notch_filter_freq == 0:
             data_filtered = data[ch_num, :]
