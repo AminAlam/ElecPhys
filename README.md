@@ -84,6 +84,5 @@ ds_factor = 5
 # call rhd to mat conversoin module
 elecphys.conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
 ```
-
-```{include} docs/available_analysis.md
-```
+### Analysis methods
+<iframe src="./docs/available_analysis.md" width="600" height="400"></iframe>
