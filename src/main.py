@@ -10,13 +10,13 @@ import visualization
 from handlers import ErrorHandler
 error_handler = ErrorHandler().error_handler
 
-@click.group(chain=True)
+@click.group(chain=True, help="ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.")
 @click.pass_context
 def cli(ctx):
     pass
 
 ### Conversion ###
-@cli.command('convert_rhd_to_mat')
+@cli.command('convert_rhd_to_mat', help='Converts RHD files to mat files using RHD to MAT converter (needs MATLAB installed')
 @click.option('--folder_path', '-f', help='Path to folder containing RHD files', required=True, type=os.PathLike)
 @click.option('--output_mat_file', '-o', help='Path to output mat file', required=True, type=os.PathLike, default='output.mat', show_default=True)
 @click.option('--ds_factor', '-d', help='Downsample factor', required=False, type=int, default=1, show_default=True)
@@ -35,7 +35,7 @@ def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
     conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
     print('\n\n--- Conversion complete.')
 
-@cli.command('convert_mat_to_npz')
+@cli.command('convert_mat_to_npz', help='Converts MAT files to NPZ files using MAT to NPZ converter')
 @click.option('--mat_file', '-m', help='Path to mat file', required=True, type=os.PathLike)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=os.PathLike, default='output_npz', show_default=True)
 @click.option('--notch_filter_freq', '-n', help='Notch filter frequency in Hz', required=False, type=int, default=50, show_default=True)
@@ -57,7 +57,7 @@ def convert_mat_to_npz(ctx, mat_file, output_npz_folder, notch_filter_freq):
 
 
 ### Preprocessing ###
-@cli.command('zscore_normalize_npz')
+@cli.command('zscore_normalize_npz', help='Z-score normalizes NPZ files')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=os.PathLike, default='output_npz', show_default=True)
 @click.pass_context
@@ -73,7 +73,8 @@ def zscore_normalize_npz(ctx, input_npz_folder, output_npz_folder):
     preprocessing.zscore_normalize_npz(input_npz_folder, output_npz_folder)
     print('\n\n--- Normalization complete.')
 
-@cli.command('normalize_npz')
+
+@cli.command('normalize_npz', help='Normalizes NPZ files')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=os.PathLike, default='output_npz', show_default=True)
 @click.pass_context
@@ -92,7 +93,7 @@ def normalize_npz(ctx, input_npz_folder, output_npz_folder):
 
 
 ### Fourier Analysis ###
-@cli.command('stft_numeric_output_from_npz')
+@cli.command('stft_numeric_output_from_npz', help='Computes STFT and saves results as NPZ files')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder to save STFT results', required=True, type=os.PathLike, show_default=True)
 @click.option('--window_size', '-w', help='Window size in seconds', required=True, type=float)
@@ -113,11 +114,27 @@ def stft_numeric_output(ctx, input_npz_folder, output_npz_folder, window_size, o
     print('\n\n--- Computing STFT and saving results as NPZ files...')
     fourier_analysis.stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_size, overlap, window_type)
     print('\n\n--- STFT computation complete.')
+
+@cli.command('dft_numeric_output_from_npz', help='Computes DFT and saves results as NPZ files')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder to save DFT results', required=True, type=os.PathLike, show_default=True)
+@click.pass_context
+@error_handler
+def dft_numeric_output(ctx, input_npz_folder, output_npz_folder):
+    """ Computes DFT and saves results as NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder to save DFT results - type: os.PathLike
+    output:
+    """
+    print('\n\n--- Computing DFT and saving results as NPZ files...')
+    fourier_analysis.dft_numeric_output_from_npz(input_npz_folder, output_npz_folder)
+    print('\n\n--- DFT computation complete.')
 ### Fourier Analysis ###
 
 
 ### Visualization ###
-@cli.command('plot_stft')
+@cli.command('plot_stft', help='Plots STFT from NPZ file')
 @click.option('--input_npz_file', '-i', help='Path to input npz file', required=True, type=os.PathLike)
 @click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
 @click.option('--f_min', '-fmin', help='Minimum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
@@ -144,5 +161,60 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
     print('\n\n--- Plotting STFT...')
     visualization.plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
     print('\n\n--- Plotting complete.')
+
+
+@cli.command('plot_signal', help='Plots signals from NPZ file')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
+@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
+@click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized', required=False, type=bool, default=False, show_default=True)
+@click.pass_context
+@error_handler
+def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize):
+    """ Plots signals from NPZ file
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        channels_list: list of channels to plot - type: list
+        normalize: normalize signals - type: bool
+    output:
+    """
+    print('\n\n--- Plotting signals...')
+    visualization.plot_signal(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
+    print('\n\n--- Plotting complete.')
+
+
+@cli.command('plot_dft', help='Plots DFT from NPZ file')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
+@click.option('--f_min', '-fmin', help='Minimum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=True, type=list, default=None, show_default=True)
+@click.option('--plot_type', '-pt', help='Plot type', required=True, type=str, default='average_of_channels', show_default=True)
+@click.option('--conv_window_size', '-cws', help='Convolution window size in seconds', required=True, type=float, default=None, show_default=True)
+@click.pass_context
+@error_handler
+def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_list, plot_type, conv_window_size):
+    """ Plots DFT from NPZ file
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        channels_list: list of channels to plot - type: list
+        plot_type: plot type - type: str
+        conv_window_size: convolution window size in seconds - type: float
+    output:
+    """
+    print('\n\n--- Plotting DFT...')
+    visualization.plot_dft(input_npz_folder, output_plot_file, f_min, f_max, plot_type, channels_list, conv_window_size)
+    print('\n\n--- Plotting complete.')
 ### Visualization ###
 
+
+if __name__ == '__main__':
+    cli()
