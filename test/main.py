@@ -10,6 +10,7 @@ import fourier_analysis
 import visualization
 import data_loading
 
+
 class TestCases_conversion(unittest.TestCase):
     def test_1_rhd_to_mat(self):
         folder_path = os.path.join(os.path.dirname(__file__), 'data', 'rhd')
@@ -28,6 +29,7 @@ class TestCases_conversion(unittest.TestCase):
                 shutil.rmtree(output_npz_folder)
             conversion.convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq)
             self.assertTrue(os.path.exists(output_npz_folder))
+
 
 class TestCases_preprocessing(unittest.TestCase):
     def test_apply_notch(self):
@@ -65,6 +67,15 @@ class TestCases_fourier_analysis(unittest.TestCase):
         overlap = 0.5
         for window_type in ['hann', 'kaiser 5']:
             fourier_analysis.stft_numeric_output_from_npz(npz_files_folder, output_npz_folder, window_size, overlap, window_type)
+            self.assertTrue(os.path.exists(output_npz_folder))
+
+    def test_dft_numeric_output_from_npz(self):
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_dft')
+        if os.path.exists(output_npz_folder):
+            shutil.rmtree(output_npz_folder)
+        fourier_analysis.dft_numeric_output_from_npz(npz_files_folder, output_npz_folder)
+        self.assertTrue(os.path.exists(output_npz_folder))
 
 
 class TestCases_visualization(unittest.TestCase):
@@ -101,6 +112,20 @@ class TestCases_visualization(unittest.TestCase):
         if os.path.exists(output_plot_file):
             os.remove(output_plot_file)
         visualization.plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list)
+        self.assertTrue(os.path.exists(output_plot_file))
+
+    def test_plot_dft(self):
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_dft')
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'dft_plot.pdf')
+        
+        f_min = None
+        f_max = 150
+        for conv_window_size in [None, 100]:
+            for plot_type in ['all_channels', 'average_of_channels']:
+                if os.path.exists(output_plot_file):
+                    os.remove(output_plot_file)
+                visualization.plot_dft_from_npz(npz_files_folder, output_plot_file, f_min, f_max, plot_type)
+                self.assertTrue(os.path.exists(output_plot_file))
 
 
 class TestCases_utils(unittest.TestCase):
