@@ -116,7 +116,7 @@ class TestCases_visualization(unittest.TestCase):
 
     def test_plot_dft(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_dft')
-        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'dft_plot.pdf')
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'dft_plot.png')
         
         f_min = None
         f_max = 150
