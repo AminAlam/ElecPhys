@@ -8,7 +8,7 @@
 
 ----------
 
-ElecPhys: A Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.
+ElecPhys: A Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.
 
 
 ----------
@@ -20,7 +20,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 ----------
 ## Overview
 <p align="justify">
- ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.. ElecPhys can conver .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domain. Please look at [here](https://github.com/AminAlam/ElecPhys#available_analysis_methods) for complete list of available analysis methods. 
+ ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.. ElecPhys can convert .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domain. Please take a look at <a href="https://github.com/AminAlam/ElecPhys/docs/available_analysis">here</a> for the complete list of available analysis methods. 
 </p>
 
 ----------
@@ -29,10 +29,13 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 ### Source code
 - Clone the repository or download the source code.
 - cd into the repository directory.
-- Run `pip3 install -r requirements.txt` or `pip install -r requirements.txt`
+- Run `python3 setup.py install`
+
+### PyPi
+Run `pip3 install ElecPhys` or `pip install ElecPhys`
 
 ## Usage
-It's possible to use ElecPhys as as command line tool or as a Python module.
+It's possible to use ElecPhys as a command line tool or as a Python module.
 
 ### Command Line
 To use ELecPhys from command line, you need to use the following pattern:
@@ -56,6 +59,7 @@ Options:
 Commands:
   convert_mat_to_npz            Converts MAT files to NPZ files using MAT...
   convert_rhd_to_mat            Converts RHD files to mat files using RHD...
+  dft_numeric_output_from_npz   Computes DFT and saves results as NPZ files
   normalize_npz                 Normalizes NPZ files
   plot_dft                      Plots DFT from NPZ file
   plot_signal                   Plots signals from NPZ file
@@ -81,4 +85,5 @@ ds_factor = 5
 elecphys.conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
 ```
 
-## Available Commands
+```{include} docs/available_analysis.md
+```
