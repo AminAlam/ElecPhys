@@ -145,6 +145,7 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
     visualization.plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
     print('\n\n--- Plotting complete.')
 
+
 @cli.command('plot_signal')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
 @click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
@@ -167,6 +168,33 @@ def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_
     """
     print('\n\n--- Plotting signals...')
     visualization.plot_signal(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
+    print('\n\n--- Plotting complete.')
+
+
+@cli.command('plot_dft')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
+@click.option('--f_min', '-fmin', help='Minimum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=True, type=list, default=None, show_default=True)
+@click.option('--plot_type', '-pt', help='Plot type', required=True, type=str, default='average_of_channels', options=['all_channels', 'average_of_channels'], show_default=True)
+@click.option('--conv_window_size', '-cws', help='Convolution window size in seconds', required=True, type=float, default=None, show_default=True)
+@click.pass_context
+@error_handler
+def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, plot_type, channels_list, conv_window_size):
+    """ Plots DFT from NPZ file
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        channels_list: list of channels to plot - type: list
+        plot_type: plot type - type: str
+        conv_window_size: convolution window size in seconds - type: float
+    output:
+    """
+    print('\n\n--- Plotting DFT...')
+    visualization.plot_dft(input_npz_folder, output_plot_file, f_min, f_max, plot_type, channels_list, conv_window_size)
     print('\n\n--- Plotting complete.')
 ### Visualization ###
 

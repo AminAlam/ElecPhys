@@ -59,7 +59,7 @@ def convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq):
     fs = mat_file_contents['fs']
     
     print(f'--- Converting MAT files to NPZ files...')
-    for ch_num in tdqm(range(data.shape[0])):
+    for ch_num in tqdm(range(data.shape[0])):
         ch_name = f'Ch{ch_num+1}'
         if notch_filter_freq == 0:
             data_filtered = data[ch_num, :]
