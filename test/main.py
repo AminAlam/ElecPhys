@@ -11,7 +11,7 @@ import visualization
 import data_loading
 
 class TestCases_conversion(unittest.TestCase):
-    def test_1_rhd_to_mat(self):   
+    def test_1_rhd_to_mat(self):
         folder_path = os.path.join(os.path.dirname(__file__), 'data', 'rhd')
         output_mat_file = os.path.join(os.path.dirname(__file__), 'data', 'mat', 'sample.mat')
         for ds_factor in [1, 20]:
