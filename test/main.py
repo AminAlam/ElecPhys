@@ -13,6 +13,8 @@ import data_loading
 
 class TestCases_conversion(unittest.TestCase):
     def test_1_rhd_to_mat(self):
+        if not MATLAB_TEST:
+            self.assertTrue(True)
         folder_path = os.path.join(os.path.dirname(__file__), 'data', 'rhd')
         output_mat_file = os.path.join(os.path.dirname(__file__), 'data', 'mat', 'sample.mat')
         for ds_factor in [1, 20]:
@@ -133,4 +135,5 @@ class TestCases_utils(unittest.TestCase):
         pass
 
 if __name__ == '__main__':
+    MATLAB_TEST = int(sys.argv[2])
     unittest.main()
