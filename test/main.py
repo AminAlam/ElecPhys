@@ -136,4 +136,4 @@ class TestCases_utils(unittest.TestCase):
 
 if __name__ == '__main__':
     MATLAB_TEST = int(sys.argv[1])
-    unittest.main()
+    unittest.main(argv=['first-arg-is-ignored'], exit=False)
