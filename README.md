@@ -20,7 +20,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 ----------
 ## Overview
 <p align="justify">
- ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.. ElecPhys can convert .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domain. Please take a look at <a href="https://github.com/AminAlam/ElecPhys/docs/available_analysis">here</a> for the complete list of available analysis methods. 
+ ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.. ElecPhys can convert .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domain. Please take a look at <a href="https://github.com/AminAlam/ElecPhys/docs/available_analysis.md">here</a> for the complete list of available tools. 
 </p>
 
 ----------
@@ -84,5 +84,5 @@ ds_factor = 5
 # call rhd to mat conversoin module
 elecphys.conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
 ```
-### Analysis methods
-<iframe src="./docs/available_analysis.md" width="600" height="400"></iframe>
+### Available Analysis methods
+Please check [this file](./docs/available_analysis.md)
