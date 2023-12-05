@@ -135,5 +135,5 @@ class TestCases_utils(unittest.TestCase):
         pass
 
 if __name__ == '__main__':
-    MATLAB_TEST = int(sys.argv[2])
+    MATLAB_TEST = int(sys.argv[1])
     unittest.main()
