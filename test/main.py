@@ -11,7 +11,7 @@ import visualization
 import data_loading
 
 
-class TestCases_conversion(unittest.TestCase):
+class TestCases_0_conversion(unittest.TestCase):
     def test_1_rhd_to_mat(self):
         if not MATLAB_TEST:
             self.assertTrue(True)
@@ -34,7 +34,7 @@ class TestCases_conversion(unittest.TestCase):
             self.assertTrue(os.path.exists(output_npz_folder))
 
 
-class TestCases_preprocessing(unittest.TestCase):
+class TestCases_1_preprocessing(unittest.TestCase):
     def test_apply_notch(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         npz_files = os.listdir(npz_files_folder)
@@ -60,7 +60,7 @@ class TestCases_preprocessing(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
 
-class TestCases_fourier_analysis(unittest.TestCase):
+class TestCases_2_fourier_analysis(unittest.TestCase):
     def test_stft_numeric_output_from_npz(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
@@ -81,7 +81,7 @@ class TestCases_fourier_analysis(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
 
-class TestCases_visualization(unittest.TestCase):
+class TestCases_3_visualization(unittest.TestCase):
     def test_plot_stft(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
         npz_files = os.listdir(npz_files_folder)
@@ -131,7 +131,7 @@ class TestCases_visualization(unittest.TestCase):
                 self.assertTrue(os.path.exists(output_plot_file))
 
 
-class TestCases_utils(unittest.TestCase):
+class TestCases_4_utils(unittest.TestCase):
     def test_get_matlab_engine(self):
         pass
 
