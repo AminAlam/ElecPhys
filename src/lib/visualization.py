@@ -167,4 +167,6 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
     if output_plot_file is None:
         plt.show()
     else:
+        if not os.path.exists(os.path.dirname(output_plot_file)):
+            os.makedirs(os.path.dirname(output_plot_file))
         plt.savefig(output_plot_file, dpi=600)
