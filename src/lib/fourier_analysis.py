@@ -79,7 +79,7 @@ def stft_from_array(signal_array, fs, window_size, overlap, window_type='hann', 
     if nfft is None:
         nfft = 2*window_length
     if 'kaiser' in window_type:
-        window_type = signal.kaiser(window_length, beta=int(window_type.split(' ')[-1]))
+        window_type = signal.windows.kaiser(window_length, float(window_type.split(' ')[1]))
     [f, t, Zxx] = signal.stft(signal_array, fs, window=window_type, nperseg=window_length, noverlap=overlap_length, nfft=nfft)
     return f, t, Zxx
 

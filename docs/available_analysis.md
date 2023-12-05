@@ -61,17 +61,6 @@ Options:
 ###
 #### plot_dft
 ```console
-Usage: main.py normalize_npz [OPTIONS]
-
-  Normalizes NPZ files
-
-Options:
-  -i, --input_npz_folder PATHLIKE
-                                  Path to input npz folder  [required]
-  -o, --output_npz_folder PATHLIKE
-                                  Path to output npz folder  [default:
-                                  output_npz; required]
-  --help                          Show this message and exit.
 ➜  ElecPhys git:(dev) ✗ python3 src/main.py plot_dft --help     
 Usage: main.py plot_dft [OPTIONS]
 
