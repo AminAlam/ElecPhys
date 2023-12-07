@@ -1,9 +1,11 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import re 
 
 import data_loading
 import preprocessing
+import utils
 
 def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file (STFT must be saved as NPZ file)
@@ -34,27 +36,98 @@ def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_
     if db_max is None:
         db_max = np.max(10*np.log10(np.abs(Zxx)))
 
+    plot_stft_from_array(Zxx_plot, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file)
+
+
+def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list=None):
+    """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
+    input:
+        npz_folder_path: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        db_min: minimum dB to plot - type: float
+        db_max: maximum dB to plot - type: float
+        channels_list: list of channels to plot - type: list
+    output:
+    """
+    
+    npz_files = os.listdir(npz_folder_path)
+    npz_files = utils.sort_file_names(npz_files)
+
+    if channels_list is None:
+        channels_list = tuple(range(1, len(npz_files)+1))
+    else:
+        channels_list = sorted(channels_list)
+
+    for channel_index, channel in enumerate(channels_list):
+        npz_file = npz_files[channel-1]
+        f, t, Zxx = data_loading.load_npz_stft(os.path.join(npz_folder_path, npz_file))
+        Zxx = 10*np.log10(np.abs(Zxx))
+        if channel_index == 0:
+            Zxx_list = Zxx
+        else:
+            Zxx_list = np.dstack((Zxx_list, Zxx))
+            
+    Zxx_avg = np.mean(Zxx_list, axis=2)
+    if f_min is None:
+        f_min = np.min(f)
+    if f_max is None:
+        f_max = np.max(f)
+    if t_min is None:
+        t_min = np.min(t)
+    if t_max is None:
+        t_max = np.max(t)
+    if db_min is None:
+        db_min = np.min(Zxx_avg)
+    if db_max is None:
+        db_max = np.max(Zxx_avg)
+
+    plot_stft_from_array(Zxx_avg, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file)
+
+    
+def plot_stft_from_array(Zxx, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file=None):
+    """ Plots STFT from 2D array
+    input:
+        Zxx: STFT matrix - type: np.ndarray
+        t: time vector - type: np.ndarray
+        f: frequency vector - type: np.ndarray
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        db_min: minimum dB to plot - type: float
+        db_max: maximum dB to plot - type: float
+        output_plot_file: path to output plot file - type: os.PathLike
+    output:
+    """
+
     desired_freq_index_low = np.where(np.min(abs(f-f_min))==abs(f-f_min))[0][0]
     desired_freq_index_high = np.where(np.min(abs(f-f_max))==abs(f-f_max))[0][0]
     desired_time_index_low = np.where(np.min(abs(t-t_min))==abs(t-t_min))[0][0]
     desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
-    Zxx_plot = Zxx_plot[desired_freq_index_low:desired_freq_index_high, desired_time_index_low:desired_time_index_high]
+    Zxx = Zxx[desired_freq_index_low:desired_freq_index_high, desired_time_index_low:desired_time_index_high]
     f = f[desired_freq_index_low:desired_freq_index_high]
     t = t[desired_time_index_low:desired_time_index_high]
-    pc = plt.pcolormesh(t, f, Zxx_plot, cmap=plt.get_cmap('jet'), shading='auto')
+    
+    pc = plt.pcolormesh(t, f, Zxx, cmap=plt.get_cmap('jet'), shading='auto')
     plt.colorbar(pc)
     plt.xlabel('Time (s)')
     plt.ylabel('Frequency (Hz)')
-    plt.clim(db_min, db_max)    
+    plt.clim(db_min, db_max)
     plt.text(1.01, 0.5, 'Power (dB)', va='center', rotation=-90, transform=plt.gca().transAxes)
+    plt.tight_layout()
+
     if output_plot_file is None:
         plt.show()
     else:
         if not os.path.exists(os.path.dirname(output_plot_file)):
             os.makedirs(os.path.dirname(output_plot_file))
-        plt.tight_layout()
         plt.savefig(output_plot_file, dpi=600)
         plt.close()
+
 
 def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list=None, normalize=False):
     """ Plots signals from NPZ file
@@ -67,14 +140,18 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
     output:
     """
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort()
+    npz_files = utils.sort_file_names(npz_files)
+
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:
         channels_list = sorted(channels_list)
-    fig = plt.figure(figsize=(30, len(channels_list)))
+    if len(channels_list) > 20:
+        fig = plt.figure(figsize=(30, len(channels_list)))
+    else:
+        fig = plt.figure(figsize=(30, 10))
     ax = fig.subplots(len(channels_list), 1, sharex=True)
-    for channel in channels_list:
+    for channel_index, channel in enumerate(channels_list):
         npz_file = npz_files[channel-1]
         signal_chan, fs = data_loading.load_npz(os.path.join(npz_folder_path, npz_file))
         if normalize:
@@ -89,14 +166,14 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
         signal_chan = signal_chan[desired_time_index_low:desired_time_index_high]
         t = t[desired_time_index_low:desired_time_index_high]
-        ax[channel-1].plot(t, signal_chan, color='k')
-        ax[channel-1].set_ylabel(f'Channel {channel}')
-        ax[channel-1].spines['top'].set_visible(False)
-        ax[channel-1].spines['right'].set_visible(False)
-        if channel != channels_list[-1]:
-            ax[channel-1].spines['bottom'].set_visible(False)
-        ax[channel-1].tick_params(axis='both', which='both', length=0)
-        ax[channel-1].set_yticks([])
+        ax[channel_index].plot(t, signal_chan, color='k')
+        ax[channel_index].set_ylabel(f'Channel {channel}')
+        ax[channel_index].spines['top'].set_visible(False)
+        ax[channel_index].spines['right'].set_visible(False)
+        if channel_index != len(channels_list)-1:
+            ax[channel_index].spines['bottom'].set_visible(False)
+        ax[channel_index].tick_params(axis='both', which='both', length=0)
+        ax[channel_index].set_yticks([])
     ax[-1].set_xlabel('Time (s)')
     ax[-1].set_xlim(t_min, t_max)
     plt.tight_layout()
@@ -108,6 +185,7 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         plt.tight_layout()
         plt.savefig(output_plot_file, dpi=600)
         plt.close()
+
 
 def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type, channels_list=None, conv_window_size=None):
     """ Plots DFT from NPZ file (DFT must be saved as NPZ file)
@@ -121,14 +199,20 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
         conv_window_size: size of convolution window to make plot smoother - type: int
     output:
     """
+    if plot_type not in ['all_channels', 'average_of_channels']:
+        raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
+
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort()
+    npz_files = utils.sort_file_names(npz_files)
+
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:
         channels_list = sorted(channels_list)
-
-    fig = plt.figure(figsize=(20, int(len(channels_list)/2)))
+    if len(channels_list) > 20:
+        fig = plt.figure(figsize=(20, int(len(channels_list)/2)))
+    else:
+        fig = plt.figure(figsize=(20, 10))
     ax = fig.subplots(1, 1)
     for channel in channels_list:
         f, Zxx = data_loading.load_npz_dft(os.path.join(npz_folder_path, npz_files[channel-1]))
