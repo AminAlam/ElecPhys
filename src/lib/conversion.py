@@ -6,7 +6,7 @@ import utils
 import shutil
 from tqdm import tqdm
 
-def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
+def convert_rhd_to_mat(folder_path, output_mat_file, ds_factor):
     """Converts RHD files to mat files using RHD to MAT converter written in MATLAB
     input:
         folder_path: path to folder containing RHD files - type: os.PathLike
@@ -37,7 +37,7 @@ def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
     eng.quit()
 
 
-def convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq):
+def convert_mat_to_npz(mat_file, output_npz_folder, notch_filter_freq):
     """Converts MAT files to NPZ files
     input:
         mat_file: path to mat file - type: os.PathLike
