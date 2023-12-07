@@ -106,6 +106,28 @@ class TestCases_3_visualization(unittest.TestCase):
                                 visualization.plot_stft_from_npz(os.path.join(npz_files_folder, npz_file), output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
                                 self.assertTrue(os.path.exists(output_plot_file))
     
+    def test_plot_avg_stft(self):
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'avg_stft_plot.png')
+        
+        f_min = None
+        f_max = None
+        t_min = None
+        t_max = None
+        db_min = None
+        db_max = None
+        for channels_list in [[1, 2, 3, 4, 5, 6, 7, 12, 15], None]:
+            for f_min in [None, 0]:
+                for f_max in [None, 200]:
+                    for t_min in [2, None]:
+                        for t_max in [10, None]:
+                            for db_min in [-50, None]:
+                                for db_max in [50, None]:
+                                    if os.path.exists(output_plot_file):
+                                        os.remove(output_plot_file)
+                                    visualization.plot_avg_stft_from_npz(npz_files_folder, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list)
+                                    self.assertTrue(os.path.exists(output_plot_file))
+
     def test_plot_signal(self):
         npz_folder_path = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'signal_plot.png')
@@ -116,6 +138,7 @@ class TestCases_3_visualization(unittest.TestCase):
                 os.remove(output_plot_file)
             visualization.plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list)
             self.assertTrue(os.path.exists(output_plot_file))
+
 
     def test_plot_dft(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_dft')

@@ -36,27 +36,8 @@ def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_
     if db_max is None:
         db_max = np.max(10*np.log10(np.abs(Zxx)))
 
-    desired_freq_index_low = np.where(np.min(abs(f-f_min))==abs(f-f_min))[0][0]
-    desired_freq_index_high = np.where(np.min(abs(f-f_max))==abs(f-f_max))[0][0]
-    desired_time_index_low = np.where(np.min(abs(t-t_min))==abs(t-t_min))[0][0]
-    desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
-    Zxx_plot = Zxx_plot[desired_freq_index_low:desired_freq_index_high, desired_time_index_low:desired_time_index_high]
-    f = f[desired_freq_index_low:desired_freq_index_high]
-    t = t[desired_time_index_low:desired_time_index_high]
-    pc = plt.pcolormesh(t, f, Zxx_plot, cmap=plt.get_cmap('jet'), shading='auto')
-    plt.colorbar(pc)
-    plt.xlabel('Time (s)')
-    plt.ylabel('Frequency (Hz)')
-    plt.clim(db_min, db_max)    
-    plt.text(1.01, 0.5, 'Power (dB)', va='center', rotation=-90, transform=plt.gca().transAxes)
-    if output_plot_file is None:
-        plt.show()
-    else:
-        if not os.path.exists(os.path.dirname(output_plot_file)):
-            os.makedirs(os.path.dirname(output_plot_file))
-        plt.tight_layout()
-        plt.savefig(output_plot_file, dpi=600)
-        plt.close()
+    plot_stft_from_array(Zxx_plot, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file)
+
 
 def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list=None):
     """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
@@ -72,6 +53,7 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
         channels_list: list of channels to plot - type: list
     output:
     """
+    
     npz_files = os.listdir(npz_folder_path)
     npz_files = utils.sort_file_names(npz_files)
 
@@ -81,7 +63,7 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
         channels_list = sorted(channels_list)
 
     for channel_index, channel in enumerate(channels_list):
-        npz_file = npz_files[channel_index]
+        npz_file = npz_files[channel-1]
         f, t, Zxx = data_loading.load_npz_stft(os.path.join(npz_folder_path, npz_file))
         Zxx = 10*np.log10(np.abs(Zxx))
         if channel_index == 0:
@@ -90,8 +72,6 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
             Zxx_list = np.dstack((Zxx_list, Zxx))
             
     Zxx_avg = np.mean(Zxx_list, axis=2)
-    Zxx_std = np.std(Zxx_list, axis=2)
-
     if f_min is None:
         f_min = np.min(f)
     if f_max is None:
@@ -101,10 +81,53 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
     if t_max is None:
         t_max = np.max(t)
     if db_min is None:
-        
+        db_min = np.min(Zxx_avg)
+    if db_max is None:
+        db_max = np.max(Zxx_avg)
 
+    plot_stft_from_array(Zxx_avg, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file)
 
     
+def plot_stft_from_array(Zxx, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file=None):
+    """ Plots STFT from 2D array
+    input:
+        Zxx: STFT matrix - type: np.ndarray
+        t: time vector - type: np.ndarray
+        f: frequency vector - type: np.ndarray
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        db_min: minimum dB to plot - type: float
+        db_max: maximum dB to plot - type: float
+        output_plot_file: path to output plot file - type: os.PathLike
+    output:
+    """
+
+    desired_freq_index_low = np.where(np.min(abs(f-f_min))==abs(f-f_min))[0][0]
+    desired_freq_index_high = np.where(np.min(abs(f-f_max))==abs(f-f_max))[0][0]
+    desired_time_index_low = np.where(np.min(abs(t-t_min))==abs(t-t_min))[0][0]
+    desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
+    Zxx = Zxx[desired_freq_index_low:desired_freq_index_high, desired_time_index_low:desired_time_index_high]
+    f = f[desired_freq_index_low:desired_freq_index_high]
+    t = t[desired_time_index_low:desired_time_index_high]
+    
+    pc = plt.pcolormesh(t, f, Zxx, cmap=plt.get_cmap('jet'), shading='auto')
+    plt.colorbar(pc)
+    plt.xlabel('Time (s)')
+    plt.ylabel('Frequency (Hz)')
+    plt.clim(db_min, db_max)
+    plt.text(1.01, 0.5, 'Power (dB)', va='center', rotation=-90, transform=plt.gca().transAxes)
+    plt.tight_layout()
+
+    if output_plot_file is None:
+        plt.show()
+    else:
+        if not os.path.exists(os.path.dirname(output_plot_file)):
+            os.makedirs(os.path.dirname(output_plot_file))
+        plt.savefig(output_plot_file, dpi=600)
+        plt.close()
+
 
 def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list=None, normalize=False):
     """ Plots signals from NPZ file
@@ -129,7 +152,7 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         fig = plt.figure(figsize=(30, 10))
     ax = fig.subplots(len(channels_list), 1, sharex=True)
     for channel_index, channel in enumerate(channels_list):
-        npz_file = npz_files[channel_index]
+        npz_file = npz_files[channel-1]
         signal_chan, fs = data_loading.load_npz(os.path.join(npz_folder_path, npz_file))
         if normalize:
             signal_chan = preprocessing.normalize(signal_chan)
@@ -162,6 +185,7 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         plt.tight_layout()
         plt.savefig(output_plot_file, dpi=600)
         plt.close()
+
 
 def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type, channels_list=None, conv_window_size=None):
     """ Plots DFT from NPZ file (DFT must be saved as NPZ file)

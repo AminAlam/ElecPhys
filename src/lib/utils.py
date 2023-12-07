@@ -1,6 +1,7 @@
 import subprocess
 import os
 import sys
+import re
 
 def get_matlab_engine():
     """Installs MATLAB engine for Python
