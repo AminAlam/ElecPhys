@@ -58,7 +58,7 @@ Options:
                                   output_npz; required]
   --help                          Show this message and exit.
 ```
-###
+### Visualization
 #### plot_dft
 ```console
 ➜  ElecPhys git:(dev) ✗ python3 src/main.py plot_dft --help     
@@ -117,6 +117,26 @@ Options:
   -dbmin, --db_min FLOAT          Minimum dB to plot  [required]
   -dbmax, --db_max FLOAT          Maximum dB to plot  [required]
   --help                          Show this message and exit.
+```
+#### plot_avg_stft
+```console
+Usage: main.py plot_avg_stft [OPTIONS]
+
+  Plots average STFT from NPZ files
+
+Options:
+  -i, --input_npz_folder TEXT  Path to input npz folder containing STFT NPZ
+                               files  [required]
+  -o, --output_plot_file TEXT  Path to output plot file  [required]
+  -fmin, --f_min FLOAT         Minimum frequency to plot in Hz
+  -fmax, --f_max FLOAT         Maximum frequency to plot in Hz
+  -tmin, --t_min FLOAT         Minimum time to plot in seconds
+  -tmax, --t_max FLOAT         Maximum time to plot in seconds
+  -dbmin, --db_min FLOAT       Minimum dB to plot
+  -dbmax, --db_max FLOAT       Maximum dB to plot
+  -cl, --channels_list LIST    List of channels to plot, if None then all of
+                               the channels will be plotted
+  --help                       Show this message and exit.
 ```
 ### Fourier Analysis
 #### dft_numeric_output_from_npz
