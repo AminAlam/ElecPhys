@@ -14,7 +14,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 ----------
 ## Table of contents			
    * [Overview](https://github.com/AminAlam/ElecPhys#overview)
-   * [Installation](https://github.com/AminAlam/Zam#ElecPhys)
+   * [Installation](https://github.com/AminAlam/ElecPhys#ElecPhys)
    * [Usage](https://github.com/AminAlam/ElecPhys#usage)
 
 ----------
