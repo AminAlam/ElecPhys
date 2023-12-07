@@ -1,4 +1,5 @@
 import utils 
+import os
 
 def pca_from_npz(input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list):
     """ Performs PCA on NPZ files
