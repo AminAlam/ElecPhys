@@ -13,13 +13,10 @@ def get_matlab_engine():
     try:
         import matlab.engine
     except:
-        Warning('MATLAB engine for Python not installed. Trying to install...')
-        try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'matlabengine'])
-        except:
-            raise ImportError(f'MATLAB engine for Python not installed. Please install MATLAB engine for Python from {matlab_installation_url}')        
+        raise ImportError(f'MATLAB engine for Python not installed. Please install MATLAB engine for Python from {matlab_installation_url}')        
     
     return matlab.engine.start_matlab()
+
 
 def sort_file_names(file_names):
     """Sorts file names in ascending order
@@ -30,3 +27,19 @@ def sort_file_names(file_names):
     """
     file_names.sort(key=lambda f: int(re.sub('\D', '', f)))
     return file_names
+
+
+def convert_string_to_list(string):
+    """Converts string to list
+    input:
+        string: string to be converted - type: str
+    output:
+        list: converted list - type: list
+    """
+    if type(string) is not str:
+        Warning('Input is not a string. Returning input.')
+        return string
+    string = string.replace(['[', ']'], '')
+    string = string.replace(' ', '')
+    string = string.split(',')
+    return list(map(int, string))

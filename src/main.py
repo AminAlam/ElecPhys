@@ -36,6 +36,7 @@ def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
     conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
     print('\n\n--- Conversion complete.')
 
+
 @cli.command('convert_mat_to_npz', help='Converts MAT files to NPZ files using MAT to NPZ converter')
 @click.option('--mat_file', '-m', help='Path to mat file', required=True, type=str)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=str, default='output_npz', show_default=True)
@@ -116,6 +117,7 @@ def stft_numeric_output(ctx, input_npz_folder, output_npz_folder, window_size, o
     fourier_analysis.stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_size, overlap, window_type)
     print('\n\n--- STFT computation complete.')
 
+
 @cli.command('dft_numeric_output_from_npz', help='Computes DFT and saves results as NPZ files')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=str)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder to save DFT results', required=True, type=str, show_default=True)
@@ -160,7 +162,7 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
     output:
     """
     print('\n\n--- Plotting STFT...')
-    visualization.plot_stft(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
+    visualization.plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max)
     print('\n\n--- Plotting complete.')
 
 
@@ -199,7 +201,7 @@ def plot_avg_stft(ctx, input_npz_folder, output_plot_file, f_min, f_max, t_min, 
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=str)
 @click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=str, default=None, show_default=True)
 @click.option('--t_min', '-tmin', help='Minimum time to plot in seconds', required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
 @click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized', required=False, type=bool, default=False, show_default=True)
 @click.pass_context
@@ -216,7 +218,7 @@ def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_
     output:
     """
     print('\n\n--- Plotting signals...')
-    visualization.plot_signal(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
+    visualization.plot_signals_from_npz(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
     print('\n\n--- Plotting complete.')
 
 
@@ -226,8 +228,8 @@ def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_
 @click.option('--f_min', '-fmin', help='Minimum frequency to plot in Hz', required=False, type=float, default=None, show_default=True)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz', required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
-@click.option('--plot_type', '-pt', help='Plot type', required=True, type=str, default='average_of_channels', show_default=True)
-@click.option('--conv_window_size', '-cws', help='Convolution window size in seconds', required=False, type=float, default=None, show_default=True)
+@click.option('--plot_type', '-pt', help='Plot type. If "all_channels", then all channels will be plotted in one figure. If "average_of_channels", then average of channels will be plotted in one figure with errorbar', required=True, type=str, default='average_of_channels', show_default=True)
+@click.option('--conv_window_size', '-cws', help='Convolution window size in seconds', required=False, type=int, default=None, show_default=True)
 @click.pass_context
 @error_handler
 def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_list, plot_type, conv_window_size):
@@ -243,7 +245,7 @@ def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_lis
     output:
     """
     print('\n\n--- Plotting DFT...')
-    visualization.plot_dft(input_npz_folder, output_plot_file, f_min, f_max, plot_type, channels_list, conv_window_size)
+    visualization.plot_dft_from_npz(input_npz_folder, output_plot_file, f_min, f_max, plot_type, channels_list, conv_window_size)
     print('\n\n--- Plotting complete.')
 ### Visualization ###
 

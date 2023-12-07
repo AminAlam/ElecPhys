@@ -6,7 +6,7 @@ import utils
 import shutil
 from tqdm import tqdm
 
-def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
+def convert_rhd_to_mat(folder_path, output_mat_file, ds_factor):
     """Converts RHD files to mat files using RHD to MAT converter written in MATLAB
     input:
         folder_path: path to folder containing RHD files - type: os.PathLike
@@ -17,27 +17,14 @@ def convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor):
     """
     output_mat_file_folder = os.path.dirname(output_mat_file)
     # if os is unix, check if MATLAB is installed
-    if os.name == 'posix': 
-        if shutil.which('matlab') is None:
-            raise ValueError('MATLAB is not installed on your system')
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            if os.path.exists(os.path.join(path, 'matlab.exe')):
-                break
-        else:
-            raise ValueError('MATLAB is not installed on your system')
-    
-    if not os.path.exists(output_mat_file_folder):
-        os.makedirs(output_mat_file_folder)
-    else:
-        Warning(f'{output_mat_file_folder} already exists. Files will be overwritten.')
+    Warning('This functionality needs MATLAB to be installed on your computer. If you do not have MATLAB installed, please install it first.') 
     eng = utils.get_matlab_engine()
     eng.addpath(os.path.join(os.path.dirname(__file__), 'matlab_scripts'))
     eng.convertRHD2Mat(folder_path, output_mat_file, ds_factor, nargout=0)
     eng.quit()
 
 
-def convert_mat_to_npz_matlab(mat_file, output_npz_folder, notch_filter_freq):
+def convert_mat_to_npz(mat_file, output_npz_folder, notch_filter_freq):
     """Converts MAT files to NPZ files
     input:
         mat_file: path to mat file - type: os.PathLike
