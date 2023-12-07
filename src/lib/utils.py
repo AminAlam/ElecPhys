@@ -17,6 +17,7 @@ def get_matlab_engine():
     
     return matlab.engine.start_matlab()
 
+
 def sort_file_names(file_names):
     """Sorts file names in ascending order
     input:
@@ -26,3 +27,19 @@ def sort_file_names(file_names):
     """
     file_names.sort(key=lambda f: int(re.sub('\D', '', f)))
     return file_names
+
+
+def convert_string_to_list(string):
+    """Converts string to list
+    input:
+        string: string to be converted - type: str
+    output:
+        list: converted list - type: list
+    """
+    if type(string) is not str:
+        Warning('Input is not a string. Returning input.')
+        return string
+    string = string.replace(['[', ']'], '')
+    string = string.replace(' ', '')
+    string = string.split(',')
+    return list(map(int, string))
