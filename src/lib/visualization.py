@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import re 
 
 import data_loading
 import preprocessing
@@ -67,15 +68,18 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
     output:
     """
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort()
+    npz_files.sort(key=lambda f: int(re.sub('\D', '', f)))
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:
         channels_list = sorted(channels_list)
-    fig = plt.figure(figsize=(30, len(channels_list)))
+    if len(channels_list) > 20:
+        fig = plt.figure(figsize=(30, len(channels_list)))
+    else:
+        fig = plt.figure(figsize=(30, 10))
     ax = fig.subplots(len(channels_list), 1, sharex=True)
-    for channel in channels_list:
-        npz_file = npz_files[channel-1]
+    for channel_index, channel in enumerate(channels_list):
+        npz_file = npz_files[channel_index]
         signal_chan, fs = data_loading.load_npz(os.path.join(npz_folder_path, npz_file))
         if normalize:
             signal_chan = preprocessing.normalize(signal_chan)
@@ -89,14 +93,14 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
         desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
         signal_chan = signal_chan[desired_time_index_low:desired_time_index_high]
         t = t[desired_time_index_low:desired_time_index_high]
-        ax[channel-1].plot(t, signal_chan, color='k')
-        ax[channel-1].set_ylabel(f'Channel {channel}')
-        ax[channel-1].spines['top'].set_visible(False)
-        ax[channel-1].spines['right'].set_visible(False)
-        if channel != channels_list[-1]:
-            ax[channel-1].spines['bottom'].set_visible(False)
-        ax[channel-1].tick_params(axis='both', which='both', length=0)
-        ax[channel-1].set_yticks([])
+        ax[channel_index].plot(t, signal_chan, color='k')
+        ax[channel_index].set_ylabel(f'Channel {channel}')
+        ax[channel_index].spines['top'].set_visible(False)
+        ax[channel_index].spines['right'].set_visible(False)
+        if channel_index != len(channels_list)-1:
+            ax[channel_index].spines['bottom'].set_visible(False)
+        ax[channel_index].tick_params(axis='both', which='both', length=0)
+        ax[channel_index].set_yticks([])
     ax[-1].set_xlabel('Time (s)')
     ax[-1].set_xlim(t_min, t_max)
     plt.tight_layout()
@@ -124,13 +128,15 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
     if plot_type not in ['all_channels', 'average_of_channels']:
         raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort()
+    npz_files.sort(key=lambda f: int(re.sub('\D', '', f)))
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:
         channels_list = sorted(channels_list)
-
-    fig = plt.figure(figsize=(20, int(len(channels_list)/2)))
+    if len(channels_list) > 20:
+        fig = plt.figure(figsize=(20, int(len(channels_list)/2)))
+    else:
+        fig = plt.figure(figsize=(20, 10))
     ax = fig.subplots(1, 1)
     for channel in channels_list:
         f, Zxx = data_loading.load_npz_dft(os.path.join(npz_folder_path, npz_files[channel-1]))

@@ -111,11 +111,11 @@ class TestCases_3_visualization(unittest.TestCase):
         output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'signal_plot.png')
         t_min = None
         t_max = None
-        channels_list = None
-        if os.path.exists(output_plot_file):
-            os.remove(output_plot_file)
-        visualization.plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list)
-        self.assertTrue(os.path.exists(output_plot_file))
+        for channels_list in [None, [1, 2, 3, 4, 5, 6, 7, 12, 15]]:
+            if os.path.exists(output_plot_file):
+                os.remove(output_plot_file)
+            visualization.plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list)
+            self.assertTrue(os.path.exists(output_plot_file))
 
     def test_plot_dft(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_dft')
@@ -123,12 +123,13 @@ class TestCases_3_visualization(unittest.TestCase):
         
         f_min = None
         f_max = 150
-        for conv_window_size in [None, 100]:
-            for plot_type in ['all_channels', 'average_of_channels']:
-                if os.path.exists(output_plot_file):
-                    os.remove(output_plot_file)
-                visualization.plot_dft_from_npz(npz_files_folder, output_plot_file, f_min, f_max, plot_type)
-                self.assertTrue(os.path.exists(output_plot_file))
+        for channels_list in [None, [1, 2, 3]]:
+            for conv_window_size in [None, 100]:
+                for plot_type in ['all_channels', 'average_of_channels']:
+                    if os.path.exists(output_plot_file):
+                        os.remove(output_plot_file)
+                    visualization.plot_dft_from_npz(npz_files_folder, output_plot_file, f_min, f_max, plot_type, conv_window_size=conv_window_size, channels_list=channels_list)
+                    self.assertTrue(os.path.exists(output_plot_file))
 
 
 class TestCases_4_utils(unittest.TestCase):
