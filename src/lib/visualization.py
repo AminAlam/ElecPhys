@@ -5,6 +5,7 @@ import re
 
 import data_loading
 import preprocessing
+import utils
 
 def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file (STFT must be saved as NPZ file)
@@ -57,6 +58,54 @@ def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_
         plt.savefig(output_plot_file, dpi=600)
         plt.close()
 
+def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list=None):
+    """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
+    input:
+        npz_folder_path: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        db_min: minimum dB to plot - type: float
+        db_max: maximum dB to plot - type: float
+        channels_list: list of channels to plot - type: list
+    output:
+    """
+    npz_files = os.listdir(npz_folder_path)
+    npz_files = utils.sort_file_names(npz_files)
+
+    if channels_list is None:
+        channels_list = tuple(range(1, len(npz_files)+1))
+    else:
+        channels_list = sorted(channels_list)
+
+    for channel_index, channel in enumerate(channels_list):
+        npz_file = npz_files[channel_index]
+        f, t, Zxx = data_loading.load_npz_stft(os.path.join(npz_folder_path, npz_file))
+        Zxx = 10*np.log10(np.abs(Zxx))
+        if channel_index == 0:
+            Zxx_list = Zxx
+        else:
+            Zxx_list = np.dstack((Zxx_list, Zxx))
+            
+    Zxx_avg = np.mean(Zxx_list, axis=2)
+    Zxx_std = np.std(Zxx_list, axis=2)
+
+    if f_min is None:
+        f_min = np.min(f)
+    if f_max is None:
+        f_max = np.max(f)
+    if t_min is None:
+        t_min = np.min(t)
+    if t_max is None:
+        t_max = np.max(t)
+    if db_min is None:
+        
+
+
+    
+
 def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list=None, normalize=False):
     """ Plots signals from NPZ file
     input:
@@ -68,7 +117,8 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
     output:
     """
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort(key=lambda f: int(re.sub('\D', '', f)))
+    npz_files = utils.sort_file_names(npz_files)
+
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:
@@ -127,8 +177,10 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
     """
     if plot_type not in ['all_channels', 'average_of_channels']:
         raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
+
     npz_files = os.listdir(npz_folder_path)
-    npz_files.sort(key=lambda f: int(re.sub('\D', '', f)))
+    npz_files = utils.sort_file_names(npz_files)
+
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files)+1))
     else:

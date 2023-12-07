@@ -19,3 +19,13 @@ def get_matlab_engine():
             raise ImportError(f'MATLAB engine for Python not installed. Please install MATLAB engine for Python from {matlab_installation_url}')        
     
     return matlab.engine.start_matlab()
+
+def sort_file_names(file_names):
+    """Sorts file names in ascending order
+    input:
+        file_names: list of file names - type: list
+    output:
+        file_names: sorted list of file names - type: list
+    """
+    file_names.sort(key=lambda f: int(re.sub('\D', '', f)))
+    return file_names

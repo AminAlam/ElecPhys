@@ -7,6 +7,7 @@ import conversion
 import preprocessing
 import fourier_analysis
 import visualization
+import dimensionality_reduction
 from handlers import ErrorHandler
 error_handler = ErrorHandler().error_handler
 
@@ -163,6 +164,37 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
     print('\n\n--- Plotting complete.')
 
 
+@cli.command('plot_avg_stft', help='Plots average STFT from NPZ files')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder containing STFT NPZ files', required=True, type=os.PathLike)
+@click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
+@click.option('--f_min', '-fmin', help='Minimum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz', required=True, type=float, default=None, show_default=True)
+@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=True, type=float, default=None, show_default=True)
+@click.option('--db_min', '-dbmin', help='Minimum dB to plot', required=True, type=float, default=None, show_default=True)
+@click.option('--db_max', '-dbmax', help='Maximum dB to plot', required=True, type=float, default=None, show_default=True)
+@click.option('channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
+@click.pass_context
+@error_handler
+def plot_avg_stft(ctx, input_npz_folder, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list):
+    """ Plots average STFT from NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_plot_file: path to output plot file - type: os.PathLike
+        f_min: minimum frequency to plot in Hz - type: float
+        f_max: maximum frequency to plot in Hz - type: float
+        t_min: minimum time to plot in seconds - type: float
+        t_max: maximum time to plot in seconds - type: float
+        db_min: minimum dB to plot - type: float
+        db_max: maximum dB to plot - type: float
+        channels_list: list of channels to plot - type: list
+    output:
+    """
+    print('\n\n--- Plotting average STFT...')
+    visualization.plot_avg_stft(input_npz_folder, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list)
+    print('\n\n--- Plotting complete.')
+
+
 @cli.command('plot_signal', help='Plots signals from NPZ file')
 @click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
 @click.option('--output_plot_file', '-o', help='Path to output plot file', required=True, type=os.PathLike, default=None, show_default=True)
@@ -215,6 +247,29 @@ def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_lis
     print('\n\n--- Plotting complete.')
 ### Visualization ###
 
+
+### Dimensionality Reduction ###
+@cli.command('pca_from_npz', help='Computes PCA from NPZ files')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=os.PathLike)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder to save PCA results', required=True, type=os.PathLike, show_default=True)
+@click.option('--n_components', '-n', help='Number of components to keep after applying the PCA', required=True, type=int, default=None, show_default=True)
+@click.option('--matrix_whitenning', '-mw', help='Matrix whitening boolean. If true, the singular values are divided by n_samples', required=True, type=bool, default=False, show_default=True)
+@click.option('--channels_list', '-cl', help='List of channels to apply PCA, if None then all of the channels will be applied', required=False, type=list, default=None, show_default=True)
+@click.pass_context
+@error_handler
+def pca_from_npz(ctx, input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list):
+    """ Computes PCA from NPZ files
+    input:
+        input_npz_folder: path to input npz folder - type: os.PathLike
+        output_npz_folder: path to output npz folder to save PCA results - type: os.PathLike
+        n_components: number of components to keep after applying the PCA - type: int
+        matrix_whitenning: matrix whitening boolean. If true, the singular values are divided by n_samples - type: bool
+        channels_list: list of channels to apply PCA, if None then all of the channels will be applied - type: list
+    output:
+    """
+    print('\n\n--- Computing PCA and saving results as NPZ files...')
+    dimensionality_reduction.pca_from_npz(input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list)
+    print('\n\n--- PCA computation complete.')
 
 if __name__ == '__main__':
     cli()
