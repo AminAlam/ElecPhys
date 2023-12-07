@@ -121,6 +121,8 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
         conv_window_size: size of convolution window to make plot smoother - type: int
     output:
     """
+    if plot_type not in ['all_channels', 'average_of_channels']:
+        raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
     npz_files = os.listdir(npz_folder_path)
     npz_files.sort()
     if channels_list is None:
