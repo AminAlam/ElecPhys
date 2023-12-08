@@ -34,14 +34,13 @@ setup(
     install_requires=get_requires(),
     python_requires='>=3.5',
     license='MIT',
-    include_package_data=True,
     url='https://github.com/AminAlam/ElecPhys',
     keywords="EEG python signal-processing electrophysiology",
     entry_points={
         'console_scripts': [
             'ElecPhys=src.main:main',
-        ]
+        ],
     },
-    packages=find_packages(where='src'),  # Set the 'src' folder as the root for finding packages
-    package_dir={'': 'src'},  # Specify that the package is under the 'src' folder
+    packages=find_packages(where='./'),
+    package_dir= {'': './'},
 )
