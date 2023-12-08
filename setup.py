@@ -42,6 +42,5 @@ setup(
             'ElecPhys=src.main:main',
         ]
     },
-    # specify the name of the compiled extension as cpp_backend
-    packages=['ElecPhys']
+    packages=['src']
     )
