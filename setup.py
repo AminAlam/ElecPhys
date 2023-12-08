@@ -7,7 +7,7 @@ MINIMAL_DESCRIPTION = '''ElecPhys: A Python package for electrophysiology data a
 
 def get_requires():
     """Read requirements.txt."""
-    requirements_file = Path('requirements.txt')
+    requirements_file = os.path.join(os.path.dirname(__file__), "requirements.txt")
     try:
         with open(requirements_file, "r") as f:
             requirements = f.read()
