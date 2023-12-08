@@ -273,5 +273,12 @@ def pca_from_npz(ctx, input_npz_folder, output_npz_folder, n_components, matrix_
     dimensionality_reduction.pca_from_npz(input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list)
     print('\n\n--- PCA computation complete.')
 
-if __name__ == '__main__':
+
+
+def main():
     cli()
+
+
+
+if __name__ == '__main__':
+    main()
