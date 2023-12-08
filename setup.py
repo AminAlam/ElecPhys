@@ -1,28 +1,28 @@
 import os
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 from distutils.core import Extension
+from pathlib import Path
 
 MINIMAL_DESCRIPTION = '''ElecPhys: A Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.'''
 
 def get_requires():
     """Read requirements.txt."""
-    requirements = open('requirements.txt', "r").read()
-    return list(filter(lambda x: x != "", requirements.split()))
+    requirements_file = Path('requirements.txt')
+    try:
+        with open(requirements_file, "r") as f:
+            requirements = f.read()
+        return list(filter(lambda x: x != "", requirements.split()))
+    except FileNotFoundError:
+        return []
 
 def read_description():
     """Read README.md and CHANGELOG.md."""
-    try:
-        with open("README.md") as r:
-            description = "\n"
-            description += r.read()
+    readme_path = Path("README.md")
+    if readme_path.exists():
+        with open(readme_path) as r:
+            description = "\n" + r.read()
         return description
-    except Exception:
-        return MINIMAL_DESCRIPTION
-    
-
+    return MINIMAL_DESCRIPTION
 
 setup(
     name="ElecPhys",
@@ -32,15 +32,16 @@ setup(
     long_description=read_description(),
     long_description_content_type='text/markdown',
     install_requires=get_requires(),
-    python_requires='>=3.8',
+    python_requires='>=3.5',
     license='MIT',
     include_package_data=True,
     url='https://github.com/AminAlam/ElecPhys',
-    keywords="EEG python singal-processing electrophysiology",
+    keywords="EEG python signal-processing electrophysiology",
     entry_points={
         'console_scripts': [
             'ElecPhys=src.main:main',
         ]
     },
-    packages=['src']
-    )
+    packages=find_packages(where='src'),  # Set the 'src' folder as the root for finding packages
+    package_dir={'': 'src'},  # Specify that the package is under the 'src' folder
+)
