@@ -41,12 +41,12 @@ It's possible to use ElecPhys as a command line tool or as a Python module.
 To use ELecPhys from command line, you need to use the following pattern:
 
 ```console
-➜ elecphys COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]
+➜ ElecPhys COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]
 ```
 Where each COMMNAD can be one of the supported commands such as convert_rhd_to_mat, plot_stft, and ... .
 To learn more about the commnads, you can use the following command:
 ```console
-➜ elecphys --help
+➜ ElecPhys --help
 Usage: main.py COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 
   ElecPhys is a Python package for electrophysiology data analysis. It
