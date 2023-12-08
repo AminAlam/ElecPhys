@@ -32,8 +32,8 @@ jobs:
         pip install setuptools wheel twine
     - name: Build package
       run: |
-        python setup.py sdist bdist_wheel
-        python -m twine upload dist/*
+        python3 -m pip install --upgrade build
+        python3 -m build
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
       with:
