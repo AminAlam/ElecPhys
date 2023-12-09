@@ -35,12 +35,11 @@ setup(
     python_requires='>=3.5',
     license='MIT',
     url='https://github.com/AminAlam/ElecPhys',
-    keywords="EEG python signal-processing electrophysiology",
+    keywords=['EEG', 'signal-processing', 'electrophysiology', 'data-analysis', 'data-visualization', 'data-conversion', 'data-preprocessing', 'data-loading', 'rhd', 'notch-filter', 'dft', 'stft', 'fourier-transform'],
     entry_points={
         'console_scripts': [
-            'ElecPhys=src.main:main',
+            'ElecPhys=elecphys.main:main',
         ],
     },
-    packages=find_packages(where='./'),
-    package_dir= {'': './'},
+    packages=['elecphys'],
 )

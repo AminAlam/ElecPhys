@@ -73,7 +73,7 @@ Commands:
 You need to import ElecPhus and use it's modules inside your python code. For example:
 
 ```python
-import elecphys
+import ElecPhys
 
 # Path to folder containing RHD files
 folder_path = "data/rhd_files"
