@@ -1,7 +1,7 @@
 ### Conversion
 #### convert_mat_to_npz
 ```console
-Usage: main.py convert_mat_to_npz [OPTIONS]
+Usage: elecphys convert_mat_to_npz [OPTIONS]
 
   Converts MAT files to NPZ files using MAT to NPZ converter
 
@@ -16,7 +16,7 @@ Options:
 ```
 #### convert_rhd_to_mat
 ```console
-Usage: main.py convert_rhd_to_mat [OPTIONS]
+Usage: elecphys convert_rhd_to_mat [OPTIONS]
 
   Converts RHD files to mat files using RHD to MAT converter (needs MATLAB
   installed
@@ -32,7 +32,7 @@ Options:
 ### Preprocessing
 #### normalize_npz
 ```console
-Usage: main.py normalize_npz [OPTIONS]
+Usage: elecphys normalize_npz [OPTIONS]
 
   Normalizes NPZ files
 
@@ -46,7 +46,7 @@ Options:
 ```
 #### zscore_normalize_npz
 ```console
-Usage: main.py zscore_normalize_npz [OPTIONS]
+Usage: elecphys zscore_normalize_npz [OPTIONS]
 
   Z-score normalizes NPZ files
 
@@ -61,8 +61,7 @@ Options:
 ### Visualization
 #### plot_dft
 ```console
-➜  ElecPhys git:(dev) ✗ python3 src/main.py plot_dft --help     
-Usage: main.py plot_dft [OPTIONS]
+Usage: elecphys plot_dft [OPTIONS]
 
   Plots DFT from NPZ file
 
@@ -83,7 +82,7 @@ Options:
 ```
 #### plot_signal
 ```console
-Usage: main.py plot_signal [OPTIONS]
+Usage: elecphys plot_signal [OPTIONS]
 
   Plots signals from NPZ file
 
@@ -102,7 +101,7 @@ Options:
 ```
 #### plot_stft
 ```console
-Usage: main.py plot_stft [OPTIONS]
+Usage: elecphys plot_stft [OPTIONS]
 
   Plots STFT from NPZ file
 
@@ -120,7 +119,7 @@ Options:
 ```
 #### plot_avg_stft
 ```console
-Usage: main.py plot_avg_stft [OPTIONS]
+Usage: elecphys plot_avg_stft [OPTIONS]
 
   Plots average STFT from NPZ files
 
@@ -141,7 +140,7 @@ Options:
 ### Fourier Analysis
 #### dft_numeric_output_from_npz
 ```console
-Usage: main.py dft_numeric_output_from_npz [OPTIONS]
+Usage: elecphys dft_numeric_output_from_npz [OPTIONS]
 
   Computes DFT and saves results as NPZ files
 
@@ -155,7 +154,7 @@ Options:
 ```
 #### stft_numeric_output_from_npz
 ```console
-Usage: main.py stft_numeric_output_from_npz [OPTIONS]
+Usage: elecphys stft_numeric_output_from_npz [OPTIONS]
 
   Computes STFT and saves results as NPZ files
 

@@ -32,7 +32,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 - Run `python3 setup.py install`
 
 ### PyPi
-Run `pip3 install ElecPhys` or `pip install ElecPhys`
+Run `pip3 install elecphys` or `pip install elecphys`
 
 ## Usage
 It's possible to use ElecPhys as a command line tool or as a Python module.

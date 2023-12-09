@@ -1,5 +1,6 @@
 from functools import wraps
 import os
+
 class ErrorHandler:
     def __init__(self):
         pass

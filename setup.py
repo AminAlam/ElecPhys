@@ -26,21 +26,20 @@ def read_description():
 
 setup(
     name="ElecPhys",
-    version="0.0.2",
+    version="0.0.3",
     author='Amin Alam',
     description='Electrophysiology data processing',
     long_description=read_description(),
     long_description_content_type='text/markdown',
     install_requires=get_requires(),
-    python_requires='>=3.5',
+    python_requires='>=3.8',
     license='MIT',
     url='https://github.com/AminAlam/ElecPhys',
-    keywords="EEG python signal-processing electrophysiology",
+    keywords=['EEG', 'signal-processing', 'electrophysiology', 'data-analysis', 'data-visualization', 'data-conversion', 'data-preprocessing', 'data-loading', 'rhd', 'notch-filter', 'dft', 'stft', 'fourier-transform'],
     entry_points={
         'console_scripts': [
-            'ElecPhys=src.main:main',
+            'elecphys=elecphys.main:main',
         ],
     },
-    packages=find_packages(where='./'),
-    package_dir= {'': './'},
+    packages=['elecphys'],
 )
