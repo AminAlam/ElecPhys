@@ -32,7 +32,7 @@ setup(
     long_description=read_description(),
     long_description_content_type='text/markdown',
     install_requires=get_requires(),
-    python_requires='>=3.5',
+    python_requires='>=3.8',
     license='MIT',
     url='https://github.com/AminAlam/ElecPhys',
     keywords=['EEG', 'signal-processing', 'electrophysiology', 'data-analysis', 'data-visualization', 'data-conversion', 'data-preprocessing', 'data-loading', 'rhd', 'notch-filter', 'dft', 'stft', 'fourier-transform'],
