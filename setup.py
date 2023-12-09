@@ -38,7 +38,7 @@ setup(
     keywords=['EEG', 'signal-processing', 'electrophysiology', 'data-analysis', 'data-visualization', 'data-conversion', 'data-preprocessing', 'data-loading', 'rhd', 'notch-filter', 'dft', 'stft', 'fourier-transform'],
     entry_points={
         'console_scripts': [
-            'ElecPhys=elecphys.main:main',
+            'elecphys=elecphys.main:main',
         ],
     },
     packages=['elecphys'],
