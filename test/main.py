@@ -21,7 +21,7 @@ class TestCases_0_conversion(unittest.TestCase):
         for ds_factor in [1, 20]:
             if os.path.exists(output_mat_file):
                 os.remove(output_mat_file)
-            conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
+            conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
             self.assertTrue(os.path.exists(output_mat_file))
 
         os.remove(output_mat_file)
