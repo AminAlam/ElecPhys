@@ -1,11 +1,12 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import re 
+import json
 
 import data_loading
 import preprocessing
 import utils
+import fourier_analysis
 
 def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file (STFT must be saved as NPZ file)
@@ -266,3 +267,54 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
         if not os.path.exists(os.path.dirname(output_plot_file)):
             os.makedirs(os.path.dirname(output_plot_file))
         plt.savefig(output_plot_file, dpi=600)
+
+
+def plot_filter_freq_response_from_json(filter_freq_response_json_file_path, figure_save_path=None):
+    """ Plots filter frequency response from JSON file
+    input:
+        filter_freq_response_json_file_path: path to filter frequency response JSON file - type: str
+        figure_save_path: path to save figure - type: str
+    output:
+    """
+
+    with open(filter_freq_response_json_file_path, 'r') as f:
+        filter_freq_response_dict = json.load(f)
+
+    f, mag, phase, _args = fourier_analysis.calc_freq_response(filter_freq_response_dict)
+
+    fig, ax = plt.subplots(2, 1, sharex=True)
+    ax[0].plot(f, mag)
+    ax[0].set_ylabel('Magnitude (dB)')
+    ax[1].plot(f, phase)
+    ax[1].set_ylabel('Phase (rad)')
+    ax[1].set_xlabel('Frequency (Hz)')
+    plt.tight_layout()
+
+    # plot filter_cutoff as a single line on both plots
+
+    if _args['filter_type'] == 'LPF':
+        ax[0].axvline(_args['filter_cutoff'], color='k', linestyle='--')
+        ax[1].axvline(_args['filter_cutoff'], color='k', linestyle='--')
+        ax[0].axvspan(_args['0'], _args['filter_cutoff'], alpha=0.5, color='gray')
+        ax[1].axvspan(_args['0'], _args['filter_cutoff'], alpha=0.5, color='gray')
+    elif _args['filter_type'] == 'HPF':
+        ax[0].axvline(_args['filter_cutoff'], color='k', linestyle='--')
+        ax[1].axvline(_args['filter_cutoff'], color='k', linestyle='--')
+        ax[0].axvspan(_args['filter_cutoff'], _args['fs']/2, alpha=0.5, color='gray')
+        ax[1].axvspan(_args['filter_cutoff'], _args['fs']/2, alpha=0.5, color='gray')
+    elif _args['filter_type'] == 'BPF':
+        ax[0].axvline(_args['filter_cutoff'][0], color='k', linestyle='--')
+        ax[0].axvline(_args['filter_cutoff'][1], color='k', linestyle='--')
+        ax[1].axvline(_args['filter_cutoff'][0], color='k', linestyle='--')
+        ax[1].axvline(_args['filter_cutoff'][1], color='k', linestyle='--')
+        ax[0].axvspan(_args['filter_cutoff'][0], _args['filter_cutoff'][1], alpha=0.5, color='gray')
+        ax[1].axvspan(_args['filter_cutoff'][0], _args['filter_cutoff'][1], alpha=0.5, color='gray')
+
+    
+    if figure_save_path is None:
+        plt.show()
+    else:
+        if not os.path.exists(os.path.dirname(figure_save_path)):
+            os.makedirs(os.path.dirname(figure_save_path))
+        plt.savefig(figure_save_path, dpi=600)
+        plt.close()

@@ -114,6 +114,20 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
         command_prompt = f'python elecphys/main.py dft_numeric_output_from_npz --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
+    
+
+    def test_frequency_filtering(self):
+        filter_order = 2
+        for filter_args in [{'filter_type': 'LPF', 'filter_cutoff': 100}, {'filter_type': 'HPF', 'filter_cutoff': 100}, {'filter_type': 'BPF', 'filter_cutoff': [50, 100]}]:
+            filter_args['filter_order'] = filter_order
+            npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+            output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_filtered')
+            if os.path.exists(output_npz_folder):
+                shutil.rmtree(output_npz_folder)
+            
+            fourier_analysis.butterworth_filtering_from_npz(npz_files_folder, output_npz_folder, filter_args)
+            self.assertTrue(os.path.exists(output_npz_folder))
+        
 
 
 class TestCases_3_visualization(unittest.TestCase):
@@ -211,6 +225,14 @@ class TestCases_3_visualization(unittest.TestCase):
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
 
+
+    def test_plot_filter_freq_response(self):
+        output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'filter_freq_response_plot.png')
+        filter_freq_response_json_file_path = os.path.join(os.path.dirname(__file__), 'data', 'npz_filtered', 'filter_freq_response.json')
+        if os.path.exists(output_plot_file):
+            os.remove(output_plot_file)
+        visualization.plot_filter_freq_response_from_json(filter_freq_response_json_file_path, output_plot_file)
+        self.assertTrue(os.path.exists(output_plot_file))
 
 
 class TestCases_4_utils(unittest.TestCase):
