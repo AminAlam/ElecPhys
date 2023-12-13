@@ -25,7 +25,7 @@ class TestCases_0_conversion(unittest.TestCase):
             self.assertTrue(os.path.exists(output_mat_file))
 
         os.remove(output_mat_file)
-        command_prompt = f'python -m elecphys.main convert_rhd_to_mat --folder_path {folder_path} --output_mat_file {output_mat_file} --ds_factor {ds_factor}'
+        command_prompt = f'python3 -m elecphys.main convert_rhd_to_mat --folder_path {folder_path} --output_mat_file {output_mat_file} --ds_factor {ds_factor}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_mat_file))
 
@@ -40,7 +40,7 @@ class TestCases_0_conversion(unittest.TestCase):
             self.assertTrue(os.path.exists(output_npz_folder))
         
         shutil.rmtree(output_npz_folder)
-        command_prompt = f'python -m elecphys.main convert_mat_to_npz --mat_file {mat_file} --output_npz_folder {output_npz_folder} --notch_filter_freq {notch_filter_freq}'
+        command_prompt = f'python3 -m elecphys.main convert_mat_to_npz --mat_file {mat_file} --output_npz_folder {output_npz_folder} --notch_filter_freq {notch_filter_freq}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
 
@@ -65,7 +65,7 @@ class TestCases_1_preprocessing(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
         shutil.rmtree(output_npz_folder)
-        command_prompt = f'python elecphys/main.py zscore_normalize_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder}'
+        command_prompt = f'python3 -m elecphys.main zscore_normalize_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
 
@@ -79,7 +79,7 @@ class TestCases_1_preprocessing(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
         shutil.rmtree(output_npz_folder)
-        command_prompt = f'python elecphys/main.py normalize_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder}'
+        command_prompt = f'python3 -m elecphys.main normalize_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
 
@@ -97,7 +97,7 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
             self.assertTrue(os.path.exists(output_npz_folder))
 
         shutil.rmtree(output_npz_folder)
-        command_prompt = f'python elecphys/main.py stft_numeric_output_from_npz --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder} --window_size {window_size} --overlap {overlap} --window_type "{window_type}"'
+        command_prompt = f'python3 -m elecphys.main stft_numeric_output_from_npz --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder} --window_size {window_size} --overlap {overlap} --window_type "{window_type}"'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
 
@@ -111,14 +111,14 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
         shutil.rmtree(output_npz_folder)
-        command_prompt = f'python elecphys/main.py dft_numeric_output_from_npz --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder}'
+        command_prompt = f'python3 -m elecphys.main dft_numeric_output_from_npz --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_npz_folder))
-    
+
 
     def test_frequency_filtering(self):
         filter_order = 2
-        for filter_args in [{'filter_type': 'LPF', 'filter_cutoff': 100}, {'filter_type': 'HPF', 'filter_cutoff': 100}, {'filter_type': 'BPF', 'filter_cutoff': [50, 100]}]:
+        for filter_args in [{'filter_type': 'LPF', 'freq_cutoff': 100}, {'filter_type': 'HPF', 'freq_cutoff': 100}, {'filter_type': 'BPF', 'freq_cutoff': [50, 100]}]:
             filter_args['filter_order'] = filter_order
             npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
             output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_filtered')
@@ -127,7 +127,11 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
             
             fourier_analysis.butterworth_filtering_from_npz(npz_files_folder, output_npz_folder, filter_args)
             self.assertTrue(os.path.exists(output_npz_folder))
-        
+
+            shutil.rmtree(output_npz_folder)
+            command_prompt = f'python3 -m elecphys.main frequncy_domain_filter --input_npz_folder "{npz_files_folder}" --output_npz_folder {output_npz_folder} --filter_type {filter_args["filter_type"]} --filter_order {filter_args["filter_order"]} --freq_cutoff "{filter_args["freq_cutoff"]}"'
+            os.system(command_prompt)
+            self.assertTrue(os.path.exists(output_npz_folder))
 
 
 class TestCases_3_visualization(unittest.TestCase):
@@ -156,7 +160,7 @@ class TestCases_3_visualization(unittest.TestCase):
                                 self.assertTrue(os.path.exists(output_plot_file))
         
         os.remove(output_plot_file)
-        command_prompt = f'python elecphys/main.py plot_stft --input_npz_file "{os.path.join(npz_files_folder, npz_file)}" --output_plot_file {output_plot_file} --f_min {f_min} --f_max {f_max} --t_min {t_min} --t_max {t_max} --db_min {db_min} --db_max {db_max}'
+        command_prompt = f'python3 -m elecphys.main plot_stft --input_npz_file "{os.path.join(npz_files_folder, npz_file)}" --output_plot_file {output_plot_file} --f_min {f_min} --f_max {f_max} --t_min {t_min} --t_max {t_max} --db_min {db_min} --db_max {db_max}'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
 
@@ -184,7 +188,7 @@ class TestCases_3_visualization(unittest.TestCase):
                                     self.assertTrue(os.path.exists(output_plot_file))
 
         os.remove(output_plot_file)
-        command_prompt = f'python elecphys/main.py plot_avg_stft --input_npz_folder "{npz_files_folder}" --output_plot_file {output_plot_file} --f_min {f_min} --f_max {f_max} --t_min {t_min} --t_max {t_max} --db_min {db_min} --db_max {db_max} --channels_list "{[1, 2, 3, 4, 5, 6, 7, 12, 15]}"'
+        command_prompt = f'python3 -m elecphys.main plot_avg_stft --input_npz_folder "{npz_files_folder}" --output_plot_file {output_plot_file} --f_min {f_min} --f_max {f_max} --t_min {t_min} --t_max {t_max} --db_min {db_min} --db_max {db_max} --channels_list "{[1, 2, 3, 4, 5, 6, 7, 12, 15]}"'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
 
@@ -201,7 +205,7 @@ class TestCases_3_visualization(unittest.TestCase):
             self.assertTrue(os.path.exists(output_plot_file))
 
         os.remove(output_plot_file)
-        command_prompt = f'python elecphys/main.py plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{[1, 2, 3, 4, 5, 6, 7, 12, 15]}"'
+        command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{[1, 2, 3, 4, 5, 6, 7, 12, 15]}"'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
 
@@ -221,7 +225,7 @@ class TestCases_3_visualization(unittest.TestCase):
                     self.assertTrue(os.path.exists(output_plot_file))
 
         os.remove(output_plot_file)
-        command_prompt = f'python elecphys/main.py plot_dft --input_npz_folder "{npz_files_folder}" --output_plot_file {output_plot_file} --plot_type {plot_type} --conv_window_size {conv_window_size} --channels_list "{[1, 2, 3]}"'
+        command_prompt = f'python3 -m elecphys.main plot_dft --input_npz_folder "{npz_files_folder}" --output_plot_file {output_plot_file} --plot_type {plot_type} --conv_window_size {conv_window_size} --channels_list "{[1, 2, 3]}"'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
 
@@ -234,6 +238,14 @@ class TestCases_3_visualization(unittest.TestCase):
         visualization.plot_filter_freq_response_from_json(filter_freq_response_json_file_path, output_plot_file)
         self.assertTrue(os.path.exists(output_plot_file))
 
+        os.remove(output_plot_file)
+        for filter_type, freq_cutoff in zip(['LPF', 'HPF', 'BPF'], [60, 60, [50, 100]]):
+            for filter_order in [2, 4]:
+                if os.path.exists(output_plot_file):
+                    os.remove(output_plot_file)
+                command_prompt = f'python3 -m elecphys.main plot_filter_freq_response --filter_type {filter_type} --filter_order {filter_order} --freq_cutoff "{freq_cutoff}" --output_plot_file {output_plot_file} -fs 1000'
+                os.system(command_prompt)
+                self.assertTrue(os.path.exists(output_plot_file))
 
 class TestCases_4_utils(unittest.TestCase):
     def test_get_matlab_engine(self):

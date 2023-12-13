@@ -4,6 +4,8 @@ from scipy import signal
 from tqdm import tqdm
 import json
 
+import utils
+
 def stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_size, overlap, window_type):
     """ Computes STFT and saves results as NPZ files
         input:
@@ -123,11 +125,15 @@ def butterworth_filtering_from_array(signal_array, fs: int, _args: dict):
     if np.ndim(signal_array) != 1:
         raise ValueError(f'Signal array must be 1D array but has {np.ndim(signal_array)} dimensions')
     if _args['filter_type'] == 'LPF':
-        b, a = signal.butter(_args['filter_order'], _args['filter_cutoff'] / (fs / 2), btype='lowpass')
-    if _args['filter_type'] == 'HPF':
-        b, a = signal.butter(_args['filter_order'], _args['filter_cutoff'] / (fs / 2), btype='highpass')
-    if _args['filter_type'] == 'BPF':
-        b, a = signal.butter(_args['filter_order'], [_args['filter_cutoff'][0] / (fs / 2), _args['filter_cutoff'][1] / (fs / 2)], btype='bandpass')
+        b, a = signal.butter(_args['filter_order'], int(_args['freq_cutoff']) / (fs / 2), btype='lowpass')
+    elif _args['filter_type'] == 'HPF':
+        b, a = signal.butter(_args['filter_order'], int(_args['freq_cutoff']) / (fs / 2), btype='highpass')
+    elif _args['filter_type'] == 'BPF':
+        _args['freq_cutoff'] = utils.convert_string_to_list(_args['freq_cutoff'])
+        _args['freq_cutoff'] = [int(i) for i in _args['freq_cutoff']]
+        b, a = signal.butter(_args['filter_order'], [_args['freq_cutoff'][0] / (fs / 2), _args['freq_cutoff'][1] / (fs / 2)], btype='bandpass')
+    else:
+        raise ValueError(f'Invalid filter type: {_args["filter_type"]}. Must be "LPF", "HPF", or "BPF"')
     
     signal_array = signal.filtfilt(b, a, signal_array)
     return signal_array
@@ -178,12 +184,16 @@ def calc_freq_response(_args):
     
     fs = _args['fs']
     if _args['filter_type'] == 'LPF':
-        b, a = signal.butter(_args['filter_order'], _args['filter_cutoff'] / (fs / 2), btype='lowpass')
-    if _args['filter_type'] == 'HPF':
-        b, a = signal.butter(_args['filter_order'], _args['filter_cutoff'] / (fs / 2), btype='highpass')
-    if _args['filter_type'] == 'BPF':
-        b, a = signal.butter(_args['filter_order'], [_args['filter_cutoff'][0] / (fs / 2), _args['filter_cutoff'][1] / (fs / 2)], btype='bandpass')
-
+        b, a = signal.butter(_args['filter_order'], int(_args['freq_cutoff'])/ (fs / 2), btype='lowpass')
+    elif _args['filter_type'] == 'HPF':
+        b, a = signal.butter(_args['filter_order'], int(_args['freq_cutoff']) / (fs / 2), btype='highpass')
+    elif _args['filter_type'] == 'BPF':
+        _args['freq_cutoff'] = utils.convert_string_to_list(_args['freq_cutoff'])
+        _args['freq_cutoff'] = [int(i) for i in _args['freq_cutoff']]
+        b, a = signal.butter(_args['filter_order'], [_args['freq_cutoff'][0] / (fs / 2), _args['freq_cutoff'][1] / (fs / 2)], btype='bandpass')
+    else:
+        raise ValueError(f'Invalid filter type: {_args["filter_type"]}. Must be "LPF", "HPF", or "BPF"')
+    
     w, h = signal.freqz(b, a, worN=2000)
     f = w / (2 * np.pi) * fs
     mag = 20 * np.log10(abs(h))

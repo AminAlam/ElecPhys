@@ -37,9 +37,9 @@ def convert_string_to_list(string):
         list: converted list - type: list
     """
     if type(string) is not str:
-        Warning('Input is not a string. Returning input.')
         return string
-    string = string.replace(['[', ']'], '')
+    string = string.replace('[', '')
+    string = string.replace(']', '')
     string = string.replace(' ', '')
     string = string.split(',')
     return list(map(int, string))
