@@ -20,7 +20,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
 ----------
 ## Overview
 <p align="justify">
- ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.. ElecPhys can convert .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domain. Please take a look at <a href="https://github.com/AminAlam/ElecPhys/docs/available_analysis.md">here</a> for the complete list of available tools. 
+ ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.. ElecPhys can convert .RHD fiels to .mat and .npz, and it can analyze the data in time and fourier domains. Please take a look at <a href="https://github.com/AminAlam/ElecPhys/docs/available_analysis.md">here</a> for the complete list of available tools. 
 </p>
 
 ----------
@@ -38,7 +38,7 @@ Run `pip3 install elecphys` or `pip install elecphys`
 It's possible to use ElecPhys as a command line tool or as a Python module.
 
 ### Command Line
-To use ELecPhys from command line, you need to use the following pattern:
+To use ElecPhys from command line, you need to use the following pattern:
 
 ```console
 ➜ elecphys COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]
@@ -70,7 +70,7 @@ Commands:
 
 ### Python module
 
-You need to import ElecPhus and use it's modules inside your python code. For example:
+You need to import ElecPhys and use it's modules inside your python code. For example:
 
 ```python
 import elecphys

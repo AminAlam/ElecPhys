@@ -45,7 +45,6 @@ def convert_mat_to_npz(mat_file, output_npz_folder, notch_filter_freq):
     data = mat_file_contents['data']
     fs = mat_file_contents['fs']
     
-    print(f'--- Converting MAT files to NPZ files...')
     for ch_num in tqdm(range(data.shape[0])):
         ch_name = f'Ch{ch_num+1}'
         if notch_filter_freq == 0:
