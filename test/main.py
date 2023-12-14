@@ -140,7 +140,7 @@ class TestCases_3_visualization(unittest.TestCase):
         npz_files = os.listdir(npz_files_folder)
         npz_file = npz_files[0]
         output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'stft_plot.png')
-        
+
         f_min = None
         f_max = None
         t_min = None

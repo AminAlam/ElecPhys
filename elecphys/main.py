@@ -304,7 +304,6 @@ def plot_filter_freq_response(ctx, filter_type, freq_cutoff, filter_order, frequ
     print('--- Plotting filter frequency response...')
     visualization.plot_filter_freq_response(filter_args, output_plot_file)
     print('--- Plotting complete.\n\n')
-    
 ### Visualization ###
 
 
