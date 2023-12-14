@@ -331,3 +331,41 @@ def plot_filter_freq_response_from_json(filter_freq_response_json_file_path, fig
     plot_filter_freq_response(filter_freq_response_dict, figure_save_path)
 
     
+def plot_mvl_form_array(MI_mat, freqs_phase, freqs_amp, clim=None, figure_save_path=None):
+    """ Plots MVL from 2D array
+    input:
+        MI_mat: MVL matrix - type: np.ndarray
+        freqs_phase: phase frequency vector - type: np.ndarray
+        freqs_amp: amplitude frequency vector - type: np.ndarray
+        clim: color limit - type: tuple
+        figure_save_path: path to save figure - type: str
+    output:
+    """
+    
+    MI_mat_plot = MI_mat
+    plt.figure(figsize=(24, 12))
+    pc = plt.pcolormesh(freqs_phase, freqs_amp, np.transpose(MI_mat_plot), cmap=plt.get_cmap('jet'), shading='gouraud')
+    plt.colorbar(pc)
+    plt.xlabel('Phase Freq')
+    plt.ylabel('Amp Freq')
+    if clim:
+        plt.clim(clim[0], clim[1])
+    if figure_save_path is None:
+        plt.show() 
+    else:
+        if not os.path.exists(os.path.dirname(figure_save_path)):
+            os.makedirs(os.path.dirname(figure_save_path))
+        plt.savefig(figure_save_path, dpi=600)
+        plt.close()
+
+
+def plot_mvl_from_npz(npz_file_path, figure_save_path=None):
+    """ Plots MVL from NPZ file
+    input:
+        npz_file_path: path to NPZ file - type: os.PathLike
+        figure_save_path: path to save figure - type: str
+    output:
+    """
+    
+    MI_mat, freqs_amp, freqs_phase, _ = data_loading.load_npz_mvl(npz_file_path)
+    plot_mvl_form_array(MI_mat, freqs_phase, freqs_amp, figure_save_path=figure_save_path)
