@@ -60,8 +60,12 @@ Commands:
   convert_mat_to_npz            Converts MAT files to NPZ files using MAT...
   convert_rhd_to_mat            Converts RHD files to mat files using RHD...
   dft_numeric_output_from_npz   Computes DFT and saves results as NPZ files
+  frequncy_domain_filter        Filtering in frequency domain using...
   normalize_npz                 Normalizes NPZ files
+  pca_from_npz                  Computes PCA from NPZ files
+  plot_avg_stft                 Plots average STFT from NPZ files
   plot_dft                      Plots DFT from NPZ file
+  plot_filter_freq_response     Plots filter frequency response
   plot_signal                   Plots signals from NPZ file
   plot_stft                     Plots STFT from NPZ file
   stft_numeric_output_from_npz  Computes STFT and saves results as NPZ files
