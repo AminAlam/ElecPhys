@@ -62,7 +62,6 @@ Commands:
   dft_numeric_output_from_npz   Computes DFT and saves results as NPZ files
   frequncy_domain_filter        Filtering in frequency domain using...
   normalize_npz                 Normalizes NPZ files
-  pca_from_npz                  Computes PCA from NPZ files
   plot_avg_stft                 Plots average STFT from NPZ files
   plot_dft                      Plots DFT from NPZ file
   plot_filter_freq_response     Plots filter frequency response
