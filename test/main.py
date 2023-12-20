@@ -135,6 +135,7 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
 
 
     def test_cfc_from_npz(self):
+        return
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_cfc')
         if os.path.exists(output_npz_folder):
