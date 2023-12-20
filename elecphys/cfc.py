@@ -6,15 +6,23 @@ import matplotlib.pyplot as plt
 from scipy.fft import fft
 
 
-def calc_tf_mvl(x, fs, freqs_phase, freqs_amp):
-    """ Calculates the tf_MVL matrix for a given signal x
-        input:
-            x: signal - type: np.array
-            fs: sampling frequency - type: float
-            freqs_phase: phase frequencies - type: list
-            freqs_amp: amplitude frequencies - type: list
-        output:
-            MI_mat: tf_MVL matrix - type: np.ndarray
+def calc_tf_mvl(x, fs: int, freqs_phase: list, freqs_amp: list) -> np.ndarray:
+    """ Function that Calculates the tf_MVL matrix for a given signal x
+        Parameters
+        ----------
+            x: np.array
+                signal in time domain
+            fs: float
+                sampling frequency (Hz)
+            freqs_phase: list
+                phase frequencies (Hz)
+            freqs_amp: list
+                amplitude frequencies (Hz)
+        
+        Returns
+        -------
+            MI_mat: np.ndarray
+                2D tf_MVL matrix (phase x amplitude) 
     """
 
     MI_mat = np.zeros((len(freqs_phase), len(freqs_amp)))
@@ -25,15 +33,23 @@ def calc_tf_mvl(x, fs, freqs_phase, freqs_amp):
     return MI_mat
 
 
-def band_tfMVL(x, high_freq, low_freq, fs):
-    """ Calculates the tf_MVL for a given signal x
-        input:
-            x: signal - type: np.array
-            high_freq: high frequency band - type: list
-            low_freq: low frequency band - type: list
-            fs: sampling frequency - type: float
-        output:
-            tf_canolty: tf_MVL - type: float
+def band_tfMVL(x, high_freq, low_freq, fs: int) -> float:
+    """ Function that Calculates the tf_MVL for a given signal x
+        Parameters
+        ----------
+            x: np.array
+                signal in time domain
+            high_freq: list
+                high frequency band (Hz)
+            low_freq: list
+                low frequency band (Hz)
+            fs: int
+                sampling frequency (Hz)
+        
+        Returns
+        -----------
+            tf_canolty: float
+                tf_MVL 
     """
 
     fs = int(fs)
@@ -48,13 +64,19 @@ def band_tfMVL(x, high_freq, low_freq, fs):
     return tf_canolty
 
 
-def calc_MVL(phase, amp):
-    """ Calculates the MVL for a given signal x
-        input:
-            phase: phase - type: np.array
-            amp: amplitude - type: np.array
-        output:
-            MVL: MVL - type: type: np.array
+def calc_MVL(phase, amp) -> np.ndarray:
+    """ Function that Calculates the MVL for a given signal phasae and amplitude
+        Parameters
+        ----------
+            phase: np.array
+                phase values
+            amp: np.array
+                amplitude values
+        
+        Returns
+        ----------
+            MVL: np.array
+                MVL values
     """
 
     z1 = np.exp(1j*phase)
@@ -63,13 +85,19 @@ def calc_MVL(phase, amp):
     return MVL
 
 
-def rid_rihaczek4(x, fbins):
-    """ Calculates the rid_rihaczek4 for a given signal x
-        input:
-            x: signal - type: np.array
-            fbins: frequency bins - type: int
-        output:
-            tfd: rid_rihaczek4 - type: np.ndarray
+def rid_rihaczek4(x, fbins) -> np.ndarray:
+    """ Function that Calculates the rid_rihaczek4 for a given signal x
+        Parameters
+        ----------
+            x: np.array
+                signal in time domain
+            fbins: int
+                number of frequency bins
+        
+        Returns
+        ----------
+            tfd: np.ndarray
+                2D rid_rihaczek4 matrix
     """
 
     tbins = len(x)
@@ -113,27 +141,40 @@ def rid_rihaczek4(x, fbins):
     return tfd
 
 
-def chwi_krn(D, L, A):
-    """ Calculates the chwi_krn for a given signal x
-        input:
-            D: D - type: np.array
-            L: L - type: np.array
-            A: A - type: float
-        output:
-            k: chwi_krn - type: np.ndarray
+def chwi_krn(D, L, A) -> np.ndarray:
+    """ Function that Calculates the chwi_krn for a given signal x
+        Parameters
+        ----------
+            D: np.array
+                D
+            L: np.array
+                L
+            A: float
+                A
+        
+        Returns
+        ----------
+            k: np.ndarray
+                chwi_krn
     """
 
     k = np.exp((-1/(A**2))*np.multiply(np.multiply(D,D), np.multiply(L,L)))
     return k
 
 
-def data_wrapper(x, sec_dim):
-    """ Wraps the data for a given signal x
-        input:
-            x: signal - type: np.array
-            sec_dim: second dimension - type: int
-        output:
-            wrapped_x: wrapped signal - type: np.ndarray
+def data_wrapper(x, sec_dim) -> np.ndarray:
+    """ Function that Wraps the data for a given signal x
+        Parameters
+        ----------
+            x: np.array
+                signal in time domain
+            sec_dim: int
+                second dimension
+        
+        Returns
+        ----------
+            wrapped_x: np.ndarray
+                wrapped signal
     """
 
     wrapped_x = np.zeros((sec_dim, 1))
@@ -143,16 +184,25 @@ def data_wrapper(x, sec_dim):
     return wrapped_x
 
 
-def cfc_mi(sig, freqs_phase, freqs_amp, fs, nbins=20):
-    """ Calculates the MI matrix for a given signal x
-            input:
-            sig: signal - type: np.array
-            freqs_phase: phase frequencies - type: list
-            freqs_amp: amplitude frequencies - type: list
-            fs: sampling frequency - type: float
-            nbins: number of bins - type: int
-        output:
-            MI_mat: MI matrix - type: np.ndarray
+def cfc_mi(sig, freqs_phase: list, freqs_amp: list, fs: int, nbins: int = 20) -> np.ndarray:
+    """ Function that Calculates the MI matrix for a given signal x
+        Parameters
+        ----------
+            sig: np.array
+                signal in time domain
+            freqs_phase: list
+                phase frequencies (Hz)
+            freqs_amp: list
+                amplitude frequencies (Hz)
+            fs: int
+                sampling frequency (Hz)
+            nbins: int
+                number of bins
+        
+        Returns
+        ----------
+            MI_mat: np.ndarray
+                2D MI matrix (phase x amplitude)
     """
 
     uniform_dist = np.ones((nbins-1,))
@@ -180,16 +230,25 @@ def cfc_mi(sig, freqs_phase, freqs_amp, fs, nbins=20):
     return MI_mat
 
 
-def butterworth_filter(sig, filt_freq, fs):
-    """ Filters signal array
-        input:
-            sig: signal - type: np.array
-            filt_freq: filter frequency - type: float
-            fs: sampling frequency - type: float
-        output:
-            filtered_sig: filtered signal - type: np.ndarray
-            b: filter numerator coefficients - type: np.ndarray
-            a: filter denominator coefficients - type: np.ndarray
+def butterworth_filter(sig, filt_freq: float, fs: int) -> np.ndarray:
+    """ Function that Filters signal array
+        Parameters
+        ----------
+            sig: np.array
+                signal in time domain
+            filt_freq: float
+                filter frequency (Hz)
+            fs: int
+                sampling frequency (Hz)
+        
+        Returns
+        ----------
+            filtered_sig: np.ndarray
+                filtered signal
+            b: np.ndarray
+                filter numerator coefficients 
+            a: np.ndarray
+                filter denominator coefficients
     """
 
     Q = 5
@@ -198,12 +257,17 @@ def butterworth_filter(sig, filt_freq, fs):
     return filtered_sig, b, a
 
 
-def extract_inst_phase(sig):
-    """ Extracts the instantaneous phase for a given signal x
-        input:
-            sig: signal - type: np.array
-        output:
-            inst_phase: instantaneous phase - type: np.ndarray
+def extract_inst_phase(sig) -> np.ndarray:
+    """ Function that Extracts the instantaneous phase for a given signal x
+        Parameters
+        ----------
+            sig: np.array
+                signal in time domain
+        
+        Returns
+        ----------
+            inst_phase: np.ndarray
+                instantaneous phase 
     """
 
     z = signal.hilbert(sig)
@@ -213,12 +277,17 @@ def extract_inst_phase(sig):
     return inst_phase
 
 
-def extract_inst_amp(sig):
-    """ Extracts the instantaneous amplitude for a given signal x
-        input:
-            sig: signal - type: np.array
-        output:
-            inst_amplitude: instantaneous amplitude - type: np.ndarray
+def extract_inst_amp(sig) -> np.ndarray:
+    """ Function that Extracts the instantaneous amplitude for a given signal x
+        Parameters
+        ----------
+            sig: np.array
+                signal in time domain
+        
+        Returns
+        ----------
+            inst_amplitude: np.ndarray
+                instantaneous amplitude
     """
 
     z = signal.hilbert(sig)

@@ -5,10 +5,13 @@ from tqdm import tqdm
 
 def apply_notch(_signal_chan, _args):
     """ Applies notch filter to given signal
-    input:
+    Parameters
+        ----------
         _signal_chan: signal channel - type: numpy.ndarray
         _args: dictionary containing notch filter parameters - type: dict
-    output:
+    
+        Returns
+        ----------
         _signal_chan: signal channel with notch filter applied - type: numpy.ndarray
     """
     for f0 in np.arange(_args['f0'],300,_args['f0']):
@@ -18,10 +21,13 @@ def apply_notch(_signal_chan, _args):
 
 def zscore_normalize_npz(input_npz_folder, output_npz_folder):
     """ Z-score normalizes NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: os.PathLike
         output_npz_folder: path to output npz folder - type: os.PathLike
-    output:
+    
+        Returns
+        ----------
     """
     if not os.path.exists(output_npz_folder):
         os.makedirs(output_npz_folder)
@@ -40,9 +46,12 @@ def zscore_normalize_npz(input_npz_folder, output_npz_folder):
 
 def zscore_normalize(data):
     """ Z-score normalizes data
-    input:
+    Parameters
+        ----------
         data: data to be normalized - type: numpy.ndarray
-    output:
+    
+        Returns
+        ----------
         data_zscore: normalized data - type: numpy.ndarray
     """
     data_zscore = (data - np.mean(data))/np.std(data)
@@ -50,10 +59,13 @@ def zscore_normalize(data):
 
 def normalize_npz(input_npz_folder, output_npz_folder):
     """ Normalizes NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: os.PathLike
         output_npz_folder: path to output npz folder - type: os.PathLike
-    output:
+    
+        Returns
+        ----------
     """
     if not os.path.exists(output_npz_folder):
         os.makedirs(output_npz_folder)
@@ -72,9 +84,12 @@ def normalize_npz(input_npz_folder, output_npz_folder):
 
 def normalize(data):
     """ Normalizes data
-    input:
+    Parameters
+        ----------
         data: data to be normalized - type: numpy.ndarray
-    output:
+    
+        Returns
+        ----------
         data_normalized: normalized data - type: numpy.ndarray
     """
     data_normalized = data/np.max(np.abs(data))

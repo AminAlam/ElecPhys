@@ -24,11 +24,14 @@ def cli(ctx):
 @error_handler
 def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
     """ Converts RHD files to mat files using RHD to MAT converter written in MATLAB
-    input:
+    Parameters
+        ----------
         folder_path: path to folder containing RHD files - type: str
         output_mat_file: path to output mat file - type: str
         ds_factor: downsample factor - type: int
-    output:
+    
+        Returns
+        ----------
     """
 
     Warning('** This command requires MATLAB to be installed on your system.\n')
@@ -45,11 +48,14 @@ def convert_rhd_to_mat(ctx, folder_path, output_mat_file, ds_factor):
 @error_handler
 def convert_mat_to_npz(ctx, mat_file, output_npz_folder, notch_filter_freq):
     """ Converts MAT files to NPZ files
-    input:
+    Parameters
+        ----------
         mat_file: path to mat file - type: str
         output_npz_folder: path to output npz folder - type: str
         notch_filter_freq: notch filter frequency - type: int
-    output:
+    
+        Returns
+        ----------
     """
     
     print('--- Converting MAT files to NPZ files...')
@@ -66,10 +72,13 @@ def convert_mat_to_npz(ctx, mat_file, output_npz_folder, notch_filter_freq):
 @error_handler
 def zscore_normalize_npz(ctx, input_npz_folder, output_npz_folder):
     """ Z-score normalizes NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder - type: str
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Z-score normalizing NPZ files...')
@@ -84,10 +93,13 @@ def zscore_normalize_npz(ctx, input_npz_folder, output_npz_folder):
 @error_handler
 def normalize_npz(ctx, input_npz_folder, output_npz_folder):
     """ Normalizes NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder - type: str
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Normalizing NPZ files...')
@@ -107,13 +119,16 @@ def normalize_npz(ctx, input_npz_folder, output_npz_folder):
 @error_handler
 def stft_numeric_output(ctx, input_npz_folder, output_npz_folder, window_size, overlap, window_type):
     """ Computes STFT and saves results as NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder to save STFT results - type: str
         window_size: window size in seconds - type: float
         overlap: overlap in seconds - type: float
         window_type: window type - type: str
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Computing STFT and saving results as NPZ files...')
@@ -128,10 +143,13 @@ def stft_numeric_output(ctx, input_npz_folder, output_npz_folder, window_size, o
 @error_handler
 def dft_numeric_output(ctx, input_npz_folder, output_npz_folder):
     """ Computes DFT and saves results as NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder to save DFT results - type: str
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Computing DFT and saving results as NPZ files...')
@@ -149,13 +167,16 @@ def dft_numeric_output(ctx, input_npz_folder, output_npz_folder):
 @error_handler
 def frequncy_domain_filter(ctx, input_npz_folder, output_npz_folder, filter_type, freq_cutoff, filter_order):
     """ Filtering in frequency domain using butterworth filter and saves results as NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder to save filtered signals - type: str
         filter_type: filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter) - type: str
         freq_cutoff: frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values - type: str
         order: filter order - type: int
-    output:
+    
+        Returns
+        ----------
     """
 
     filter_args = {'filter_type': filter_type, 'freq_cutoff': freq_cutoff, 'filter_order': filter_order}
@@ -179,7 +200,8 @@ def frequncy_domain_filter(ctx, input_npz_folder, output_npz_folder, filter_type
 @error_handler
 def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file
-    input:
+    Parameters
+        ----------
         input_npz_file: path to input npz file - type: str
         output_plot_file: path to output plot file - type: str
         f_min: minimum frequency to plot in Hz - type: float
@@ -188,7 +210,9 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
         t_max: maximum time to plot in seconds - type: float
         db_min: minimum dB to plot - type: float
         db_max: maximum dB to plot - type: float
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Plotting STFT...')
@@ -210,7 +234,8 @@ def plot_stft(ctx, input_npz_file, output_plot_file, f_min, f_max, t_min, t_max,
 @error_handler
 def plot_avg_stft(ctx, input_npz_folder, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list):
     """ Plots average STFT from NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_plot_file: path to output plot file - type: str
         f_min: minimum frequency to plot in Hz - type: float
@@ -220,7 +245,9 @@ def plot_avg_stft(ctx, input_npz_folder, output_plot_file, f_min, f_max, t_min, 
         db_min: minimum dB to plot - type: float
         db_max: maximum dB to plot - type: float
         channels_list: list of channels to plot - type: list
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Plotting average STFT...')
@@ -239,14 +266,17 @@ def plot_avg_stft(ctx, input_npz_folder, output_plot_file, f_min, f_max, t_min, 
 @error_handler
 def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize):
     """ Plots signals from NPZ file
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_plot_file: path to output plot file - type: str
         t_min: minimum time to plot in seconds - type: float
         t_max: maximum time to plot in seconds - type: float
         channels_list: list of channels to plot - type: list
         normalize: normalize signals - type: bool
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Plotting signals...')
@@ -266,7 +296,8 @@ def plot_signal(ctx, input_npz_folder, output_plot_file, t_min, t_max, channels_
 @error_handler
 def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_list, plot_type, conv_window_size):
     """ Plots DFT from NPZ file
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_plot_file: path to output plot file - type: str
         f_min: minimum frequency to plot in Hz - type: float
@@ -274,7 +305,9 @@ def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_lis
         channels_list: list of channels to plot - type: list
         plot_type: plot type - type: str
         conv_window_size: convolution window size in seconds - type: float
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Plotting DFT...')
@@ -292,12 +325,15 @@ def plot_dft(ctx, input_npz_folder, output_plot_file, f_min, f_max, channels_lis
 @error_handler
 def plot_filter_freq_response(ctx, filter_type, freq_cutoff, filter_order, frequency_sampling, output_plot_file):
     """ Plots filter frequency response
-    input:
+    Parameters
+        ----------
         filter_type: filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter) - type: str
         freq_cutoff: frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values - type: str
         order: filter order - type: int
         output_plot_file: path to output plot file - type: str
-    output:
+    
+        Returns
+        ----------
     """
     
     filter_args = {'filter_type': filter_type, 'freq_cutoff': freq_cutoff, 'filter_order': filter_order, 'fs': frequency_sampling}
@@ -318,13 +354,16 @@ def plot_filter_freq_response(ctx, filter_type, freq_cutoff, filter_order, frequ
 @error_handler
 def pca_from_npz(ctx, input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list):
     """ Computes PCA from NPZ files
-    input:
+    Parameters
+        ----------
         input_npz_folder: path to input npz folder - type: str
         output_npz_folder: path to output npz folder to save PCA results - type: str
         n_components: number of components to keep after applying the PCA - type: int
         matrix_whitenning: matrix whitening boolean. If true, the singular values are divided by n_samples - type: bool
         channels_list: list of channels to apply PCA, if None then all of the channels will be applied - type: list
-    output:
+    
+        Returns
+        ----------
     """
 
     print('--- Computing PCA and saving results as NPZ files...')

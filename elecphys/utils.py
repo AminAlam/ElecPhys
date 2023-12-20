@@ -5,8 +5,11 @@ import re
 
 def get_matlab_engine():
     """Installs MATLAB engine for Python
-    input:
-    output:
+    Parameters
+        ----------
+    
+        Returns
+        ----------
         eng: MATLAB engine for Python
     """
     matlab_installation_url = 'https://uk.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html'
@@ -20,9 +23,12 @@ def get_matlab_engine():
 
 def sort_file_names(file_names):
     """Sorts file names in ascending order
-    input:
+    Parameters
+        ----------
         file_names: list of file names - type: list
-    output:
+    
+        Returns
+        ----------
         file_names: sorted list of file names - type: list
     """
     file_names.sort(key=lambda f: int(re.sub('\D', '', f)))
@@ -31,9 +37,12 @@ def sort_file_names(file_names):
 
 def convert_string_to_list(string):
     """Converts string to list
-    input:
+    Parameters
+        ----------
         string: string to be converted - type: str
-    output:
+    
+        Returns
+        ----------
         list: converted list - type: list
     """
     if type(string) is not str:

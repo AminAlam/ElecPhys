@@ -10,7 +10,8 @@ import fourier_analysis
 
 def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max):
     """ Plots STFT from NPZ file (STFT must be saved as NPZ file)
-    input:
+    Parameters
+        ----------
         input_npz_file: path to input npz file - type: os.PathLike
         output_plot_file: path to output plot file - type: os.PathLike
         f_min: minimum frequency to plot in Hz - type: float
@@ -19,7 +20,9 @@ def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_
         t_max: maximum time to plot in seconds - type: float
         db_min: minimum dB to plot - type: float
         db_max: maximum dB to plot - type: float
-    output:
+    
+        Returns
+        ----------
     """
     f, t, Zxx = data_loading.load_npz_stft(input_npz_file)
     Zxx_plot = 10*np.log10(np.abs(Zxx))
@@ -42,7 +45,8 @@ def plot_stft_from_npz(input_npz_file, output_plot_file, f_min, f_max, t_min, t_
 
 def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_min, t_max, db_min, db_max, channels_list=None):
     """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
-    input:
+    Parameters
+        ----------
         npz_folder_path: path to input npz folder - type: os.PathLike
         output_plot_file: path to output plot file - type: os.PathLike
         f_min: minimum frequency to plot in Hz - type: float
@@ -52,7 +56,9 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
         db_min: minimum dB to plot - type: float
         db_max: maximum dB to plot - type: float
         channels_list: list of channels to plot - type: list
-    output:
+    
+        Returns
+        ----------
     """
     
     npz_files = os.listdir(npz_folder_path)
@@ -92,7 +98,8 @@ def plot_avg_stft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, t_mi
     
 def plot_stft_from_array(Zxx, t, f, f_min, f_max, t_min, t_max, db_min, db_max, output_plot_file=None):
     """ Plots STFT from 2D array
-    input:
+    Parameters
+        ----------
         Zxx: STFT matrix - type: np.ndarray
         t: time vector - type: np.ndarray
         f: frequency vector - type: np.ndarray
@@ -103,7 +110,9 @@ def plot_stft_from_array(Zxx, t, f, f_min, f_max, t_min, t_max, db_min, db_max, 
         db_min: minimum dB to plot - type: float
         db_max: maximum dB to plot - type: float
         output_plot_file: path to output plot file - type: os.PathLike
-    output:
+    
+        Returns
+        ----------
     """
 
     desired_freq_index_low = np.where(np.min(abs(f-f_min))==abs(f-f_min))[0][0]
@@ -133,13 +142,16 @@ def plot_stft_from_array(Zxx, t, f, f_min, f_max, t_min, t_max, db_min, db_max, 
 
 def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, channels_list=None, normalize=False):
     """ Plots signals from NPZ file
-    input:
+    Parameters
+        ----------
         npz_folder_path: path to input npz folder - type: os.PathLike
         output_plot_file: path to output plot file - type: os.PathLike
         t_min: minimum time to plot in seconds - type: float
         t_max: maximum time to plot in seconds - type: float
         channels_list: list of channels to plot - type: list
-    output:
+    
+        Returns
+        ----------
     """
     npz_files = os.listdir(npz_folder_path)
     npz_files = utils.sort_file_names(npz_files)
@@ -196,7 +208,8 @@ def plot_signals_from_npz(npz_folder_path, output_plot_file, t_min, t_max, chann
 
 def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type, channels_list=None, conv_window_size=None):
     """ Plots DFT from NPZ file (DFT must be saved as NPZ file)
-    input:
+    Parameters
+        ----------
         npz_folder_path: path to input npz folder - type: os.PathLike
         output_plot_file: path to output plot file - type: os.PathLike
         f_min: minimum frequency to plot in Hz - type: float
@@ -204,7 +217,9 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
         plot_type: type of plot - type: str
         channels_list: list of channels to plot - type: list
         conv_window_size: size of convolution window to make plot smoother - type: int
-    output:
+    
+        Returns
+        ----------
     """
     if plot_type not in ['all_channels', 'average_of_channels']:
         raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
@@ -271,10 +286,13 @@ def plot_dft_from_npz(npz_folder_path, output_plot_file, f_min, f_max, plot_type
 
 def plot_filter_freq_response(filter_args, figure_save_path=None):
     """ Plots filter frequency response
-    input:
+    Parameters
+        ----------
         filter_args: dictionary containing filter parameters - type: dict
         figure_save_path: path to save figure - type: str
-        output:
+        
+        Returns
+        ----------
     """
 
     f, mag, phase, _args = fourier_analysis.calc_freq_response(filter_args)
@@ -319,10 +337,13 @@ def plot_filter_freq_response(filter_args, figure_save_path=None):
 
 def plot_filter_freq_response_from_json(filter_freq_response_json_file_path, figure_save_path=None):
     """ Plots filter frequency response from JSON file
-    input:
+    Parameters
+        ----------
         filter_freq_response_json_file_path: path to filter frequency response JSON file - type: str
         figure_save_path: path to save figure - type: str
-    output:
+    
+        Returns
+        ----------
     """
 
     with open(filter_freq_response_json_file_path, 'r') as f:
@@ -333,13 +354,16 @@ def plot_filter_freq_response_from_json(filter_freq_response_json_file_path, fig
     
 def plot_mvl_form_array(MI_mat, freqs_phase, freqs_amp, clim=None, figure_save_path=None):
     """ Plots MVL from 2D array
-    input:
+    Parameters
+        ----------
         MI_mat: MVL matrix - type: np.ndarray
         freqs_phase: phase frequency vector - type: np.ndarray
         freqs_amp: amplitude frequency vector - type: np.ndarray
         clim: color limit - type: tuple
         figure_save_path: path to save figure - type: str
-    output:
+    
+        Returns
+        ----------
     """
     
     MI_mat_plot = MI_mat
@@ -361,10 +385,13 @@ def plot_mvl_form_array(MI_mat, freqs_phase, freqs_amp, clim=None, figure_save_p
 
 def plot_mvl_from_npz(npz_file_path, figure_save_path=None):
     """ Plots MVL from NPZ file
-    input:
+    Parameters
+        ----------
         npz_file_path: path to NPZ file - type: os.PathLike
         figure_save_path: path to save figure - type: str
-    output:
+    
+        Returns
+        ----------
     """
     
     MI_mat, freqs_amp, freqs_phase, _ = data_loading.load_npz_mvl(npz_file_path)

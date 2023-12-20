@@ -8,15 +8,23 @@ import utils
 import cfc
 
 
-def stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_size, overlap, window_type):
+def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str , window_size: float, overlap: float, window_type: str) -> None:
     """ Computes STFT and saves results as NPZ files
-        input:
-        input_npz_folder: path to input npz folder - type: os.PathLike
-        output_npz_folder: path to output npz folder to save STFT results - type: os.PathLike
-        window_size: window size in seconds - type: float
-        overlap: overlap in seconds - type: float
-        window_type: window type - type: str
-        output:    
+        Parameters
+        ----------
+        input_npz_folder: str
+            path to input npz folder 
+        output_npz_folder: str
+            path to output npz folder to save STFT results
+        window_size: float
+            window size in seconds
+        overlap: float:
+            overlap in seconds
+        window_type: str
+            window type 
+        
+        Returns
+        ----------    
     """
 
     if not os.path.exists(output_npz_folder):
@@ -35,12 +43,17 @@ def stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_siz
             np.savez(stft_npz_file_path, f=f, t=t, Zxx=Zxx)
 
 
-def dft_numeric_output_from_npz(input_npz_folder, output_npz_folder, nfft=None):
+def dft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str, nfft: int=None) -> None:
     """ Computes DFT and saves results as NPZ files
-        input:
-        input_npz_folder: path to input npz folder - type: os.PathLike
-        output_npz_folder: path to output npz folder to save DFT results - type: os.PathLike
-        output:    
+        Parameters
+        ----------
+        input_npz_folder: str
+            path to input npz folder
+        output_npz_folder: str
+            path to output npz folder to save DFT results
+        
+        Returns
+        ----------    
     """
 
     if not os.path.exists(output_npz_folder):
@@ -59,19 +72,31 @@ def dft_numeric_output_from_npz(input_npz_folder, output_npz_folder, nfft=None):
             np.savez(dft_npz_file_path, f=f, Zxx=Zxx)
 
 
-def stft_from_array(signal_array, fs, window_size, overlap, window_type='hann', nfft=None):
+def stft_from_array(signal_array, fs: int, window_size: float, overlap: float, window_type: str='hann', nfft: int=None) -> [np.ndarray, np.ndarray, np.ndarray]:
     """ Computes STFT from 1D array
-        input:
-            signal_array: 1D array of signal - type: np.ndarray
-            fs: sampling frequency - type: float
-            window_size: window size in seconds - type: float
-            overlap: overlap in seconds - type: float
-            window_type: window type - type: str
-            nfft: number of FFT points - type: int
-        output:
-            f: frequency vector - type: np.ndarray
-            t: time vector - type: np.ndarray
-            Zxx: STFT matrix - type: np.ndarray
+        Parameters
+        ----------
+            signal_array: np.ndarray
+                signal array in time domain
+            fs: int
+                sampling frequency (Hz)
+            window_size: float
+                window size in seconds
+            overlap: float
+                windows overlap in seconds
+            window_type: str
+                window type
+            nfft: int
+                number of FFT points
+        
+        Returns
+        ----------
+            f: np.ndarray
+                frequency vector
+            t: np.ndarray
+                time vector
+            Zxx: np.ndarray
+                STFT matrix (complex)
     """
     if np.ndim(signal_array) == 2:
         signal_array = np.squeeze(signal_array)
@@ -88,15 +113,23 @@ def stft_from_array(signal_array, fs, window_size, overlap, window_type='hann', 
     return f, t, Zxx
 
 
-def dft_from_array(signal_array, fs, nfft=None):
+def dft_from_array(signal_array, fs: int, nfft: int=None) -> [np.ndarray, np.ndarray]:
     """ Computes DFT from 1D array
-        input:
-            signal_array: 1D array of signal - type: np.ndarray
-            fs: sampling frequency - type: float
-            nfft: number of FFT points - type: int
-        output:
-            f: frequency vector - type: np.ndarray
-            Zxx: DFT vector - type: np.ndarray
+        Parameters
+        ----------
+            signal_array: np.ndarray
+                signal array in time domain
+            fs: int
+                sampling frequency (Hz)
+            nfft: int
+                number of FFT points
+        
+        Returns
+        ----------
+            f: np.ndarray
+                frequency vector
+            Zxx: np.ndarray
+                DFT vector (complex)
     """
     if np.ndim(signal_array) == 2:
         signal_array = np.squeeze(signal_array)
@@ -110,15 +143,23 @@ def dft_from_array(signal_array, fs, nfft=None):
     return f, Zxx
 
 
-def butterworth_filtering_from_array(signal_array, fs: int, _args: dict):
+def butterworth_filtering_from_array(signal_array, fs: int, _args: dict) -> np.ndarray:
     """ Filters signal array
-        input:
-            signal_array: 1D array of signal - type: np.ndarray
-            fs: sampling frequency - type: float
-            _args: dictionary containing filter parameters - type: dict
-        output:
-            signal_array: filtered signal array - type: np.ndarray
-            filter_freq_response: dictionary containing filter frequency response - type: dict
+        Parameters
+        ----------
+            signal_array: type: np.ndarray
+                number of FFT points
+            fs: int
+                sampling frequency (Hz)
+            _args: dict
+                dictionary containing filter parameters
+        
+        Returns
+        ----------
+            signal_array: np.ndarray
+                filtered signal array in time domain
+            filter_freq_response: dict
+                dictionary containing filter frequency response
     """
     
     if np.ndim(signal_array) == 2:
@@ -141,15 +182,19 @@ def butterworth_filtering_from_array(signal_array, fs: int, _args: dict):
     return signal_array
 
 
-def butterworth_filtering_from_npz(input_npz_folder, output_npz_folder, _args: dict):
+def butterworth_filtering_from_npz(input_npz_folder: str, output_npz_folder: str, _args: dict) -> None:
     """ Filters signal array
-        input:
-            input_npz_folder: path to input npz folder - type: os.PathLike
-            output_npz_folder: path to output npz folder to save filtered results - type: os.PathLike
-            fs: sampling frequency - type: float
-            _args: dictionary containing filter parameters - type: dict
-        output:
-            output_npz_folder: no return value
+        Parameters
+        ----------
+            input_npz_folder: str
+                path to input npz folder
+            output_npz_folder: str
+                path to output npz folder to save filtered results
+            _args: dict
+                dictionary containing filter parameters
+        
+        Returns
+        ----------
     """
     
     if not os.path.exists(output_npz_folder):
@@ -174,14 +219,23 @@ def butterworth_filtering_from_npz(input_npz_folder, output_npz_folder, _args: d
         json.dump(_args, fp)
 
 
-def calc_freq_response(_args):
+def calc_freq_response(_args: dict) -> [np.ndarray, np.ndarray, np.ndarray, dict]:
     """ Calculates filter frequency response
-        input:
-            _args: dictionary containing filter parameters - type: dict
-        output:
-            f: frequency vector - type: np.ndarray
-            mag: magnitude vector - type: np.ndarray
-            phase: phase vector - type: np.ndarray
+        Parameters
+        ----------
+            _args: dict
+                dictionary containing filter parameters
+        
+        Returns
+        ----------
+            f: np.ndarray
+                frequency vector
+            mag: np.ndarray
+                magnitude vector
+            phase: np.ndarray
+                phase vector
+            _args: dict
+                dictionary containing filter parameters
     """
     
     fs = _args['fs']
@@ -204,16 +258,25 @@ def calc_freq_response(_args):
     return f, mag, phase, _args
 
 
-def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list, time_interval: list=None):
+def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list, time_interval: list=None) -> np.ndarray:
     """ Calculates CFC matrix
-        input:
-            signal_array: 1D array of signal - type: np.ndarray
-            fs: sampling frequency - type: float
-            freqs_amp: amplitude frequencies - type: list
-            freqs_phase: phase frequencies - type: list
-            time_interval: time interval to calculate CFC over in seconds- type: list
-        output:
-            MI_mat: CFC matrix - type: np.ndarray
+        Parameters
+        ----------
+            signal_array: np.ndarray
+                1D array of signal
+            fs: int
+                sampling frequency (Hz)
+            freqs_amp: list
+                amplitude frequencies (Hz)
+            freqs_phase: list
+                phase frequencies (Hz)
+            time_interval: list
+                time interval to calculate CFC over in seconds
+        
+        Returns
+        ----------
+            MI_mat: np.ndarray
+                CFC matrix
     """
     if np.ndim(signal_array) == 2:
         signal_array = np.squeeze(signal_array)
@@ -228,15 +291,22 @@ def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list
     return MI_mat
 
 
-def calc_cfc_from_npz(input_npz_folder, output_npz_folder, freqs_amp: list, freqs_phase:list, time_interval: list=None):
+def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str, freqs_amp: list, freqs_phase:list, time_interval: list=None) -> None:
     """ Calculates CFC matrix
-        input:
-            input_npz_folder: path to input npz folder - type: os.PathLike
-            output_npz_folder: path to output npz folder to save CFC results - type: os.PathLike
-            freqs_amp: amplitude frequencies - type: list
-            freqs_phase: phase frequencies - type: list
+        Parameters
+        ----------
+            input_npz_folder: str
+                path to input npz folder
+            output_npz_folder: str
+                path to output npz folder to save CFC results
+            freqs_amp: list
+                amplitude frequencies (Hz)
+            freqs_phase: list
+                phase frequencies (Hz)
             time_interval: time interval to calculate CFC over in seconds- type: list
-        output:
+        
+        Returns
+        ----------
             output_npz_folder: no return value
     """
     
