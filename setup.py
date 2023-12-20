@@ -42,4 +42,5 @@ setup(
         ],
     },
     packages=['elecphys'],
+    include_package_data=True,
 )
