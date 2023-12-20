@@ -2,7 +2,7 @@ from functools import wraps
 import os
 
 class ErrorHandler:
-    """Error handler class
+    """ Error handler class
         Parameters
         ----------
         
@@ -12,8 +12,8 @@ class ErrorHandler:
     def __init__(self):
         pass
 
-    def error(self, e):
-        """Prints error message
+    def error(self, e: str):
+        """ Prints error message
             Parameters
             ----------
             e: str
@@ -27,7 +27,7 @@ class ErrorHandler:
         return None
 
     def error_handler(self, func: function) -> function:
-        """Error handler decorator
+        """ Error handler decorator
             Parameters
             ----------
             func: function
