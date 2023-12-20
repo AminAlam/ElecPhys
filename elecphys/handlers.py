@@ -26,7 +26,7 @@ class ErrorHandler:
         print(e)
         return None
 
-    def error_handler(self, func: function) -> function:
+    def error_handler(self, func):
         """ Error handler decorator
             Parameters
             ----------
