@@ -56,3 +56,18 @@ def load_npz_dft(npz_file):
     f = npz_file_contents['f']
     Zxx = npz_file_contents['Zxx']
     return f, Zxx
+
+
+def load_npz_mvl(npz_file):
+    """ Loads NPZ file
+    input:
+        npz_file: path to npz file - type: os.PathLike
+    output:
+        MVL: MVL array - type: numpy.ndarray
+    """
+    npz_file_contents = np.load(npz_file)
+    MI_mat = npz_file_contents['MI_mat']
+    freqs_amp = npz_file_contents['freqs_amp']
+    freqs_phase = npz_file_contents['freqs_phase']
+    time_interval = npz_file_contents['time_interval']
+    return MI_mat, freqs_amp, freqs_phase, time_interval

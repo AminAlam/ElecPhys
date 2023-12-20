@@ -5,6 +5,8 @@ from tqdm import tqdm
 import json
 
 import utils
+import cfc
+
 
 def stft_numeric_output_from_npz(input_npz_folder, output_npz_folder, window_size, overlap, window_type):
     """ Computes STFT and saves results as NPZ files
@@ -200,4 +202,55 @@ def calc_freq_response(_args):
     phase = np.unwrap(np.angle(h)) * 180 / np.pi
     
     return f, mag, phase, _args
+
+
+def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list, time_interval: list=None):
+    """ Calculates CFC matrix
+        input:
+            signal_array: 1D array of signal - type: np.ndarray
+            fs: sampling frequency - type: float
+            freqs_amp: amplitude frequencies - type: list
+            freqs_phase: phase frequencies - type: list
+            time_interval: time interval to calculate CFC over in seconds- type: list
+        output:
+            MI_mat: CFC matrix - type: np.ndarray
+    """
+    if np.ndim(signal_array) == 2:
+        signal_array = np.squeeze(signal_array)
+        Warning('Signal array is 2D but only one channel. Using first channel.')
+    if np.ndim(signal_array) != 1:
+        raise ValueError(f'Signal array must be 1D array but has {np.ndim(signal_array)} dimensions')
+
+    if time_interval is None:
+        time_interval = [0, len(signal_array)/fs]
+    signal_array = signal_array[int(time_interval[0]*fs):int(time_interval[1]*fs)]
+    MI_mat = cfc.calc_tf_mvl(signal_array, fs, freqs_phase, freqs_amp)
+    return MI_mat
+
+
+def calc_cfc_from_npz(input_npz_folder, output_npz_folder, freqs_amp: list, freqs_phase:list, time_interval: list=None):
+    """ Calculates CFC matrix
+        input:
+            input_npz_folder: path to input npz folder - type: os.PathLike
+            output_npz_folder: path to output npz folder to save CFC results - type: os.PathLike
+            freqs_amp: amplitude frequencies - type: list
+            freqs_phase: phase frequencies - type: list
+            time_interval: time interval to calculate CFC over in seconds- type: list
+        output:
+            output_npz_folder: no return value
+    """
     
+    if not os.path.exists(output_npz_folder):
+        os.makedirs(output_npz_folder)
+    else:
+        Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
+    
+    for npz_file in tqdm(os.listdir(input_npz_folder)):
+        if npz_file.endswith('.npz'):
+            npz_file_path = os.path.join(input_npz_folder, npz_file)
+            npz_file_contents = np.load(npz_file_path)
+            data = npz_file_contents['data']
+            fs = npz_file_contents['fs']
+            MI_mat = calc_cfc_from_array(data, fs, freqs_amp, freqs_phase, time_interval)
+            cfc_npz_file_path = os.path.join(output_npz_folder, f'CFC_{npz_file}')
+            np.savez(cfc_npz_file_path, MI_mat=MI_mat, freqs_amp=freqs_amp, freqs_phase=freqs_phase, time_interval=time_interval)

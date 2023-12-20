@@ -137,6 +137,27 @@ Options:
                                the channels will be plotted
   --help                       Show this message and exit.
 ```
+#### plot_filter_freq_response
+```console
+Usage: elecphys plot_filter_freq_response [OPTIONS]
+
+  Plots filter frequency response
+
+Options:
+  -ft, --filter_type TEXT         Filter type. LPF (low-pass filter), HPF
+                                  (high-pass filter), or BPF (band-pass
+                                  filter)  [default: LPF; required]
+  -fc, --freq_cutoff TEXT         Frequency cutoff in Hz. If filter_type is
+                                  LPF or HPF, then freq_cutoff is a single
+                                  value. If filter_type is BPF, then
+                                  freq_cutoff is a list of two values
+                                  [required]
+  -fo, --filter_order INTEGER     Filter order  [default: 4; required]
+  -fs, --frequency_sampling INTEGER
+                                  Frequency sampling in Hz  [required]
+  -o, --output_plot_file TEXT     Path to output plot file  [required]
+  --help                          Show this message and exit.
+```
 ### Fourier Analysis
 #### dft_numeric_output_from_npz
 ```console
@@ -169,4 +190,24 @@ Options:
   -wt, --window_type TEXT         Window type  [default: hann; required]
   --help                          Show this message and exit.
 ```
+#### frequncy_domain_filter
+```console
+Usage: elecphys frequncy_domain_filter [OPTIONS]
 
+Filtering in frequency domain using butterworth filter and saves results as
+  NPZ files
+
+Options:
+  -i, --input_npz_folder TEXT   Path to input npz folder  [required]
+  -o, --output_npz_folder TEXT  Path to output npz folder to save filtered
+                                signals  [required]
+  -ft, --filter_type TEXT       Filter type. LPF (low-pass filter), HPF (high-
+                                pass filter), or BPF (band-pass filter)
+                                [default: LPF; required]
+  -fc, --freq_cutoff TEXT       Frequency cutoff in Hz. If filter_type is LPF
+                                or HPF, then freq_cutoff is a single value. If
+                                filter_type is BPF, then freq_cutoff is a list
+                                of two values  [required]
+  -fo, --filter_order INTEGER   Filter order  [default: 4; required]
+  --help                        Show this message and exit.
+```

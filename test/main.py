@@ -134,13 +134,27 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
             self.assertTrue(os.path.exists(output_npz_folder))
 
 
+    def test_cfc_from_npz(self):
+        return
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_cfc')
+        if os.path.exists(output_npz_folder):
+            shutil.rmtree(output_npz_folder)
+        freq_phase = list(range(2, 9))
+        freq_amp = list(range(35, 46))
+        fourier_analysis.calc_cfc_from_npz(npz_files_folder, output_npz_folder, freq_amp, freq_phase)
+        self.assertTrue(os.path.exists(output_npz_folder))
+
+
+
+
 class TestCases_3_visualization(unittest.TestCase):
     def test_plot_stft(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
         npz_files = os.listdir(npz_files_folder)
         npz_file = npz_files[0]
         output_plot_file = os.path.join(os.path.dirname(__file__), 'data', 'plots', 'stft_plot.png')
-        
+
         f_min = None
         f_max = None
         t_min = None
