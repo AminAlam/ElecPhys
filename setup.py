@@ -42,5 +42,6 @@ setup(
         ],
     },
     packages=['elecphys'],
+    package_data={'elecphys': ['*.m', 'elecphys/matlab_scripts/*.m']},
     include_package_data=True,
 )
