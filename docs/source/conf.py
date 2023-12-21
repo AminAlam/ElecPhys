@@ -21,12 +21,10 @@ extensions = [
    'sphinx.ext.autodoc',
    'sphinx.ext.autosummary',
    'sphinx.ext.napoleon',
+   'numpydoc',
 ]
 templates_path = ['_templates']
 exclude_patterns = []
-
-html_theme = "pydata_sphinx_theme"
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
