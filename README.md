@@ -6,6 +6,9 @@
 <img src="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white" alt="built with Python3" />
 </div>
 
+[![Documentation Status](https://readthedocs.org/projects/elecphys/badge/?version=latest)](https://elecphys.readthedocs.io/en/latest/?badge=latest) [![Ci testing](https://github.com/AminAlam/elecphys/workflows/CI/badge.svg?branch=main)](https://github.com/AminAlam/elecphys/workflows/CI/badge.svg?branch=main)
+
+
 ----------
 
 ElecPhys: A Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.
@@ -16,7 +19,7 @@ ElecPhys: A Python package for electrophysiology data analysis. It provides tool
    * [Overview](https://github.com/AminAlam/ElecPhys#overview)
    * [Installation](https://github.com/AminAlam/ElecPhys#ElecPhys)
    * [Usage](https://github.com/AminAlam/ElecPhys#usage)
-
+   * [Documentation](https://github.com/AminAlam/ElecPhys#documentation)
 ----------
 ## Overview
 <p align="justify">
@@ -87,5 +90,5 @@ ds_factor = 5
 # call rhd to mat conversoin module
 elecphys.conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
 ```
-### Available Analysis methods
-Please check [this file](./docs/available_analysis.md)
+### Documentation
+Please check [this link](https://readthedocs.org/projects/elecphys) for full documentation
