@@ -36,7 +36,33 @@ def sort_file_names(file_names: list) -> list:
         file_names: list
             sorted list of file names
     """
-    file_names.sort(key=lambda f: int(re.sub('\D', '', f)))
+    file_names_with_number = []
+    file_names_without_number = []
+    for file_name in file_names:
+        if re.search('\d', file_name):
+            file_names_with_number.append(file_name)
+        else:
+            file_names_without_number.append(file_name)
+    file_names_with_number.sort(key=lambda f: int(re.sub('\D', '', f)))
+    file_names_without_number.sort()
+    file_names = file_names_with_number + file_names_without_number
+    return file_names
+
+
+def keep_npz_files(file_names: list) -> list:
+    """Keeps only NPZ files
+
+        Parameters
+        ----------
+        file_names: list
+            list of file names
+    
+        Returns
+        ----------
+        file_names: list
+            list of NPZ file names
+    """
+    file_names = [file_name for file_name in file_names if file_name.endswith('.npz')]
     return file_names
 
 

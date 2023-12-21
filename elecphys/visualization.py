@@ -271,6 +271,7 @@ def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f
         raise ValueError('plot_type must be either "all_channels" or "average_of_channels"')
 
     npz_files = os.listdir(npz_folder_path)
+    npz_files = utils.keep_npz_files(npz_files)
     npz_files = utils.sort_file_names(npz_files)
 
     if channels_list is None:
