@@ -6,16 +6,26 @@ import utils
 import shutil
 from tqdm import tqdm
 
-def convert_rhd_to_mat(folder_path, output_mat_file, ds_factor):
-    """Converts RHD files to mat files using RHD to MAT converter written in MATLAB
-    input:
-        folder_path: path to folder containing RHD files - type: os.PathLike
-        output_mat_file: path to output mat file - type: os.PathLike
-        ds_factor: downsample factor - type: int
-    output:
-        output_mat_file: no return value
+def convert_rhd_to_mat(folder_path: str, output_mat_file: str, ds_factor: int) -> None:
+    """ Function that Converts RHD files to mat files using RHD to MAT converter written in MATLAB
+
+        Parameters
+        ----------
+        folder_path: str
+            path to folder containing RHD files
+        output_mat_file: str
+            path to output mat file
+        ds_factor: int
+            downsample factor 
+        
+        Returns
+        ----------
     """
     output_mat_file_folder = os.path.dirname(output_mat_file)
+    if not os.path.exists(output_mat_file_folder):
+        os.makedirs(output_mat_file_folder)
+    elif os.path.exists(output_mat_file):
+        Warning(f'{output_mat_file} already exists. File will be overwritten.')
     # if os is unix, check if MATLAB is installed
     Warning('This functionality needs MATLAB to be installed on your computer. If you do not have MATLAB installed, please install it first.') 
     eng = utils.get_matlab_engine()
@@ -24,13 +34,18 @@ def convert_rhd_to_mat(folder_path, output_mat_file, ds_factor):
     eng.quit()
 
 
-def convert_mat_to_npz(mat_file, output_npz_folder, notch_filter_freq):
-    """Converts MAT files to NPZ files
-    input:
-        mat_file: path to mat file - type: os.PathLike
-        output_npz_folder: path to output npz folder - type: os.PathLike
-    output:
-        output_npz_folder: no return value
+def convert_mat_to_npz(mat_file: str, output_npz_folder: str, notch_filter_freq: int) -> None:
+    """ Function that  Converts MAT files to NPZ files
+
+        Parameters
+        ----------
+        mat_file: str
+            path to mat file 
+        output_npz_folder: str
+            path to output npz folder
+        
+        Returns
+        ----------
     """
 
     if not os.path.exists(output_npz_folder):
