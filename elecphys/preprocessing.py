@@ -3,29 +3,34 @@ import numpy as np
 from scipy import signal
 from tqdm import tqdm
 
-def apply_notch(_signal_chan, _args):
+def apply_notch(_signal_chan: np.ndarray, _args: dict) -> np.ndarray:
     """ Applies notch filter to given signal
-    Parameters
+        Parameters
         ----------
-        _signal_chan: signal channel - type: numpy.ndarray
-        _args: dictionary containing notch filter parameters - type: dict
+        _signal_chan: np.ndarray
+            signal channel
+        _args: dict
+            dictionary containing notch filter parameters
     
         Returns
         ----------
-        _signal_chan: signal channel with notch filter applied - type: numpy.ndarray
+        _signal_chan: np.ndarray
+            signal channel with notch filter applied
     """
     for f0 in np.arange(_args['f0'],300,_args['f0']):
         b_notch, a_notch = signal.iirnotch(f0, _args['Q'], _args['fs'])
         _signal_chan = signal.filtfilt(b_notch, a_notch, _signal_chan)
     return _signal_chan
 
-def zscore_normalize_npz(input_npz_folder, output_npz_folder):
+def zscore_normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
     """ Z-score normalizes NPZ files
-    Parameters
+        Parameters
         ----------
-        input_npz_folder: path to input npz folder - type: os.PathLike
-        output_npz_folder: path to output npz folder - type: os.PathLike
-    
+        input_npz_folder: str
+            path to input npz folder
+        output_npz_folder: str
+            path to output npz folder
+
         Returns
         ----------
     """
@@ -44,25 +49,29 @@ def zscore_normalize_npz(input_npz_folder, output_npz_folder):
             data_zscore = zscore_normalize(data)
             np.savez(os.path.join(output_npz_folder, npz_file), data=data_zscore, fs=fs)
 
-def zscore_normalize(data):
+def zscore_normalize(data: np.ndarray) -> np.ndarray:
     """ Z-score normalizes data
-    Parameters
+        Parameters
         ----------
-        data: data to be normalized - type: numpy.ndarray
-    
+        data: np.ndarray
+            data to be normalized
+
         Returns
         ----------
-        data_zscore: normalized data - type: numpy.ndarray
+        data_zscore: np.ndarray
+            normalized data
     """
     data_zscore = (data - np.mean(data))/np.std(data)
     return data_zscore
 
-def normalize_npz(input_npz_folder, output_npz_folder):
+def normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
     """ Normalizes NPZ files
     Parameters
         ----------
-        input_npz_folder: path to input npz folder - type: os.PathLike
-        output_npz_folder: path to output npz folder - type: os.PathLike
+        input_npz_folder: str
+            path to input npz folder
+        output_npz_folder: str
+            path to output npz folder
     
         Returns
         ----------
@@ -82,15 +91,17 @@ def normalize_npz(input_npz_folder, output_npz_folder):
             data_normalized = normalize(data)
             np.savez(os.path.join(output_npz_folder, npz_file), data=data_normalized, fs=fs)
 
-def normalize(data):
+def normalize(data: np.ndarray) -> np.ndarray:
     """ Normalizes data
     Parameters
         ----------
-        data: data to be normalized - type: numpy.ndarray
+        data: umpy.ndarray
+            data to be normalized
     
         Returns
         ----------
-        data_normalized: normalized data - type: numpy.ndarray
+        data_normalized: numpy.ndarray
+            normalized data
     """
     data_normalized = data/np.max(np.abs(data))
     return data_normalized

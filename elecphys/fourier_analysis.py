@@ -8,7 +8,7 @@ import utils
 import cfc
 
 
-def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str , window_size: float, overlap: float, window_type: str) -> None:
+def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str , window_size: float, overlap: float, window_type: str='hann') -> None:
     """ Computes STFT and saves results as NPZ files
         Parameters
         ----------
@@ -21,7 +21,7 @@ def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str ,
         overlap: float:
             overlap in seconds
         window_type: str
-            window type 
+            window type. Default is 'hann', but can be any window type supported by scipy.signal.get_window()
         
         Returns
         ----------    
@@ -85,7 +85,7 @@ def stft_from_array(signal_array, fs: int, window_size: float, overlap: float, w
             overlap: float
                 windows overlap in seconds
             window_type: str
-                window type
+                window type. Default is 'hann', but can be any window type supported by scipy.signal.get_window()
             nfft: int
                 number of FFT points
         
@@ -303,11 +303,11 @@ def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str, freqs_amp: 
                 amplitude frequencies (Hz)
             freqs_phase: list
                 phase frequencies (Hz)
-            time_interval: time interval to calculate CFC over in seconds- type: list
+            time_interval: list
+                time interval to calculate CFC over in seconds
         
         Returns
         ----------
-            output_npz_folder: no return value
     """
     
     if not os.path.exists(output_npz_folder):
