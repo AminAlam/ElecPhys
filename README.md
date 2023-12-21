@@ -91,4 +91,4 @@ ds_factor = 5
 elecphys.conversion.convert_rhd_to_mat_matlab(folder_path, output_mat_file, ds_factor)
 ```
 ### Documentation
-Please check [this link](https://readthedocs.org/projects/elecphys) for full documentation
+Please check [this link](https://elecphys.readthedocs.io/en/latest/) for full documentation
