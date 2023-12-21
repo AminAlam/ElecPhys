@@ -168,6 +168,5 @@ test/data/plots
 docs/build
 docs/source/_static
 docs/source/_templates
-docs/source/*.rst
 docs/*.bat
 docs/Makefile
