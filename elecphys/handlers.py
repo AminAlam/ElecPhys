@@ -3,6 +3,7 @@ import os
 
 class ErrorHandler:
     """ Error handler class
+
         Parameters
         ----------
         
@@ -14,7 +15,8 @@ class ErrorHandler:
 
     def error(self, e: str):
         """ Prints error message
-            Parameters
+    
+        Parameters
             ----------
             e: str
                 error message
@@ -28,7 +30,8 @@ class ErrorHandler:
 
     def error_handler(self, func):
         """ Error handler decorator
-            Parameters
+    
+        Parameters
             ----------
             func: function
                 function to be decorated

@@ -24,6 +24,7 @@ def cli(ctx):
 @error_handler
 def convert_rhd_to_mat(ctx, folder_path: str, output_mat_file: str='output.mat', ds_factor: int=1) -> None:
     """ Converts RHD files to mat files using RHD to MAT converter written in MATLAB
+
         Parameters
         ----------
         folder_path: str
@@ -51,6 +52,7 @@ def convert_rhd_to_mat(ctx, folder_path: str, output_mat_file: str='output.mat',
 @error_handler
 def convert_mat_to_npz(ctx, mat_file: str, output_npz_folder: str='output_npz', notch_filter_freq: int=50) -> None:
     """ Converts MAT files to NPZ files
+
         Parameters
         ----------
         mat_file: str
@@ -78,6 +80,7 @@ def convert_mat_to_npz(ctx, mat_file: str, output_npz_folder: str='output_npz', 
 @error_handler
 def zscore_normalize_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_z_normalized') -> None:
     """ Z-score normalizes NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -101,6 +104,7 @@ def zscore_normalize_npz(ctx, input_npz_folder: str, output_npz_folder: str='out
 @error_handler
 def normalize_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_normalized') -> None:
     """ Normalizes NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -129,6 +133,7 @@ def normalize_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz
 @error_handler
 def stft_numeric_output(ctx, input_npz_folder: str, window_size: float, overlap: float, window_type: str='hann', output_npz_folder: str='output_npz_normalized') -> None:
     """ Computes STFT and saves results as NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -158,6 +163,7 @@ def stft_numeric_output(ctx, input_npz_folder: str, window_size: float, overlap:
 @error_handler
 def dft_numeric_output(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_dft') -> None:
     """ Computes DFT and saves results as NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -184,6 +190,7 @@ def dft_numeric_output(ctx, input_npz_folder: str, output_npz_folder: str='outpu
 @error_handler
 def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_filtered', filter_type: str='LPF', freq_cutoff: str=None, filter_order: int=2) -> None:
     """ Filtering in frequency domain using butterworth filter and saves results as NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -222,6 +229,7 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str='o
 @error_handler
 def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float=None, f_max: float=None, t_min: float=None, t_max: float=None, db_min: float=None, db_max: float=None) -> None:
     """ Plots STFT from NPZ file
+
         Parameters
         ----------
         input_npz_file: str
@@ -264,6 +272,7 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float=None
 @error_handler
 def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float=None, f_max: float=None, t_min: float=None, t_max: float=None, db_min: float=None, db_max: float=None, channels_list: list=None) -> None:
     """ Plots average STFT from NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -305,6 +314,7 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
 @error_handler
 def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float=None, t_max: float=None, channels_list: list=None, normalize: bool=False) -> None:
     """ Plots signals from NPZ file
+
         Parameters
         ----------
         input_npz_folder: str
@@ -341,6 +351,7 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float=
 @error_handler
 def plot_dft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float=None, f_max: float=None, channels_list: list=None, plot_type: str='average_of_channels', conv_window_size: int=None) -> None:
     """ Plots DFT from NPZ file
+
         Parameters
         ----------
         input_npz_folder: str
@@ -377,6 +388,7 @@ def plot_dft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float=Non
 @error_handler
 def plot_filter_freq_response(ctx, filter_type: str='LPF', freq_cutoff: str=None, filter_order: int=4, frequency_sampling: int=None, output_plot_file: str=None) -> None:
     """ Plots filter frequency response
+
         Parameters
         ----------
         filter_type: str
@@ -412,6 +424,7 @@ def plot_filter_freq_response(ctx, filter_type: str='LPF', freq_cutoff: str=None
 @error_handler
 def pca_from_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_pca', n_components: int=None, matrix_whitenning: bool=False, channels_list: list=None) -> None:
     """ Computes PCA from NPZ files
+
         Parameters
         ----------
         input_npz_folder: str

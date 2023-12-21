@@ -10,6 +10,7 @@ import cfc
 
 def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str , window_size: float, overlap: float, window_type: str='hann') -> None:
     """ Computes STFT and saves results as NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -45,6 +46,7 @@ def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str ,
 
 def dft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str, nfft: int=None) -> None:
     """ Computes DFT and saves results as NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -74,6 +76,7 @@ def dft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str, n
 
 def stft_from_array(signal_array, fs: int, window_size: float, overlap: float, window_type: str='hann', nfft: int=None) -> [np.ndarray, np.ndarray, np.ndarray]:
     """ Computes STFT from 1D array
+
         Parameters
         ----------
             signal_array: np.ndarray
@@ -115,6 +118,7 @@ def stft_from_array(signal_array, fs: int, window_size: float, overlap: float, w
 
 def dft_from_array(signal_array, fs: int, nfft: int=None) -> [np.ndarray, np.ndarray]:
     """ Computes DFT from 1D array
+
         Parameters
         ----------
             signal_array: np.ndarray
@@ -145,6 +149,7 @@ def dft_from_array(signal_array, fs: int, nfft: int=None) -> [np.ndarray, np.nda
 
 def butterworth_filtering_from_array(signal_array, fs: int, _args: dict) -> np.ndarray:
     """ Filters signal array
+
         Parameters
         ----------
             signal_array: type: np.ndarray
@@ -184,6 +189,7 @@ def butterworth_filtering_from_array(signal_array, fs: int, _args: dict) -> np.n
 
 def butterworth_filtering_from_npz(input_npz_folder: str, output_npz_folder: str, _args: dict) -> None:
     """ Filters signal array
+
         Parameters
         ----------
             input_npz_folder: str
@@ -221,6 +227,7 @@ def butterworth_filtering_from_npz(input_npz_folder: str, output_npz_folder: str
 
 def calc_freq_response(_args: dict) -> [np.ndarray, np.ndarray, np.ndarray, dict]:
     """ Calculates filter frequency response
+
         Parameters
         ----------
             _args: dict
@@ -260,6 +267,7 @@ def calc_freq_response(_args: dict) -> [np.ndarray, np.ndarray, np.ndarray, dict
 
 def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list, time_interval: list=None) -> np.ndarray:
     """ Calculates CFC matrix
+
         Parameters
         ----------
             signal_array: np.ndarray
@@ -293,6 +301,7 @@ def calc_cfc_from_array(signal_array, fs: int, freqs_amp: list, freqs_phase:list
 
 def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str, freqs_amp: list, freqs_phase:list, time_interval: list=None) -> None:
     """ Calculates CFC matrix
+
         Parameters
         ----------
             input_npz_folder: str

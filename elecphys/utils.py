@@ -5,6 +5,7 @@ import re
 
 def get_matlab_engine() -> 'matlab.engine':
     """Installs MATLAB engine for Python
+
         Parameters
         ----------
     
@@ -24,7 +25,8 @@ def get_matlab_engine() -> 'matlab.engine':
 
 def sort_file_names(file_names: list) -> list:
     """Sorts file names in ascending order
-    Parameters
+
+        Parameters
         ----------
         file_names: list
             list of file names to be sorted
@@ -40,7 +42,8 @@ def sort_file_names(file_names: list) -> list:
 
 def convert_string_to_list(string):
     """Converts string to list
-    Parameters
+
+        Parameters
         ----------
         string: str
             string to be converted

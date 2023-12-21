@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 def apply_notch(_signal_chan: np.ndarray, _args: dict) -> np.ndarray:
     """ Applies notch filter to given signal
+
         Parameters
         ----------
         _signal_chan: np.ndarray
@@ -24,6 +25,7 @@ def apply_notch(_signal_chan: np.ndarray, _args: dict) -> np.ndarray:
 
 def zscore_normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
     """ Z-score normalizes NPZ files
+
         Parameters
         ----------
         input_npz_folder: str
@@ -51,6 +53,7 @@ def zscore_normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
 
 def zscore_normalize(data: np.ndarray) -> np.ndarray:
     """ Z-score normalizes data
+
         Parameters
         ----------
         data: np.ndarray
@@ -66,7 +69,8 @@ def zscore_normalize(data: np.ndarray) -> np.ndarray:
 
 def normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
     """ Normalizes NPZ files
-    Parameters
+    
+        Parameters
         ----------
         input_npz_folder: str
             path to input npz folder
@@ -93,7 +97,8 @@ def normalize_npz(input_npz_folder: str, output_npz_folder: str) -> None:
 
 def normalize(data: np.ndarray) -> np.ndarray:
     """ Normalizes data
-    Parameters
+
+        Parameters
         ----------
         data: umpy.ndarray
             data to be normalized

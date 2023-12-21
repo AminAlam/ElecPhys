@@ -3,7 +3,8 @@ import numpy as np
 
 def load_mat(mat_file) -> [np.ndarray, int]:
     """ Function that Loads MAT file
-    Parameters
+
+        Parameters
         ----------
         mat_file: str
             path to mat file
@@ -22,7 +23,8 @@ def load_mat(mat_file) -> [np.ndarray, int]:
 
 def load_npz(npz_file) -> [np.ndarray, int]:
     """ Function that Loads NPZ file
-    Parameters
+
+        Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
     
@@ -39,7 +41,8 @@ def load_npz(npz_file) -> [np.ndarray, int]:
 
 def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
-    Parameters
+
+        Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
     
@@ -58,7 +61,8 @@ def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:
 
 def load_npz_dft(npz_file) -> [np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
-    Parameters
+
+        Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
     
@@ -76,7 +80,8 @@ def load_npz_dft(npz_file) -> [np.ndarray, np.ndarray]:
 
 def load_npz_mvl(npz_file) -> [np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
-    Parameters
+
+        Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
     

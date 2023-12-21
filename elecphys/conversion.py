@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 def convert_rhd_to_mat(folder_path: str, output_mat_file: str, ds_factor: int) -> None:
     """ Function that Converts RHD files to mat files using RHD to MAT converter written in MATLAB
+
         Parameters
         ----------
         folder_path: str
@@ -35,6 +36,7 @@ def convert_rhd_to_mat(folder_path: str, output_mat_file: str, ds_factor: int) -
 
 def convert_mat_to_npz(mat_file: str, output_npz_folder: str, notch_filter_freq: int) -> None:
     """ Function that  Converts MAT files to NPZ files
+
         Parameters
         ----------
         mat_file: str

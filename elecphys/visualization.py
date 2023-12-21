@@ -10,6 +10,7 @@ import fourier_analysis
 
 def plot_stft_from_npz(input_npz_file: str, output_plot_file: str, f_min: int, f_max: int, t_min: float, t_max: float, db_min: float, db_max:float) -> None:
     """ Plots STFT from NPZ file (STFT must be saved as NPZ file)
+   
         Parameters
         ----------
         input_npz_file: str
@@ -53,6 +54,7 @@ def plot_stft_from_npz(input_npz_file: str, output_plot_file: str, f_min: int, f
 
 def plot_avg_stft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f_max: int, t_min: float, t_max: float, db_min: int, db_max: int, channels_list: [str, list]=None) -> None:
     """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
+
         Parameters
         ----------
         npz_folder_path: str
@@ -115,6 +117,7 @@ def plot_avg_stft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: i
     
 def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: int, f_max: int, t_min: float, t_max: float, db_min: float, db_max: float, output_plot_file: str=None) -> None:
     """ Plots STFT from 2D array
+
         Parameters
         ----------
         Zxx: np.ndarray
@@ -169,6 +172,7 @@ def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: i
 
 def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: float, t_max: float, channels_list: [str, list]=None, normalize: bool=False) -> None:
     """ Plots signals from NPZ file
+
         Parameters
         ----------
         npz_folder_path: str
@@ -242,6 +246,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
 
 def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f_max: int, plot_type: str, channels_list: [str, list]=None, conv_window_size: float=None) -> None:
     """ Plots DFT from NPZ file (DFT must be saved as NPZ file)
+
         Parameters
         ----------
         npz_folder_path: str
@@ -327,6 +332,7 @@ def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f
 
 def plot_filter_freq_response(filter_args: dict, figure_save_path: str=None) -> None:
     """ Plots filter frequency response
+
         Parameters
         ----------
         filter_args: dict
@@ -380,6 +386,7 @@ def plot_filter_freq_response(filter_args: dict, figure_save_path: str=None) -> 
 
 def plot_filter_freq_response_from_json(filter_freq_response_json_file_path: str, figure_save_path: str=None) -> None:
     """ Plots filter frequency response from JSON file
+
         Parameters
         ----------
         filter_freq_response_json_file_path: str
@@ -399,7 +406,8 @@ def plot_filter_freq_response_from_json(filter_freq_response_json_file_path: str
     
 def plot_mvl_form_array(MI_mat: np.ndarray, freqs_phase: np.ndarray, freqs_amp: np.ndarray, clim: list=None, figure_save_path: str=None) -> None:
     """ Plots MVL from 2D array
-    Parameters
+
+        Parameters
         ----------
         MI_mat: np.ndarray
             MVL array
@@ -435,7 +443,8 @@ def plot_mvl_form_array(MI_mat: np.ndarray, freqs_phase: np.ndarray, freqs_amp: 
 
 def plot_mvl_from_npz(npz_file_path: str, figure_save_path: str=None) -> None:
     """ Plots MVL from NPZ file
-    Parameters
+
+        Parameters
         ----------
         npz_file_path: str
             path to npz file

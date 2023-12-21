@@ -8,6 +8,7 @@ from scipy.fft import fft
 
 def calc_tf_mvl(x, fs: int, freqs_phase: list, freqs_amp: list) -> np.ndarray:
     """ Function that Calculates the tf_MVL matrix for a given signal x
+
         Parameters
         ----------
             x: np.array
@@ -35,6 +36,7 @@ def calc_tf_mvl(x, fs: int, freqs_phase: list, freqs_amp: list) -> np.ndarray:
 
 def band_tfMVL(x, high_freq, low_freq, fs: int) -> float:
     """ Function that Calculates the tf_MVL for a given signal x
+
         Parameters
         ----------
             x: np.array
@@ -66,6 +68,7 @@ def band_tfMVL(x, high_freq, low_freq, fs: int) -> float:
 
 def calc_MVL(phase, amp) -> np.ndarray:
     """ Function that Calculates the MVL for a given signal phasae and amplitude
+
         Parameters
         ----------
             phase: np.array
@@ -87,6 +90,7 @@ def calc_MVL(phase, amp) -> np.ndarray:
 
 def rid_rihaczek4(x, fbins) -> np.ndarray:
     """ Function that Calculates the rid_rihaczek4 for a given signal x
+
         Parameters
         ----------
             x: np.array
@@ -143,6 +147,7 @@ def rid_rihaczek4(x, fbins) -> np.ndarray:
 
 def chwi_krn(D, L, A) -> np.ndarray:
     """ Function that Calculates the chwi_krn for a given signal x
+
         Parameters
         ----------
             D: np.array
@@ -164,6 +169,7 @@ def chwi_krn(D, L, A) -> np.ndarray:
 
 def data_wrapper(x, sec_dim) -> np.ndarray:
     """ Function that Wraps the data for a given signal x
+
         Parameters
         ----------
             x: np.array
@@ -186,6 +192,7 @@ def data_wrapper(x, sec_dim) -> np.ndarray:
 
 def cfc_mi(sig, freqs_phase: list, freqs_amp: list, fs: int, nbins: int = 20) -> np.ndarray:
     """ Function that Calculates the MI matrix for a given signal x
+
         Parameters
         ----------
             sig: np.array
@@ -232,6 +239,7 @@ def cfc_mi(sig, freqs_phase: list, freqs_amp: list, fs: int, nbins: int = 20) ->
 
 def butterworth_filter(sig, filt_freq: float, fs: int) -> np.ndarray:
     """ Function that Filters signal array
+
         Parameters
         ----------
             sig: np.array
@@ -259,6 +267,7 @@ def butterworth_filter(sig, filt_freq: float, fs: int) -> np.ndarray:
 
 def extract_inst_phase(sig) -> np.ndarray:
     """ Function that Extracts the instantaneous phase for a given signal x
+
         Parameters
         ----------
             sig: np.array
@@ -279,6 +288,7 @@ def extract_inst_phase(sig) -> np.ndarray:
 
 def extract_inst_amp(sig) -> np.ndarray:
     """ Function that Extracts the instantaneous amplitude for a given signal x
+
         Parameters
         ----------
             sig: np.array

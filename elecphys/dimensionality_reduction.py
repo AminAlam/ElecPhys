@@ -3,7 +3,8 @@ import os
 
 def pca_from_npz(input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list) -> None:
     """ Performs PCA on NPZ files
-    Parameters
+
+        Parameters
         ----------
         input_npz_folder: str
             path to input npz folder
