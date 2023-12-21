@@ -6,7 +6,7 @@
 <img src="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white" alt="built with Python3" />
 </div>
 
-[![Documentation Status](https://readthedocs.org/projects/elecphys/badge/?version=latest)](https://elecphys.readthedocs.io/en/latest/?badge=latest) [![Ci testing](https://github.com/AminAlam/elecphys/workflows/CI/badge.svg?branch=main)](https://github.com/AminAlam/elecphys/workflows/CI/badge.svg?branch=main)
+[![Documentation Status](https://readthedocs.org/projects/elecphys/badge/?version=latest)](https://elecphys.readthedocs.io) [![Ci testing](https://github.com/AminAlam/elecphys/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/AminAlam/elecphys)
 
 
 ----------
