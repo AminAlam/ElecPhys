@@ -90,5 +90,5 @@ ds_factor = 5
 # call rhd to mat conversoin module
 elecphys.conversion.convert_rhd_to_mat(folder_path, output_mat_file, ds_factor)
 ```
-### Documentation
+## Documentation
 Please check [this link](https://elecphys.readthedocs.io/en/stable/) for full documentation
