@@ -193,6 +193,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
         Returns
         ----------
     """
+
     npz_files = os.listdir(npz_folder_path)
     npz_files = utils.sort_file_names(npz_files)
 
@@ -201,7 +202,6 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     else:
         channels_list = utils.convert_string_to_list(channels_list)
         channels_list = sorted(channels_list)
-    channels_list = [i-1 for i in channels_list]
 
     if len(channels_list) > 20:
         fig = plt.figure(figsize=(30, len(channels_list)))
@@ -211,6 +211,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     ax = fig.subplots(len(channels_list), 1, sharex=True)
 
     for row_no, channel_index in enumerate(channels_list):
+        channel_index = channel_index-1
         npz_file = npz_files[channel_index]
         signal_chan, fs = data_io.load_npz(os.path.join(npz_folder_path, npz_file))
         if normalize:
@@ -232,30 +233,35 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     if _rereference_args is not None:
         ignore_channels = _rereference_args['ignore_channels']
         rr_channel = _rereference_args['rr_channel']
-
-        if rr_channel not in channels_list:
-            raise ValueError('rr_channel must be in channels_list')
-        
-        if not set(ignore_channels).issubset(set(channels_list)):
-            raise ValueError('All channels in ignore_channels must be in channels_list, as it does not make sense to ignore a channel for re-referencing if it is not in channels_list')
+        ignore_channels = utils.convert_string_to_list(ignore_channels)
+        if rr_channel is not None:
+            print(rr_channel, channels_list)
+            if rr_channel not in channels_list:
+                raise ValueError('rr_channel must be in channels_list')
+        if ignore_channels is not None:
+            if not set(ignore_channels).issubset(set(channels_list)):
+                raise ValueError('All channels in ignore_channels must be in channels_list, as it does not make sense to ignore a channel for re-referencing if it is not in channels_list')
         
         for row_no, channel_index in enumerate(channels_list):
-            if channel_index == rr_channel:
-                rr_channel = row_no
-            if channel_index in ignore_channels:
-                ignore_channels[ignore_channels.index(channel_index)] = row_no
+            channel_index = channel_index-1
+            if rr_channel is not None:
+                if channel_index == rr_channel-1:
+                    rr_channel = row_no
+            if ignore_channels is not None:
+                if channel_index in ignore_channels:
+                    ignore_channels[ignore_channels.index(channel_index)] = row_no
         data_all = preprocessing.re_reference(data_all, ignore_channels, rr_channel)
 
-    for channel_index, channel in enumerate(channels_list):
+    for row_no, channel_index in enumerate(channels_list):
 
-        ax[channel_index].plot(t, signal_chan, color='k')
-        ax[channel_index].set_ylabel(f'Channel {channel}')
-        ax[channel_index].spines['top'].set_visible(False)
-        ax[channel_index].spines['right'].set_visible(False)
-        if channel_index != len(channels_list)-1:
-            ax[channel_index].spines['bottom'].set_visible(False)
-        ax[channel_index].tick_params(axis='both', which='both', length=0)
-        ax[channel_index].set_yticks([])
+        ax[row_no].plot(t, signal_chan, color='k')
+        ax[row_no].set_ylabel(f'Channel {channel_index}')
+        ax[row_no].spines['top'].set_visible(False)
+        ax[row_no].spines['right'].set_visible(False)
+        if row_no != len(channels_list)-1:
+            ax[row_no].spines['bottom'].set_visible(False)
+        ax[row_no].tick_params(axis='both', which='both', length=0)
+        ax[row_no].set_yticks([])
 
     ax[-1].set_xlabel('Time (s)')
     ax[-1].set_xlim(t_min, t_max)

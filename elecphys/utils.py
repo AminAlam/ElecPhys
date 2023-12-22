@@ -1,7 +1,5 @@
-import subprocess
-import os
-import sys
 import re
+import numpy as np
 
 def get_matlab_engine():
     """Installs MATLAB engine for Python
@@ -99,7 +97,7 @@ def convert_string_to_list(string):
     
         Returns
         ----------
-        list: list
+        output: list
             converted list
     """
     if string is None:
@@ -111,4 +109,6 @@ def convert_string_to_list(string):
     string = string.replace(']', '')
     string = string.replace(' ', '')
     string = string.split(',')
-    return list(map(int, string))
+    output = list(map(int, string))
+    output = np.unique(output)
+    return output

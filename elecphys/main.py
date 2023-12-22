@@ -11,8 +11,8 @@ from handlers import ErrorHandler
 error_handler = ErrorHandler().error_handler
 
 @click.group(chain=True, help="ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.")
-@click.option('--verbose', '-v', help='Verbose mode', required=False, type=bool, default=False, show_default=True)
-@click.option('--debug', '-d', help='Debug mode', required=False, type=bool, default=False, show_default=True)
+@click.option('--verbose', '-v', help='Verbose mode', required=False, type=bool, default=False, show_default=True, is_flag=True)
+@click.option('--debug', '-d', help='Debug mode', required=False, type=bool, default=False, show_default=True, is_flag=True)
 @click.pass_context
 def cli(ctx, verbose: bool=False, debug: bool=False) -> None:
     """ ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.
