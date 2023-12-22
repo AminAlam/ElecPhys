@@ -43,7 +43,7 @@ class ErrorHandler:
         """
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if os.environ.get('DEBUG') == 'True':
+            if os.environ.get('ELECPHYS_DEBUG') == 'True':
                 return func(*args, **kwargs)
             else:
                 try:
