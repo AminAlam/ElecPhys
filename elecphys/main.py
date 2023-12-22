@@ -11,9 +11,34 @@ from handlers import ErrorHandler
 error_handler = ErrorHandler().error_handler
 
 @click.group(chain=True, help="ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.")
+@click.option('--verbose', '-v', help='Verbose mode', required=False, type=bool, default=False, show_default=True)
+@click.option('--debug', '-d', help='Debug mode', required=False, type=bool, default=False, show_default=True)
 @click.pass_context
-def cli(ctx):
-    pass
+def cli(ctx, verbose: bool=False, debug: bool=False) -> None:
+    """ ElecPhys is a Python package for electrophysiology data analysis. It provides tools for data loading, conversion, preprocessing, and visualization.
+
+        Parameters
+        ----------
+        verbose: bool
+            verbose mode. If not specified, the default value is False
+        debug: bool
+            debug mode. If not specified, the default value is False
+
+        Returns
+        ----------
+    """
+
+    ctx.ensure_object(dict)
+    ctx.obj['VERBOSE'] = verbose
+    if verbose:
+        print('--- Verbose mode is on.\n\n')
+        os.environ['ELECPHYS_VERBOSE'] = 'True'
+    
+    ctx.obj['DEBUG'] = debug
+    if debug:
+        print('--- Debug mode is on.\n\n')
+        os.environ['ELECPHYS_DEBUG'] = 'True'
+
 
 ### Conversion ###
 @cli.command('convert_rhd_to_mat', help='Converts RHD files to mat files using RHD to MAT converter (needs MATLAB installed')
@@ -119,6 +144,36 @@ def normalize_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz
     print('--- Normalizing NPZ files...')
     preprocessing.normalize_npz(input_npz_folder, output_npz_folder)
     print('--- Normalization complete.\n\n')
+
+
+@cli.command('re_reference_npz', help='re-references NPZ files and save them as NPZ files')
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder', required=True, type=str)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder', required=True, type=str, default='output_npz_avg_rereferenced', show_default=True)
+@click.option('--ignore_channels', '-ic', help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored', required=False, type=list, default=None, show_default=True)
+@click.option('--rr_channel', '-rrc', help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels', required=False, type=int, default=None, show_default=True)
+@click.pass_context
+@error_handler
+def re_reference_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_avg_rereferenced', ignore_channels: list=None, rr_channel: int=None) -> None:
+    """ Re-references NPZ files and save them as NPZ files
+
+        Parameters
+        ----------
+        input_npz_folder: str
+            path to input npz folder
+        output_npz_folder: str
+            path to output npz folder. If the folder already exists, it will be overwritten. If not specified, the default value is 'output_npz_avg_rereferenced'
+        ignore_channels: list
+            list of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored. Either a list of channel indexes or a string of channel indexes separated by commas
+        rr_channel: int
+            channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels. If not specified, the default value is None
+    
+        Returns
+        ----------
+    """
+
+    print('--- Average re-referencing NPZ files...')
+    preprocessing.re_reference_npz(input_npz_folder, output_npz_folder, ignore_channels, rr_channel)
+    print('--- Re-referencing complete.\n\n')
 ### Preprocessing ###
 
 
@@ -310,9 +365,12 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
 @click.option('--t_max', '-tmax', help='Maximum time to plot in seconds', required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted', required=False, type=list, default=None, show_default=True)
 @click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized', required=False, type=bool, default=False, show_default=True)
+@click.option('--re_reference', '-rr', help='Re-reference signals. If -rr_channel not specified, signals will be re-referenced to the average of all channels, unless they will be re-referenced to the given channel. If --ignore_channels is specified, specified channels will not be re referenced or taken into account for avg rereferencing', required=False, type=bool, default=False, show_default=True)
+@click.option('--ignore_channels', '-ic', help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored', required=False, type=list, default=None, show_default=True)
+@click.option('--rr_channel', '-rrc', help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels', required=False, type=int, default=None, show_default=True)
 @click.pass_context
 @error_handler
-def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float=None, t_max: float=None, channels_list: list=None, normalize: bool=False) -> None:
+def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float=None, t_max: float=None, channels_list: list=None, normalize: bool=False, re_reference: bool=False, ignore_channels: list=None, rr_channel: int=None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -329,13 +387,20 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float=
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         normalize: bool
             normalize signals. If true, each channel will be normalized. If not specified, the default value is False.
+        rr_channel: int
+            channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels. If not specified, the default value is None.
 
         Returns
         ----------
     """
+    
+    if re_reference:
+        _rereference_args = {'ignore_channels': ignore_channels, 'rr_channel': rr_channel}
+    else:
+        _rereference_args = None
 
     print('--- Plotting signals...')
-    visualization.plot_signals_from_npz(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize)
+    visualization.plot_signals_from_npz(input_npz_folder, output_plot_file, t_min, t_max, channels_list, normalize, _rereference_args)
     print('--- Plotting complete.\n\n')
 
 
@@ -445,7 +510,7 @@ def pca_from_npz(ctx, input_npz_folder: str, output_npz_folder: str='output_npz_
     print('--- Computing PCA and saving results as NPZ files...')
     dimensionality_reduction.pca_from_npz(input_npz_folder, output_npz_folder, n_components, matrix_whitenning, channels_list)
     print('--- PCA computation complete.\n\n')
-
+### Dimensionality Reduction ###
 
 
 def main():

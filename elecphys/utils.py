@@ -65,6 +65,29 @@ def keep_npz_files(file_names: list) -> list:
     file_names = [file_name for file_name in file_names if file_name.endswith('.npz')]
     return file_names
 
+def remove_non_numeric(input_list: list) -> list:
+    """Removes None values from list
+
+        Parameters
+        ----------
+        input_list: list
+            list to be processed
+    
+        Returns
+        ----------
+        output_list: list
+            processed list
+    """
+    # use regex to remove non-numeric characters
+    output_list = []
+    for item in input_list:
+        if type(item) is str:
+            item = re.sub('[^0-9]', '', item)
+            if item != '':
+                output_list.append(int(item))
+        else:
+            output_list.append(item)
+    return output_list
 
 def convert_string_to_list(string):
     """Converts string to list
@@ -79,7 +102,10 @@ def convert_string_to_list(string):
         list: list
             converted list
     """
+    if string is None:
+        return None
     if type(string) is not str:
+        string = remove_non_numeric(string)
         return string
     string = string.replace('[', '')
     string = string.replace(']', '')

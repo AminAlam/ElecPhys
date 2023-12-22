@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 
-import data_loading
+import data_io
 import preprocessing
 import utils
 import fourier_analysis
@@ -33,7 +33,7 @@ def plot_stft_from_npz(input_npz_file: str, output_plot_file: str, f_min: int, f
         Returns
         ----------
     """
-    f, t, Zxx = data_loading.load_npz_stft(input_npz_file)
+    f, t, Zxx = data_io.load_npz_stft(input_npz_file)
     Zxx_plot = 10*np.log10(np.abs(Zxx))
     
     if f_min is None:
@@ -91,7 +91,7 @@ def plot_avg_stft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: i
 
     for channel_index, channel in enumerate(channels_list):
         npz_file = npz_files[channel_index]
-        f, t, Zxx = data_loading.load_npz_stft(os.path.join(npz_folder_path, npz_file))
+        f, t, Zxx = data_io.load_npz_stft(os.path.join(npz_folder_path, npz_file))
         Zxx = 10*np.log10(np.abs(Zxx))
         if channel_index == 0:
             Zxx_list = Zxx
@@ -170,7 +170,7 @@ def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: i
         plt.close()
 
 
-def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: float, t_max: float, channels_list: [str, list]=None, normalize: bool=False) -> None:
+def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: float, t_max: float, channels_list: [str, list]=None, normalize: bool=False, _rereference_args: dict=None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -187,7 +187,9 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
             list of channels to plot (can be a strin of comma-separated values or a list of integers)
         normalize: bool
             whether to normalize the signal
-    
+        _rereference_args: dict
+            dictionary containing rereferencing parameters. If None, no rereferencing will be applied
+
         Returns
         ----------
     """
@@ -199,6 +201,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     else:
         channels_list = utils.convert_string_to_list(channels_list)
         channels_list = sorted(channels_list)
+    channels_list = [i-1 for i in channels_list]
 
     if len(channels_list) > 20:
         fig = plt.figure(figsize=(30, len(channels_list)))
@@ -207,9 +210,9 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
 
     ax = fig.subplots(len(channels_list), 1, sharex=True)
 
-    for channel_index, channel in enumerate(channels_list):
+    for row_no, channel_index in enumerate(channels_list):
         npz_file = npz_files[channel_index]
-        signal_chan, fs = data_loading.load_npz(os.path.join(npz_folder_path, npz_file))
+        signal_chan, fs = data_io.load_npz(os.path.join(npz_folder_path, npz_file))
         if normalize:
             signal_chan = preprocessing.normalize(signal_chan)
         t = np.linspace(0, len(signal_chan)/fs, len(signal_chan))
@@ -222,6 +225,29 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
         desired_time_index_high = np.where(np.min(abs(t-t_max))==abs(t-t_max))[0][0]
         signal_chan = signal_chan[desired_time_index_low:desired_time_index_high]
         t = t[desired_time_index_low:desired_time_index_high]
+        if channel_index == 0:
+            data_all = np.zeros((len(channels_list), len(signal_chan)))
+        data_all[row_no, :] = signal_chan
+
+    if _rereference_args is not None:
+        ignore_channels = _rereference_args['ignore_channels']
+        rr_channel = _rereference_args['rr_channel']
+
+        if rr_channel not in channels_list:
+            raise ValueError('rr_channel must be in channels_list')
+        
+        if not set(ignore_channels).issubset(set(channels_list)):
+            raise ValueError('All channels in ignore_channels must be in channels_list, as it does not make sense to ignore a channel for re-referencing if it is not in channels_list')
+        
+        for row_no, channel_index in enumerate(channels_list):
+            if channel_index == rr_channel:
+                rr_channel = row_no
+            if channel_index in ignore_channels:
+                ignore_channels[ignore_channels.index(channel_index)] = row_no
+        data_all = preprocessing.re_reference(data_all, ignore_channels, rr_channel)
+
+    for channel_index, channel in enumerate(channels_list):
+
         ax[channel_index].plot(t, signal_chan, color='k')
         ax[channel_index].set_ylabel(f'Channel {channel}')
         ax[channel_index].spines['top'].set_visible(False)
@@ -230,6 +256,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
             ax[channel_index].spines['bottom'].set_visible(False)
         ax[channel_index].tick_params(axis='both', which='both', length=0)
         ax[channel_index].set_yticks([])
+
     ax[-1].set_xlabel('Time (s)')
     ax[-1].set_xlim(t_min, t_max)
     plt.tight_layout()
@@ -288,7 +315,7 @@ def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f
     ax = fig.subplots(1, 1)
 
     for channel_index, channel in enumerate(channels_list):
-        f, Zxx = data_loading.load_npz_dft(os.path.join(npz_folder_path, npz_files[channel_index]))
+        f, Zxx = data_io.load_npz_dft(os.path.join(npz_folder_path, npz_files[channel_index]))
         if f_min is None:
             f_min = np.min(f)
         if f_max is None:
@@ -456,5 +483,5 @@ def plot_mvl_from_npz(npz_file_path: str, figure_save_path: str=None) -> None:
         ----------
     """
     
-    MI_mat, freqs_amp, freqs_phase, _ = data_loading.load_npz_mvl(npz_file_path)
+    MI_mat, freqs_amp, freqs_phase, _ = data_io.load_npz_mvl(npz_file_path)
     plot_mvl_form_array(MI_mat, freqs_phase, freqs_amp, figure_save_path=figure_save_path)
