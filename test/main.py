@@ -8,7 +8,7 @@ import elecphys.conversion as conversion
 import elecphys.preprocessing as preprocessing
 import elecphys.fourier_analysis as fourier_analysis
 import elecphys.visualization as visualization
-import elecphys.data_loading as data_loading
+import elecphys.data_io as data_io
 
 
 class TestCases_0_conversion(unittest.TestCase):
@@ -51,7 +51,7 @@ class TestCases_1_preprocessing(unittest.TestCase):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         npz_files = os.listdir(npz_files_folder)
         npz_file = npz_files[0]
-        _signal_chan, fs = data_loading.load_npz(os.path.join(npz_files_folder, npz_file))
+        _signal_chan, fs = data_io.load_npz(os.path.join(npz_files_folder, npz_file))
         output = preprocessing.apply_notch(_signal_chan, {'Q':60, 'fs':fs, 'f0':50})
         self.assertTrue(output.shape == _signal_chan.shape)
 
@@ -84,7 +84,28 @@ class TestCases_1_preprocessing(unittest.TestCase):
         self.assertTrue(os.path.exists(output_npz_folder))
 
 
+    def test_re_reference_npz(self):
+        npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
+        output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_avg_reref')
+        for ignore_channels in [[1,2], "[1,4,6]", None]:
+            for rr_channel in [1, 4]:
+                if os.path.exists(output_npz_folder):
+                    shutil.rmtree(output_npz_folder)
+                preprocessing.re_reference_npz(npz_files_folder, output_npz_folder, ignore_channels, rr_channel)
+                self.assertTrue(os.path.exists(output_npz_folder))
+
+                shutil.rmtree(output_npz_folder)
+                command_prompt = f'python3 -m elecphys.main re_reference_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder} --ignore_channels "{ignore_channels}" --rr_channel {rr_channel}'
+                os.system(command_prompt)
+                self.assertTrue(os.path.exists(output_npz_folder))
+        shutil.rmtree(output_npz_folder)
+        command_prompt = f'python3 -m elecphys.main re_reference_npz --input_npz_folder {npz_files_folder} --output_npz_folder {output_npz_folder}'
+        os.system(command_prompt)
+        self.assertTrue(os.path.exists(output_npz_folder))
+
+
 class TestCases_2_fourier_analysis(unittest.TestCase):
+
     def test_stft_numeric_output_from_npz(self):
         npz_files_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz')
         output_npz_folder = os.path.join(os.path.dirname(__file__), 'data', 'npz_stft')
@@ -219,9 +240,39 @@ class TestCases_3_visualization(unittest.TestCase):
             self.assertTrue(os.path.exists(output_plot_file))
 
         os.remove(output_plot_file)
+        command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file "{output_plot_file}"'
+        os.system(command_prompt)
+        self.assertTrue(os.path.exists(output_plot_file))
+
+        os.remove(output_plot_file)
         command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{[1, 2, 3, 4, 5, 6, 7, 12, 15]}"'
         os.system(command_prompt)
         self.assertTrue(os.path.exists(output_plot_file))
+
+        re_reference = True
+        for channels_list, ignore_channels in zip([[1, 2, 3, 4, 5, 6, 7, 12, 15], [1, 2, 3, 4, 5]], [[1, 5], [5]]):
+            os.remove(output_plot_file)
+            command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --re_reference {re_reference}'
+            os.system(command_prompt)
+            self.assertTrue(os.path.exists(output_plot_file))
+
+        os.remove(output_plot_file)
+        command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --re_reference {re_reference}'
+        os.system(command_prompt)
+        self.assertTrue(os.path.exists(output_plot_file))
+
+        rr_channel = 2
+
+        os.remove(output_plot_file)
+        command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --re_reference {re_reference} --rr_channel {rr_channel}'
+        os.system(command_prompt)
+        self.assertTrue(os.path.exists(output_plot_file))
+
+        for channels_list, ignore_channels in zip([[1, 2, 3, 4, 5, 6, 7, 12, 15], [1, 2, 3, 4, 5]], [[1, 5], [5]]):
+            os.remove(output_plot_file)
+            command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --re_reference {re_reference} --rr_channel {rr_channel}'
+            os.system(command_prompt)
+            self.assertTrue(os.path.exists(output_plot_file))
 
 
     def test_plot_dft(self):
@@ -261,6 +312,7 @@ class TestCases_3_visualization(unittest.TestCase):
                 os.system(command_prompt)
                 self.assertTrue(os.path.exists(output_plot_file))
 
+
 class TestCases_4_utils(unittest.TestCase):
     def test_get_matlab_engine(self):
         pass
@@ -268,6 +320,8 @@ class TestCases_4_utils(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    os.system('pip3 uninstall elecphys -y')
     MATLAB_TEST = int(sys.argv[1])
-    os.environ['DEBUG'] = 'True'
+    os.environ['ELECPHYS_DEBUG'] = 'True'
+    os.environ['ELECPHYS_VERBOSE'] = 'True'
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
