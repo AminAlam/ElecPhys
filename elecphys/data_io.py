@@ -3,6 +3,7 @@ import numpy as np
 import os
 import utils
 
+
 def load_mat(mat_file) -> [np.ndarray, int]:
     """ Function that Loads MAT file
 
@@ -10,7 +11,7 @@ def load_mat(mat_file) -> [np.ndarray, int]:
         ----------
         mat_file: str
             path to mat file
-    
+
         Returns
         ----------
         data: numpy.ndarray
@@ -30,7 +31,7 @@ def load_npz(npz_file) -> [np.ndarray, int]:
         Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
-    
+
         Returns
         ----------
         data: data from NPZ file - type: numpy.ndarray
@@ -42,7 +43,8 @@ def load_npz(npz_file) -> [np.ndarray, int]:
     return data, fs
 
 
-def load_all_npz_files(npz_folder: str, ignore_channels: [list, str]=None) -> [np.ndarray, int]:
+def load_all_npz_files(npz_folder: str, ignore_channels: [
+                       list, str] = None) -> [np.ndarray, int]:
     """ Function that Loads all NPZ files in a folder
 
         Parameters
@@ -51,7 +53,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [list, str]=None) -> [n
             path to npz folder containing NPZ files
         ignore_channels: list, str
             list of channels to be ignored and not loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
-    
+
         Returns
         --------
         data_all: np.ndarray
@@ -75,7 +77,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [list, str]=None) -> [n
             data_all = np.zeros((num_channels, len(data)))
         else:
             data, _ = load_npz(npz_file_path)
-        data_all[ch_indx, :] = data 
+        data_all[ch_indx, :] = data
     return data_all, fs
 
 
@@ -85,7 +87,7 @@ def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:
         Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
-    
+
         Returns
         ----------
         f: frequency array - type: numpy.ndarray
@@ -105,7 +107,7 @@ def load_npz_dft(npz_file) -> [np.ndarray, np.ndarray]:
         Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
-    
+
         Returns
         ----------
         f: frequency array - type: numpy.ndarray
@@ -124,7 +126,7 @@ def load_npz_mvl(npz_file) -> [np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         Parameters
         ----------
         npz_file: path to npz file - type: os.PathLike
-    
+
         Returns
         ----------
         MVL: MVL array - type: numpy.ndarray
@@ -140,7 +142,8 @@ def load_npz_mvl(npz_file) -> [np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     return MI_mat, freqs_amp, freqs_phase, time_interval
 
 
-def write_separate_npz_files(data: np.ndarray, fs: int, output_npz_folder: str) -> None:
+def write_separate_npz_files(
+        data: np.ndarray, fs: int, output_npz_folder: str) -> None:
     """ Function that Writes data to NPZ file as separate files for each channel
 
         Parameters
@@ -151,7 +154,7 @@ def write_separate_npz_files(data: np.ndarray, fs: int, output_npz_folder: str) 
             sampling frequency (Hz)
         output_npz_folder: str
             path to output npz folder
-    
+
         Returns
         ----------
     """
@@ -160,4 +163,5 @@ def write_separate_npz_files(data: np.ndarray, fs: int, output_npz_folder: str) 
     else:
         Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
     for ch_indx in range(data.shape[0]):
-        np.savez(os.path.join(output_npz_folder, f'Ch{ch_indx}.npz'), data=data[ch_indx, :], fs=fs)
+        np.savez(os.path.join(output_npz_folder,
+                 f'Ch{ch_indx}.npz'), data=data[ch_indx, :], fs=fs)
