@@ -275,7 +275,6 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
         rr_channel = _rereference_args['rr_channel']
         ignore_channels = utils.convert_string_to_list(ignore_channels)
         if rr_channel is not None:
-            print(rr_channel, channels_list)
             if rr_channel not in channels_list:
                 raise ValueError('rr_channel must be in channels_list')
         if ignore_channels is not None:
@@ -283,20 +282,11 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
                 raise ValueError(
                     'All channels in ignore_channels must be in channels_list, as it does not make sense to ignore a channel for re-referencing if it is not in channels_list')
 
-        for row_no, channel_index in enumerate(channels_list):
-            channel_index = channel_index - 1
-            if rr_channel is not None:
-                if channel_index == rr_channel - 1:
-                    rr_channel = row_no
-            if ignore_channels is not None:
-                if channel_index in ignore_channels:
-                    ignore_channels[ignore_channels.index(
-                        channel_index)] = row_no
         data_all = preprocessing.re_reference(
             data_all, ignore_channels, rr_channel)
 
     for row_no, channel_index in enumerate(channels_list):
-
+        signal_chan = data_all[row_no, :]
         ax[row_no].plot(t, signal_chan, color='k')
         ax[row_no].set_ylabel(f'Channel {channel_index}')
         ax[row_no].spines['top'].set_visible(False)
