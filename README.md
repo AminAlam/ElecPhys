@@ -70,6 +70,7 @@ Commands:
   plot_filter_freq_response     Plots filter frequency response
   plot_signal                   Plots signals from NPZ file
   plot_stft                     Plots STFT from NPZ file
+  re_reference_npz              re-references NPZ files and save them as...
   stft_numeric_output_from_npz  Computes STFT and saves results as NPZ files
   zscore_normalize_npz          Z-score normalizes NPZ files
 ```
