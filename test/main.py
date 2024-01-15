@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import shutil
 import unittest
 import elecphys.conversion as conversion
@@ -5,10 +10,7 @@ import elecphys.preprocessing as preprocessing
 import elecphys.fourier_analysis as fourier_analysis
 import elecphys.visualization as visualization
 import elecphys.data_io as data_io
-import sys
-import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 class TestCases_0_conversion(unittest.TestCase):
