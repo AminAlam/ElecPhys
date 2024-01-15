@@ -191,12 +191,16 @@ def re_reference(data: np.ndarray, ignore_channels: [
         channels_list = [i for i in range(data.shape[0])]
 
     rr_channel = rr_channel - 1 if rr_channel is not None else None
+
     data_rereferenced = data.copy()
 
     if rr_channel is not None:
+        reference = data[rr_channel, :].reshape(1, -1)
         data_rereferenced[channels_list, :] = data[channels_list,
-                                                   :] - data[rr_channel, :].reshape(1, -1)
+                                                   :] - np.repeat(reference, len(channels_list), axis=0)
     else:
+        reference = np.mean(data[channels_list, :], axis=0).reshape(1, -1)
         data_rereferenced[channels_list, :] = data[channels_list,
-                                                   :] - np.mean(data[channels_list, :], axis=0).reshape(1, -1)
+                                                   :] - np.repeat(reference, len(channels_list), axis=0)
+
     return data_rereferenced

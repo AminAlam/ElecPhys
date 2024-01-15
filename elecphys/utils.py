@@ -116,4 +116,5 @@ def convert_string_to_list(string):
     string = string.split(',')
     output = list(map(int, string))
     output = np.unique(output)
+    output = output.tolist()
     return output

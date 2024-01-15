@@ -207,7 +207,7 @@ def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: i
 
 
 def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: float, t_max: float, channels_list: [
-                          str, list] = None, normalize: bool = False, _rereference_args: dict = None) -> None:
+                          str, list] = None, normalize: bool = False, scale_bar: bool = True, _rereference_args: dict = None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -224,6 +224,8 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
             list of channels to plot (can be a strin of comma-separated values or a list of integers)
         normalize: bool
             whether to normalize the signal
+        scale_bar: bool
+            whether to plot a scale bar
         _rereference_args: dict
             dictionary containing rereferencing parameters. If None, no rereferencing will be applied
 
@@ -245,7 +247,16 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     else:
         fig = plt.figure(figsize=(30, 10))
 
-    ax = fig.subplots(len(channels_list), 1, sharex=True)
+    if normalize:
+        scale_bar = False
+
+    if scale_bar:
+        ax = fig.subplots(
+            len(channels_list), 2, gridspec_kw={
+                'width_ratios': [
+                    10, 1]})
+    else:
+        ax = fig.subplots(len(channels_list), 1, sharex=True)
 
     for row_no, channel_index in enumerate(channels_list):
         channel_index = channel_index - 1
@@ -275,7 +286,6 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
         rr_channel = _rereference_args['rr_channel']
         ignore_channels = utils.convert_string_to_list(ignore_channels)
         if rr_channel is not None:
-            print(rr_channel, channels_list)
             if rr_channel not in channels_list:
                 raise ValueError('rr_channel must be in channels_list')
         if ignore_channels is not None:
@@ -283,31 +293,49 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
                 raise ValueError(
                     'All channels in ignore_channels must be in channels_list, as it does not make sense to ignore a channel for re-referencing if it is not in channels_list')
 
-        for row_no, channel_index in enumerate(channels_list):
-            channel_index = channel_index - 1
-            if rr_channel is not None:
-                if channel_index == rr_channel - 1:
-                    rr_channel = row_no
-            if ignore_channels is not None:
-                if channel_index in ignore_channels:
-                    ignore_channels[ignore_channels.index(
-                        channel_index)] = row_no
         data_all = preprocessing.re_reference(
             data_all, ignore_channels, rr_channel)
 
     for row_no, channel_index in enumerate(channels_list):
+        signal_chan = data_all[row_no, :]
+        if not scale_bar:
+            ax[row_no].plot(t, signal_chan, color='k')
+            ax[row_no].set_ylabel(f'Channel {channel_index}')
+            ax[row_no].spines['top'].set_visible(False)
+            ax[row_no].spines['right'].set_visible(False)
+            if row_no != len(channels_list) - 1:
+                ax[row_no].spines['bottom'].set_visible(False)
+            ax[row_no].tick_params(axis='both', which='both', length=0)
+            ax[row_no].set_yticks([])
+            ax[row_no].set_xlim(t_min, t_max)
+        else:
+            scale_bar_size = np.max(signal_chan) - np.min(signal_chan)
+            ax[row_no, 0].plot(t, signal_chan, color='k')
+            ax[row_no, 0].set_ylabel(f'Channel {channel_index}')
+            ax[row_no, 0].spines['top'].set_visible(False)
+            ax[row_no, 0].spines['right'].set_visible(False)
+            if row_no != len(channels_list) - 1:
+                ax[row_no, 0].spines['bottom'].set_visible(False)
+            ax[row_no, 0].tick_params(axis='both', which='both', length=0)
+            ax[row_no, 0].set_yticks([])
+            # symmetric error bar for scale bar
+            ax[row_no, 1].errorbar(
+                0, 0, yerr=scale_bar_size / 2, color='k', capsize=5)
+            ax[row_no, 1].text(
+                1 / fs, 0, f'{scale_bar_size:.2f} uV', ha='left')
+            ax[row_no, 1].axis('off')
+            ax[row_no, 0].set_xlim(t_min, t_max)
+            ax[row_no, 0].set_xticks([])
+            ax[row_no, 1].set_xticks([])
 
-        ax[row_no].plot(t, signal_chan, color='k')
-        ax[row_no].set_ylabel(f'Channel {channel_index}')
-        ax[row_no].spines['top'].set_visible(False)
-        ax[row_no].spines['right'].set_visible(False)
-        if row_no != len(channels_list) - 1:
-            ax[row_no].spines['bottom'].set_visible(False)
-        ax[row_no].tick_params(axis='both', which='both', length=0)
-        ax[row_no].set_yticks([])
-
-    ax[-1].set_xlabel('Time (s)')
-    ax[-1].set_xlim(t_min, t_max)
+    if not scale_bar:
+        ax[-1].set_xlabel('Time (s)')
+        ax[-1].set_xlim(t_min, t_max)
+    else:
+        ax[-1, 0].set_xlabel('Time (s)')
+        ax[-1, 1].set_xlabel('Scale bar')
+        ax[-1, 0].set_xlim(t_min, t_max)
+        ax[-1, 1].set_ylim(-scale_bar_size / 2, scale_bar_size / 2)
     plt.tight_layout()
 
     if output_plot_file is None:
