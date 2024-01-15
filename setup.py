@@ -26,7 +26,7 @@ def read_description():
 
 setup(
     name="ElecPhys",
-    version="0.0.6",
+    version="0.0.53",
     author='Amin Alam',
     description='Electrophysiology data processing',
     long_description=read_description(),

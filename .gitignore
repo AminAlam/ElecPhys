@@ -170,3 +170,5 @@ docs/source/_static
 docs/source/_templates
 docs/*.bat
 docs/Makefile
+
+paradigm.sh

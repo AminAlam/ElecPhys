@@ -183,6 +183,7 @@ def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: i
     f = f[desired_freq_index_low:desired_freq_index_high]
     t = t[desired_time_index_low:desired_time_index_high]
 
+    plt.figure(figsize=(30, 15))
     pc = plt.pcolormesh(t, f, Zxx, cmap=plt.get_cmap('jet'), shading='auto')
     plt.colorbar(pc)
     plt.xlabel('Time (s)')
@@ -234,6 +235,7 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
     """
 
     npz_files = os.listdir(npz_folder_path)
+    # remove non-NPZ files
     npz_files = utils.sort_file_names(npz_files)
 
     if channels_list is None:
@@ -308,6 +310,8 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
             ax[row_no].tick_params(axis='both', which='both', length=0)
             ax[row_no].set_yticks([])
             ax[row_no].set_xlim(t_min, t_max)
+            if row_no != len(channels_list) - 1:
+                ax[row_no].set_xticks([])
         else:
             scale_bar_size = np.max(signal_chan) - np.min(signal_chan)
             ax[row_no, 0].plot(t, signal_chan, color='k')
@@ -325,8 +329,9 @@ def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: fl
                 1 / fs, 0, f'{scale_bar_size:.2f} uV', ha='left')
             ax[row_no, 1].axis('off')
             ax[row_no, 0].set_xlim(t_min, t_max)
-            ax[row_no, 0].set_xticks([])
-            ax[row_no, 1].set_xticks([])
+            if row_no != len(channels_list) - 1:
+                ax[row_no, 0].set_xticks([])
+                ax[row_no, 1].set_xticks([])
 
     if not scale_bar:
         ax[-1].set_xlabel('Time (s)')
