@@ -189,8 +189,8 @@ def re_reference(data: np.ndarray, ignore_channels: [
                 data.shape[0]) if i not in ignore_channels]
     else:
         channels_list = [i for i in range(data.shape[0])]
+
     rr_channel = rr_channel - 1 if rr_channel is not None else None
-    print(rr_channel, ignore_channels)
 
     data_rereferenced = data.copy()
 
