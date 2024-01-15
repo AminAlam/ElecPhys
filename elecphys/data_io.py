@@ -78,6 +78,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
         else:
             data, _ = load_npz(npz_file_path)
         data_all[ch_indx, :] = data
+        ch_indx += 1
     return data_all, fs
 
 
@@ -164,4 +165,4 @@ def write_separate_npz_files(
         Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
     for ch_indx in range(data.shape[0]):
         np.savez(os.path.join(output_npz_folder,
-                 f'Ch{ch_indx}.npz'), data=data[ch_indx, :], fs=fs)
+                 f'Ch{ch_indx+1}.npz'), data=data[ch_indx, :], fs=fs)

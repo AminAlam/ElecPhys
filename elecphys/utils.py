@@ -36,6 +36,7 @@ def sort_file_names(file_names: list) -> list:
         file_names: list
             sorted list of file names
     """
+    file_names = keep_npz_files(file_names)
     file_names_with_number = []
     file_names_without_number = []
     for file_name in file_names:
