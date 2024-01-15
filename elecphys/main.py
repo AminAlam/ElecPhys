@@ -463,6 +463,7 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
               required=False, type=list, default=None, show_default=True)
 @click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized',
               required=False, type=bool, default=False, show_default=True)
+@click.option('--scale_bar', '-sb', help='Scale bar. If true, a scale bar will be added to the plot', required=False, type=bool, default=True, show_default=True)
 @click.option('--re_reference', '-rr', help='Re-reference signals. If -rr_channel not specified, signals will be re-referenced to the average of all channels, unless they will be re-referenced to the given channel. If --ignore_channels is specified, specified channels will not be re referenced or taken into account for avg rereferencing', required=False, type=bool, default=False, show_default=True)
 @click.option('--ignore_channels', '-ic', help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
               required=False, type=str, default=None, show_default=True)
@@ -471,7 +472,7 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
 @click.pass_context
 @error_handler
 def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float = None, t_max: float = None, channels_list: list = None,
-                normalize: bool = False, re_reference: bool = False, ignore_channels: str = None, rr_channel: int = None) -> None:
+                normalize: bool = False, scale_bar: bool = True, re_reference: bool = False, ignore_channels: str = None, rr_channel: int = None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -488,6 +489,8 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float 
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         normalize: bool
             normalize signals. If true, each channel will be normalized. If not specified, the default value is False.
+        scale_bar: bool
+            scale bar. If true, a scale bar will be added to the plot. If not specified, the default value is True.
         re_reference: bool
             re-reference signals. If true, signals will be re-referenced. If not specified, the default value is False.
         ignore_channels: str
@@ -514,6 +517,7 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float 
         t_max,
         channels_list,
         normalize,
+        scale_bar,
         _rereference_args)
     print('--- Plotting complete.\n\n')
 
