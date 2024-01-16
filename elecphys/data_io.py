@@ -44,7 +44,7 @@ def load_npz(npz_file) -> [np.ndarray, int]:
 
 
 def load_all_npz_files(npz_folder: str, ignore_channels: [
-                       list, str] = None, channels_list: [list, str] = None) -> [np.ndarray, int]:
+                       list, str] = None, channels_list: [list, str] = None) -> [np.ndarray, int, list]:
     """ Function that Loads all NPZ files in a folder
 
         Parameters
@@ -55,12 +55,15 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
             list of channels to be ignored and not loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
         channels_list: list, str
             list of channels to be loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
+        
         Returns
         --------
         data_all: np.ndarray
             data from all NPZ files. Shape: (num_channels, num_samples)
         fs: int
             sampling frequency (Hz)
+        channels_map: list
+            list of channel indices corresponding to the order of channels in data_all
     """
     files_list = os.listdir(npz_folder)
     for file_name in files_list:
