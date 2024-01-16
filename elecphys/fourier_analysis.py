@@ -408,6 +408,8 @@ def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, 
         spectrum_all = spectrum_all[:, :, f0:f1+1]
         power_all = np.sum(spectrum_all**2, axis=2)
         avg_power = np.mean(power_all, axis=0)
+        avg_power = 10 * np.log10(avg_power)
+        power_all = 10 * np.log10(power_all)
         if output_csv_file is not None:
             if 'csv' in output_csv_file:
                 output_csv_file = output_csv_file.replace('.csv', '')

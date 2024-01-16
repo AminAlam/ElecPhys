@@ -74,15 +74,27 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
         channels_list = utils.convert_string_to_list(channels_list)
     if ignore_channels is not None:
         ignore_channels = utils.convert_string_to_list(ignore_channels)
-        # all elements of channels_list that are not in all_channels_in_folder
-        invalid_channels = [ channel for channel in channels_list if channel not in all_channels_in_folder ]
-        if len(invalid_channels) > 0:
-            ignore_channels.extend(invalid_channels)
+        ignore_channels = [i - 1 for i in ignore_channels]
+    else:
+        ignore_channels = []
+    # all elements of channels_list that are not in all_channels_in_folder
+    invalid_channels = [ channel for channel in all_channels_in_folder if channel+1 not in channels_list ]
+    if len(invalid_channels) > 0:
+        ignore_channels.extend(invalid_channels)
     channels_map = all_channels_in_folder
-    if ignore_channels is not None:
-        for ch_indx in ignore_channels:
-            files_list.remove(ch_indx)
-            channels_map.remove(ch_indx)
+    
+    channels_map_new = []
+    for channel in channels_map:
+        if channel not in ignore_channels:
+            channels_map_new.append(channel)
+    channels_map = channels_map_new
+
+    files_list_new = []
+    for indx, file_name in enumerate(files_list):
+        if indx not in ignore_channels:
+            files_list_new.append(file_name)
+    files_list = files_list_new
+    
     num_channels = len(files_list)
     ch_indx = 0
     for npz_file in files_list:

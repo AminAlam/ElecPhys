@@ -373,7 +373,6 @@ def freq_bands_power_over_time(ctx, input_npz_folder: str, freq_bands: list = No
         Returns
         ----------
     """
-
     print('--- Computing signal\'s power in given frequency bands, and saving them as csv files and plots...')
     fourier_analysis.freq_bands_power_over_time(input_npz_folder, freq_bands, channels_list, ignore_channels, window_size,  overlap, output_csv_file, output_plot_file, plot_type)
     print('--- Computation complete.\n\n')

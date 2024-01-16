@@ -488,7 +488,7 @@ def plot_power_over_time_from_array(power: np.ndarray, t: np.ndarray, channels_m
         ax.fill_between(t, power_avg - power_std, power_avg + power_std, alpha=0.5, color='k')
     elif plot_type == 'all':
         for channel_index in range(num_channels):
-            ax.plot(t, power[channel_index, :], label=f'Ch{channels_map[channel_index]}')
+            ax.plot(t, power[channel_index, :], label=f'Ch{channels_map[channel_index]+1}')
         ax.legend()
     else:
         raise ValueError('plot_type must be either "avg" or "all"')
