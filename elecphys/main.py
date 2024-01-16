@@ -323,6 +323,60 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
     fourier_analysis.butterworth_filtering_from_npz(
         input_npz_folder, output_npz_folder, filter_args)
     print('--- Filtering complete.\n\n')
+
+
+@cli.command('freq_bands_power_over_time', help="Computes signal's power in given frequency bands over time, and saves them as csv files and plots them")
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder',
+              required=True, type=str)
+@click.option('--freq_bands', '-fb', multiple=True, help='Frequency bands to compute power for (in Hz). It should be a list of two values (e.g. "[40,80]"). Also, it accepts multiple values (e.g. --freq_bands "[15,25]" --freq_bands "[45, 80]").',
+                required=True, type=str)
+@click.option('--channels_list', '-cl', help='List of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]").',
+                required=False, type=str, default=None, show_default=True)
+@click.option('--ignore_channels', '-ic', help='List of channels to ignore. If None, then no channels will be ignored', 
+              required=False, type=str, default=None, show_default=True)
+@click.option('--window_size', '-w', help='Window size in seconds',
+                required=False, type=float, default=1, show_default=True)
+@click.option('--overlap', '-ov', help='Overlap in seconds',
+                required=False, type=float, default=0.5, show_default=True)
+@click.option('--output_csv_file', '-o', help='Path to output csv file. If not specified, the default value is None and the csv file will not be saved.', 
+              required=False, type=str, default=None, show_default=True)
+@click.option('--output_plot_file', '-op', help='Path to output plot file. If not specified, the default value is None and the plot will be displayed.', 
+              required=False, type=str, default=None, show_default=True)
+@click.option('--plot_type', '-pt', help='Plot type. It can be "avg" or "all". If not specified, the default value is "avg". If "avg" selected, avg of power of the given frequency band of all channels will be plot with an error cloud. If "all" selected, power of the given frequency band of all channels will be plot.',
+                required=False, type=str, default='avg', show_default=True)
+@click.pass_context
+@error_handler
+def freq_bands_power_over_time(ctx, input_npz_folder: str, freq_bands: list = None, channels_list: str = None, ignore_channels: str = None, window_size: float = 1, overlap: float = 0.5, output_csv_file: str = None, output_plot_file: str = None, plot_type: str = None) -> None:
+    """ Computes signal's power in given frequency bands over time, and saves them as csv files and plots them
+
+        Parameters
+        ----------
+        input_npz_folder: str
+            path to input npz folder
+        freq_bands: list
+            frequency bands to compute power for (in Hz). It should be a list of two values (e.g. "[40,80]"). Also, it accepts multiple values (e.g. --freq_bands "[15,25]" --freq_bands "[45, 80]"). If not specified, the default value is None
+        channels_list: str
+            list of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+        ignore_channels: str
+            list of channels to ignore. If None, then no channels will be ignored. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+        window_size: float
+            window size in seconds. If not specified, the default value is 1 second
+        overlap: float
+            overlap in seconds. If not specified, the default value is 0.5 seconds
+        output_csv_file: str
+            path to output csv file. If not specified, the default value is None and the csv file will not be saved.
+        output_plot_file: str
+            path to output plot file. If not specified, the default value is None and the plot will be displayed.
+        plot_type: str
+            plot type. It can be "avg" or "all". If not specified, the default value is "avg". If "avg" selected, avg of power of the given frequency band of all channels will be plot with an error cloud. If "all" selected, power of the given frequency band of all channels will be plot.
+        
+        Returns
+        ----------
+    """
+
+    print('--- Computing signal\'s power in given frequency bands, and saving them as csv files and plots...')
+    fourier_analysis.freq_bands_power_over_time(input_npz_folder, freq_bands, channels_list, ignore_channels, window_size,  overlap, output_csv_file, output_plot_file, plot_type)
+    print('--- Computation complete.\n\n')
 ### Fourier Analysis ###
 
 

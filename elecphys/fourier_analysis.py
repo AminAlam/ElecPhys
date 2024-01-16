@@ -3,10 +3,12 @@ import numpy as np
 from scipy import signal
 from tqdm import tqdm
 import json
+import csv
 
 import utils
 import cfc
-
+import data_io
+import visualization
 
 def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str,
                                  window_size: float, overlap: float, window_type: str = 'hann') -> None:
@@ -378,3 +380,53 @@ def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str,
                 freqs_amp=freqs_amp,
                 freqs_phase=freqs_phase,
                 time_interval=time_interval)
+
+
+def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, channels_list: str = None, ignore_channels: str = None, window_size: float = 1, overlap: float = 0.5, output_csv_file: str = None, output_plot_file: str = None, plot_type: str = 'average_of_channels') -> None:
+    fs = 1000
+    freq_bands = [utils.convert_string_to_list(freq_band) for freq_band in freq_bands]
+    freq_bands = utils.check_freq_bands(freq_bands, fs)
+
+    if channels_list is not None:
+        channels_list = utils.convert_string_to_list(channels_list)
+    if ignore_channels is not None:
+        ignore_channels = utils.convert_string_to_list(ignore_channels)
+
+    data_all, fs, channels_map = data_io.load_all_npz_files(input_npz_folder, ignore_channels, channels_list)
+    
+    for freq_band in freq_bands:
+        for ch_indx in range(data_all.shape[0]):
+            data = data_all[ch_indx, :]
+            f, t, Zxx = stft_from_array(data, fs, window_size, overlap)
+            Zxx = np.abs(Zxx)
+            if ch_indx == 0:
+                spectrum_all = np.zeros((data_all.shape[0], len(t), len(f)))
+            spectrum_all[ch_indx, :, :] = Zxx.T
+
+        f0 = np.where(f >= freq_band[0])[0][0]
+        f1 = np.where(f <= freq_band[1])[0][-1]
+        spectrum_all = spectrum_all[:, :, f0:f1+1]
+        power_all = np.sum(spectrum_all**2, axis=2)
+        avg_power = np.mean(power_all, axis=0)
+        if output_csv_file is not None:
+            if 'csv' in output_csv_file:
+                output_csv_file = output_csv_file.replace('.csv', '')
+            # save to csv file
+            with open(f'{output_csv_file}_{freq_band[0]}_{freq_band[1]}.csv', 'w', newline='') as csvfile:
+                csvwriter = csv.writer(csvfile)
+                csvwriter.writerow(['Channel', 'Time', 'Power'])
+                for ch_indx in range(data_all.shape[0]):
+                    for t_indx in range(len(t)):
+                        csvwriter.writerow([channels_map[ch_indx]+1, t[t_indx], power_all[ch_indx, t_indx]])
+                for t_indx in range(len(t)):
+                    csvwriter.writerow(['Avg_channels', t[t_indx], avg_power[t_indx]])
+        if output_plot_file is not None:
+            output_plot_file_format = output_plot_file.split('.')[-1]
+            if output_plot_file_format == '':
+                output_plot_file_format = 'pdf'
+            output_plot_file_band = f"{output_plot_file.split('.')[0]}_{freq_band[0]}_{freq_band[1]}.{output_plot_file_format}"
+        else:
+            output_plot_file_band = None
+        visualization.plot_power_over_time_from_array(power_all, t, channels_map, plot_type, output_plot_file_band)
+    
+    
