@@ -14,7 +14,7 @@ import elecphys.data_io as data_io
 class TestCases_0_autopep8(unittest.TestCase):
     def test_1_autopep8(self):
         elecphys_path = os.path.join(os.path.dirname(__file__), '..', 'elecphys')
-        os.system(f'autopep8 --in-place --aggressive --aggressive --aggressive --recursive --max-line-length 128 "{elecphys_path}" --exclude "{os.path.join(elecphys_path, "matlab_scripts")}" --verbose')
+        os.system(f'autopep8 --in-place -a -a -a -a --recursive --max-line-length 128 "{elecphys_path}" --exclude "{os.path.join(elecphys_path, "matlab_scripts")}" --verbose')
 
 
 class TestCases_0_conversion(unittest.TestCase):
@@ -199,13 +199,16 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
         output_plot_file = os.path.join(
             os.path.dirname(__file__), 'data', 'plots', 'power_over_time.png')
         
-        for freq_bands in [([0, 4], [4, 8], [8, 12], [12, 30], [30, 60], [60, 100]), ([10, 20])]:
+        for freq_bands in [([10, 20]), ([0, 4], [44, 80])]:
             for channels_list in [None, [1,2,3]]:
                 for ignore_channels in [None, [4,5,6]]:
                     for plot_type in ['avg', 'all']:
-                        fourier_analysis.freq_bands_power_over_time(npz_files_folder, freq_bands=freq_bands, channels_list=channels_list, ignore_channels=ignore_channels, output_csv_file=output_csv_file, output_plot_file=output_plot_file, plot_type=plot_type)
-
-        command_prompt = f'python3 -m elecphys.main freq_bands_power_over_time --input_npz_folder {npz_files_folder} --output_csv_file {output_csv_file} --output_plot_file {output_plot_file} --freq_bands "{freq_bands}" --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --plot_type {plot_type}'
+                        for t_min in [None, 10]:
+                            for t_max in [None, 20]:
+                                fourier_analysis.freq_bands_power_over_time(npz_files_folder, freq_bands=freq_bands, channels_list=channels_list, ignore_channels=ignore_channels, output_csv_file=output_csv_file, output_plot_file=output_plot_file, plot_type=plot_type, t_min=t_min, t_max=t_max)
+        t_min = 10
+        t_max = 20
+        command_prompt = f'python3 -m elecphys.main freq_bands_power_over_time --input_npz_folder {npz_files_folder} --output_csv_file {output_csv_file} --output_plot_file {output_plot_file} --freq_bands "{freq_bands}" --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --plot_type {plot_type} --t_min {t_min} --t_max {t_max}'
         for _ in range(2):
             os.system(command_prompt)
 
