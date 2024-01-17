@@ -172,3 +172,4 @@ docs/*.bat
 docs/Makefile
 
 paradigm.sh
+*.csv
