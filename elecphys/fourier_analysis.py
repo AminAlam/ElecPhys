@@ -392,6 +392,8 @@ def freq_bands_power_over_time(
     ignore_channels: str = None,
     window_size: float = 1,
     overlap: float = 0.5,
+    t_min: float = None,
+    t_max: float = None,
     output_csv_file: str = None,
     output_plot_file: str = None,
         plot_type: str = 'average_of_channels') -> None:
@@ -411,6 +413,10 @@ def freq_bands_power_over_time(
                 window size in seconds to calculate power over time
             overlap: float
                 windows overlap in seconds to calculate power over time
+            t_min: float
+                start of time interval to calculate power over time. Default is None which means start from beginning of signal.
+            t_max: float
+                end of time interval to calculate power over time. Default is None which means end at end of signal.
             output_csv_file: str
                 path to output csv file to save power over time results
             output_plot_file: str
@@ -433,6 +439,15 @@ def freq_bands_power_over_time(
     freq_bands = [utils.convert_string_to_list(freq_band) for freq_band in freq_bands]
     freq_bands = utils.check_freq_bands(freq_bands, fs)
 
+    if t_min is None:
+        t_min = 0
+    if t_max is None:
+        t_max = data_all.shape[1] / fs
+
+    if t_max <= t_min:
+        raise ValueError(
+            f'Invalid time interval: [{t_min}, {t_max}]. t_max must be larger than t_min.')
+
     for freq_band in freq_bands:
         for ch_indx in range(data_all.shape[0]):
             data = data_all[ch_indx, :]
@@ -442,9 +457,13 @@ def freq_bands_power_over_time(
                 spectrum_all = np.zeros((data_all.shape[0], len(t), len(f)))
             spectrum_all[ch_indx, :, :] = Zxx.T
 
+        t0 = np.where(t >= t_min)[0][0]
+        t1 = np.where(t <= t_max)[0][-1]
+        t = t[t0:t1 + 1]
         f0 = np.where(f >= freq_band[0])[0][0]
         f1 = np.where(f <= freq_band[1])[0][-1]
         spectrum_all = spectrum_all[:, :, f0:f1 + 1]
+        spectrum_all = spectrum_all[:, t0:t1 + 1, :]
         power_all = np.sum(spectrum_all**2, axis=2)
         avg_power = np.mean(power_all, axis=0)
         avg_power = 10 * np.log10(avg_power)

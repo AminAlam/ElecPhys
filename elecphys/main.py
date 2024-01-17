@@ -368,6 +368,10 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
               required=False, type=float, default=1, show_default=True)
 @click.option('--overlap', '-ov', help='Overlap in seconds',
               required=False, type=float, default=0.5, show_default=True)
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
+              required=False, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmin', help='End of time interval to plot',
+              required=False, type=float, default=None, show_default=True)
 @click.option('--output_csv_file',
               '-o',
               help='Path to output csv file. If not specified, the default value is None and the csv file will not be saved.',
@@ -399,6 +403,8 @@ def freq_bands_power_over_time(
         ignore_channels: str = None,
         window_size: float = 1,
         overlap: float = 0.5,
+        t_min: float = None,
+        t_max: float = None,
         output_csv_file: str = None,
         output_plot_file: str = None,
         plot_type: str = None) -> None:
@@ -418,6 +424,10 @@ def freq_bands_power_over_time(
             window size in seconds. If not specified, the default value is 1 second
         overlap: float
             overlap in seconds. If not specified, the default value is 0.5 seconds
+        t_min: float
+            start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
+        t_max: float
+            end of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         output_csv_file: str
             path to output csv file. If not specified, the default value is None and the csv file will not be saved.
         output_plot_file: str
@@ -436,6 +446,8 @@ def freq_bands_power_over_time(
         ignore_channels,
         window_size,
         overlap,
+        t_min,
+        t_max,
         output_csv_file,
         output_plot_file,
         plot_type)
@@ -453,9 +465,9 @@ def freq_bands_power_over_time(
               required=False, type=float, default=None, show_default=True)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
 @click.option('--db_min', '-dbmin', help='Minimum dB to plot',
               required=False, type=float, default=None, show_default=True)
@@ -478,9 +490,9 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float = No
         f_max: float
             maximum frequency to plot in Hz. If not specified, the default value is None and the maximum frequency will be the Nyquist frequency
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         db_min: float
             minimum dB to plot. If not specified, the default value is None and the minimum dB will be the minimum dB of the signal
         db_max: float
@@ -512,9 +524,9 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float = No
               type=float, default=None, show_default=True, required=False)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz',
               type=float, default=None, show_default=True, required=False)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               type=float, default=None, show_default=True, required=False)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               type=float, default=None, show_default=True, required=False)
 @click.option('--db_min', '-dbmin', help='Minimum dB to plot',
               type=float, default=None, show_default=True, required=False)
@@ -548,9 +560,9 @@ def plot_avg_stft(
         f_max: float
             maximum frequency to plot in Hz. If not specified, the default value is None and the maximum frequency will be the Nyquist frequency
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         db_min: float
             minimum dB to plot. If not specified, the default value is None and the minimum dB will be the minimum dB of the signal
         db_max: float
@@ -581,9 +593,9 @@ def plot_avg_stft(
               help='Path to input npz folder', required=True, type=str)
 @click.option('--output_plot_file', '-o', help='Path to output plot file',
               required=True, type=str, default=None, show_default=True)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted',
               required=False, type=list, default=None, show_default=True)
@@ -635,9 +647,9 @@ def plot_signal(
         output_plot_file: str
             path to output plot file. If not specified, the default value is None and the plot will be displayed.
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         channels_list: list
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         normalize: bool
