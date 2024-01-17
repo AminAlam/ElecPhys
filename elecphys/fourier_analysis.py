@@ -10,6 +10,7 @@ import cfc
 import data_io
 import visualization
 
+
 def stft_numeric_output_from_npz(input_npz_folder: str, output_npz_folder: str,
                                  window_size: float, overlap: float, window_type: str = 'hann') -> None:
     """ Computes STFT and saves results as NPZ files
@@ -382,18 +383,53 @@ def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str,
                 time_interval=time_interval)
 
 
-def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, channels_list: str = None, ignore_channels: str = None, window_size: float = 1, overlap: float = 0.5, output_csv_file: str = None, output_plot_file: str = None, plot_type: str = 'average_of_channels') -> None:
-    fs = 1000
-    freq_bands = [utils.convert_string_to_list(freq_band) for freq_band in freq_bands]
-    freq_bands = utils.check_freq_bands(freq_bands, fs)
+def freq_bands_power_over_time(
+        input_npz_folder: str,
+        freq_bands: [
+            tuple,
+            list] = None,
+    channels_list: str = None,
+    ignore_channels: str = None,
+    window_size: float = 1,
+    overlap: float = 0.5,
+    output_csv_file: str = None,
+    output_plot_file: str = None,
+        plot_type: str = 'average_of_channels') -> None:
+    """ Calculates power over time for given frequency bands
 
+        Parameters
+        ----------
+            input_npz_folder: str
+                path to input npz folder containing signal npz files (in time domain)
+            freq_bands: tuple
+                tuple or list of frequency bands to calculate power over time for. It should be a tuple or list of lists, where each list contains two elements: the lower and upper frequency bounds of the band (in Hz). For example, freq_bands = [[1, 4], [4, 8], [8, 12]] would calculate power over time for the delta, theta, and alpha bands.
+            channels_list: str
+                list of channels to include in analysis
+            ignore_channels: str
+                list of channels to ignore in analysis
+            window_size: float
+                window size in seconds to calculate power over time
+            overlap: float
+                windows overlap in seconds to calculate power over time
+            output_csv_file: str
+                path to output csv file to save power over time results
+            output_plot_file: str
+                path to output plot file to save power over time results
+            plot_type: str
+                type of plot to generate. Options are 'avg' or 'all'. Default is 'avg' which plots average power over time for all channels with an erros cloud. 'all' plots power over time for all channels individually.
+
+        Returns
+        ----------
+    """
     if channels_list is not None:
         channels_list = utils.convert_string_to_list(channels_list)
     if ignore_channels is not None:
         ignore_channels = utils.convert_string_to_list(ignore_channels)
 
     data_all, fs, channels_map = data_io.load_all_npz_files(input_npz_folder, ignore_channels, channels_list)
-    
+    freq_bands = [utils.convert_string_to_list(freq_band) for freq_band in freq_bands]
+    freq_bands = utils.check_freq_bands(freq_bands, fs)
+
     for freq_band in freq_bands:
         for ch_indx in range(data_all.shape[0]):
             data = data_all[ch_indx, :]
@@ -405,7 +441,7 @@ def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, 
 
         f0 = np.where(f >= freq_band[0])[0][0]
         f1 = np.where(f <= freq_band[1])[0][-1]
-        spectrum_all = spectrum_all[:, :, f0:f1+1]
+        spectrum_all = spectrum_all[:, :, f0:f1 + 1]
         power_all = np.sum(spectrum_all**2, axis=2)
         avg_power = np.mean(power_all, axis=0)
         avg_power = 10 * np.log10(avg_power)
@@ -419,7 +455,7 @@ def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, 
                 csvwriter.writerow(['Channel', 'Time', 'Power'])
                 for ch_indx in range(data_all.shape[0]):
                     for t_indx in range(len(t)):
-                        csvwriter.writerow([channels_map[ch_indx]+1, t[t_indx], power_all[ch_indx, t_indx]])
+                        csvwriter.writerow([channels_map[ch_indx] + 1, t[t_indx], power_all[ch_indx, t_indx]])
                 for t_indx in range(len(t)):
                     csvwriter.writerow(['Avg_channels', t[t_indx], avg_power[t_indx]])
         if output_plot_file is not None:
@@ -430,5 +466,3 @@ def freq_bands_power_over_time(input_npz_folder: str, freq_bands: tuple = None, 
         else:
             output_plot_file_band = None
         visualization.plot_power_over_time_from_array(power_all, t, channels_map, plot_type, output_plot_file_band)
-    
-    

@@ -55,7 +55,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
             list of channels to be ignored and not loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
         channels_list: list, str
             list of channels to be loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
-        
+
         Returns
         --------
         data_all: np.ndarray
@@ -81,7 +81,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
     else:
         ignore_channels = []
     # all elements of channels_list that are not in all_channels_in_folder
-    invalid_channels = [ channel for channel in all_channels_in_folder if channel not in channels_list ]
+    invalid_channels = [channel for channel in all_channels_in_folder if channel not in channels_list]
     if len(invalid_channels) > 0:
         ignore_channels.extend(invalid_channels)
     channels_map = all_channels_in_folder
