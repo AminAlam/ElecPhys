@@ -44,7 +44,7 @@ def load_npz(npz_file) -> [np.ndarray, int]:
 
 
 def load_all_npz_files(npz_folder: str, ignore_channels: [
-                       list, str] = None) -> [np.ndarray, int]:
+                       list, str] = None, channels_list: [list, str] = None) -> [np.ndarray, int, list]:
     """ Function that Loads all NPZ files in a folder
 
         Parameters
@@ -53,21 +53,51 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
             path to npz folder containing NPZ files
         ignore_channels: list, str
             list of channels to be ignored and not loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
+        channels_list: list, str
+            list of channels to be loaded. If None, all channels will be loaded. Either a list of channel names or a string of channel names separated by commas.
 
         Returns
         --------
         data_all: np.ndarray
+            data from all NPZ files. Shape: (num_channels, num_samples)
         fs: int
+            sampling frequency (Hz)
+        channels_map: list
+            list of channel indices corresponding to the order of channels in data_all
     """
     files_list = os.listdir(npz_folder)
     for file_name in files_list:
         if not file_name.endswith('.npz'):
             files_list.remove(file_name)
     files_list = utils.sort_file_names(files_list)
+    all_channels_in_folder = list(range(0, len(files_list)))
+    if channels_list is None:
+        channels_list = all_channels_in_folder
+    else:
+        channels_list = utils.convert_string_to_list(channels_list)
     if ignore_channels is not None:
         ignore_channels = utils.convert_string_to_list(ignore_channels)
-        for ch_indx in ignore_channels:
-            files_list.remove(ch_indx)
+        ignore_channels = [i - 1 for i in ignore_channels]
+    else:
+        ignore_channels = []
+    # all elements of channels_list that are not in all_channels_in_folder
+    invalid_channels = [channel for channel in all_channels_in_folder if channel not in channels_list]
+    if len(invalid_channels) > 0:
+        ignore_channels.extend(invalid_channels)
+    channels_map = all_channels_in_folder
+
+    channels_map_new = []
+    for channel in channels_map:
+        if channel not in ignore_channels:
+            channels_map_new.append(channel)
+    channels_map = channels_map_new
+
+    files_list_new = []
+    for indx, file_name in enumerate(files_list):
+        if indx not in ignore_channels:
+            files_list_new.append(file_name)
+    files_list = files_list_new
+
     num_channels = len(files_list)
     ch_indx = 0
     for npz_file in files_list:
@@ -79,7 +109,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
             data, _ = load_npz(npz_file_path)
         data_all[ch_indx, :] = data
         ch_indx += 1
-    return data_all, fs
+    return data_all, fs, channels_map
 
 
 def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:

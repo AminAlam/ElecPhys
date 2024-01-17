@@ -207,8 +207,17 @@ def plot_stft_from_array(Zxx: np.ndarray, t: np.ndarray, f: np.ndarray, f_min: i
         plt.close()
 
 
-def plot_signals_from_npz(npz_folder_path: str, output_plot_file: str, t_min: float, t_max: float, channels_list: [
-                          str, list] = None, normalize: bool = False, scale_bar: bool = True, _rereference_args: dict = None) -> None:
+def plot_signals_from_npz(
+        npz_folder_path: str,
+        output_plot_file: str,
+        t_min: float,
+        t_max: float,
+        channels_list: [
+            str,
+            list] = None,
+    normalize: bool = False,
+    scale_bar: bool = True,
+        _rereference_args: dict = None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -454,6 +463,57 @@ def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f
         if not os.path.exists(os.path.dirname(output_plot_file)):
             os.makedirs(os.path.dirname(output_plot_file))
         plt.savefig(output_plot_file, dpi=600)
+        plt.close()
+
+
+def plot_power_over_time_from_array(power: np.ndarray, t: np.ndarray, channels_map: list,
+                                    plot_type: str = 'avg', output_plot_file: str = None) -> None:
+    """ Plots power over time from 3D array
+
+            Parameters
+            ----------
+            power: np.ndarray
+                A 2D array containing power values. Shape: (num_channels, num_timepoints)
+            t: np.ndarray
+                time array (seconds)
+            plot_type: str
+                whether to plot all channels or average of channels. Must be either 'all' or 'avg'
+
+            Returns
+            ----------
+        """
+
+    num_channels = power.shape[0]
+
+    if num_channels > 20:
+        fig = plt.figure(figsize=(30, int(num_channels / 2)))
+    else:
+        fig = plt.figure(figsize=(30, 10))
+
+    ax = fig.subplots(1, 1)
+
+    if plot_type == 'avg':
+        power_avg = np.mean(power, axis=0)
+        power_std = np.std(power, axis=0)
+        ax.plot(t, power_avg, color='k')
+        ax.fill_between(t, power_avg - power_std, power_avg + power_std, alpha=0.5, color='k')
+    elif plot_type == 'all':
+        for channel_index in range(num_channels):
+            ax.plot(t, power[channel_index, :], label=f'Ch{channels_map[channel_index]+1}')
+        ax.legend()
+    else:
+        raise ValueError('plot_type must be either "avg" or "all"')
+
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Power (dB)')
+
+    plt.tight_layout()
+
+    if output_plot_file is None:
+        plt.show()
+    else:
+        plt.savefig(output_plot_file, dpi=600)
+        plt.close()
 
 
 def plot_filter_freq_response(filter_args: dict,

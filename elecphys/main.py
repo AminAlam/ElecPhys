@@ -174,10 +174,20 @@ def normalize_npz(ctx, input_npz_folder: str,
               help='Path to input npz folder', required=True, type=str)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder',
               required=True, type=str, default='output_npz_avg_rereferenced', show_default=True)
-@click.option('--ignore_channels', '-ic', help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
-              required=False, type=list, default=None, show_default=True)
-@click.option('--rr_channel', '-rrc', help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels',
-              required=False, type=int, default=None, show_default=True)
+@click.option('--ignore_channels',
+              '-ic',
+              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
+              required=False,
+              type=list,
+              default=None,
+              show_default=True)
+@click.option('--rr_channel',
+              '-rrc',
+              help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels',
+              required=False,
+              type=int,
+              default=None,
+              show_default=True)
 @click.pass_context
 @error_handler
 def re_reference_npz(ctx, input_npz_folder: str, output_npz_folder: str = 'output_npz_avg_rereferenced',
@@ -286,10 +296,20 @@ def dft_numeric_output(ctx, input_npz_folder: str,
               help='Path to input npz folder', required=True, type=str)
 @click.option('--output_npz_folder', '-o', help='Path to output npz folder to save filtered signals',
               required=True, type=str, show_default=True, default='output_npz_filtered')
-@click.option('--filter_type', '-ft', help='Filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter)',
-              required=True, type=str, default='LPF', show_default=True)
-@click.option('--freq_cutoff', '-fc', help='Frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values',
-              required=True, type=str, default=None, show_default=True)
+@click.option('--filter_type',
+              '-ft',
+              help='Filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter)',
+              required=True,
+              type=str,
+              default='LPF',
+              show_default=True)
+@click.option('--freq_cutoff',
+              '-fc',
+              help='Frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values',
+              required=True,
+              type=str,
+              default=None,
+              show_default=True)
 @click.option('--filter_order', '-fo', help='Filter order',
               required=True, type=int, default=2, show_default=True)
 @click.pass_context
@@ -323,6 +343,115 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
     fourier_analysis.butterworth_filtering_from_npz(
         input_npz_folder, output_npz_folder, filter_args)
     print('--- Filtering complete.\n\n')
+
+
+@cli.command('freq_bands_power_over_time',
+             help="Computes signal's power in given frequency bands over time, and saves them as csv files and plots them")
+@click.option('--input_npz_folder', '-i', help='Path to input npz folder',
+              required=True, type=str)
+@click.option('--freq_bands',
+              '-fb',
+              multiple=True,
+              help='Frequency bands to compute power for (in Hz). It should be a list of two values (e.g. "[40,80]"). Also, it accepts multiple values (e.g. --freq_bands "[15,25]" --freq_bands "[45, 80]").',
+              required=True,
+              type=str)
+@click.option('--channels_list',
+              '-cl',
+              help='List of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--ignore_channels', '-ic', help='List of channels to ignore. If None, then no channels will be ignored',
+              required=False, type=str, default=None, show_default=True)
+@click.option('--window_size', '-w', help='Window size in seconds',
+              required=False, type=float, default=1, show_default=True)
+@click.option('--overlap', '-ov', help='Overlap in seconds',
+              required=False, type=float, default=0.5, show_default=True)
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
+              required=False, type=float, default=None, show_default=True)
+@click.option('--t_max', '-tmin', help='End of time interval to plot',
+              required=False, type=float, default=None, show_default=True)
+@click.option('--output_csv_file',
+              '-o',
+              help='Path to output csv file. If not specified, the default value is None and the csv file will not be saved.',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--output_plot_file',
+              '-op',
+              help='Path to output plot file. If not specified, the default value is None and the plot will be displayed.',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--plot_type',
+              '-pt',
+              help='Plot type. It can be "avg" or "all". If not specified, the default value is "avg". If "avg" selected, avg of power of the given frequency band of all channels will be plot with an error cloud. If "all" selected, power of the given frequency band of all channels will be plot.',
+              required=False,
+              type=str,
+              default='avg',
+              show_default=True)
+@click.pass_context
+@error_handler
+def freq_bands_power_over_time(
+        ctx,
+        input_npz_folder: str,
+        freq_bands: list = None,
+        channels_list: str = None,
+        ignore_channels: str = None,
+        window_size: float = 1,
+        overlap: float = 0.5,
+        t_min: float = None,
+        t_max: float = None,
+        output_csv_file: str = None,
+        output_plot_file: str = None,
+        plot_type: str = None) -> None:
+    """ Computes signal's power in given frequency bands over time, and saves them as csv files and plots them
+
+        Parameters
+        ----------
+        input_npz_folder: str
+            path to input npz folder
+        freq_bands: list
+            frequency bands to compute power for (in Hz). It should be a list of two values (e.g. "[40,80]"). Also, it accepts multiple values (e.g. --freq_bands "[15,25]" --freq_bands "[45, 80]"). If not specified, the default value is None
+        channels_list: str
+            list of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+        ignore_channels: str
+            list of channels to ignore. If None, then no channels will be ignored. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+        window_size: float
+            window size in seconds. If not specified, the default value is 1 second
+        overlap: float
+            overlap in seconds. If not specified, the default value is 0.5 seconds
+        t_min: float
+            start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
+        t_max: float
+            end of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
+        output_csv_file: str
+            path to output csv file. If not specified, the default value is None and the csv file will not be saved.
+        output_plot_file: str
+            path to output plot file. If not specified, the default value is None and the plot will be displayed.
+        plot_type: str
+            plot type. It can be "avg" or "all". If not specified, the default value is "avg". If "avg" selected, avg of power of the given frequency band of all channels will be plot with an error cloud. If "all" selected, power of the given frequency band of all channels will be plot.
+
+        Returns
+        ----------
+    """
+    print('--- Computing signal\'s power in given frequency bands...')
+    fourier_analysis.freq_bands_power_over_time(
+        input_npz_folder,
+        freq_bands,
+        channels_list,
+        ignore_channels,
+        window_size,
+        overlap,
+        t_min,
+        t_max,
+        output_csv_file,
+        output_plot_file,
+        plot_type)
+    print('--- Computation complete.\n\n')
 ### Fourier Analysis ###
 
 
@@ -336,9 +465,9 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
               required=False, type=float, default=None, show_default=True)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
 @click.option('--db_min', '-dbmin', help='Minimum dB to plot',
               required=False, type=float, default=None, show_default=True)
@@ -361,9 +490,9 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float = No
         f_max: float
             maximum frequency to plot in Hz. If not specified, the default value is None and the maximum frequency will be the Nyquist frequency
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         db_min: float
             minimum dB to plot. If not specified, the default value is None and the minimum dB will be the minimum dB of the signal
         db_max: float
@@ -395,9 +524,9 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float = No
               type=float, default=None, show_default=True, required=False)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz',
               type=float, default=None, show_default=True, required=False)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               type=float, default=None, show_default=True, required=False)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               type=float, default=None, show_default=True, required=False)
 @click.option('--db_min', '-dbmin', help='Minimum dB to plot',
               type=float, default=None, show_default=True, required=False)
@@ -407,8 +536,17 @@ def plot_stft(ctx, input_npz_file: str, output_plot_file: str, f_min: float = No
               required=False, type=list, default=None, show_default=True)
 @click.pass_context
 @error_handler
-def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float = None, f_max: float = None,
-                  t_min: float = None, t_max: float = None, db_min: float = None, db_max: float = None, channels_list: list = None) -> None:
+def plot_avg_stft(
+        ctx,
+        input_npz_folder: str,
+        output_plot_file: str,
+        f_min: float = None,
+        f_max: float = None,
+        t_min: float = None,
+        t_max: float = None,
+        db_min: float = None,
+        db_max: float = None,
+        channels_list: list = None) -> None:
     """ Plots average STFT from NPZ files
 
         Parameters
@@ -422,9 +560,9 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
         f_max: float
             maximum frequency to plot in Hz. If not specified, the default value is None and the maximum frequency will be the Nyquist frequency
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         db_min: float
             minimum dB to plot. If not specified, the default value is None and the minimum dB will be the minimum dB of the signal
         db_max: float
@@ -455,24 +593,51 @@ def plot_avg_stft(ctx, input_npz_folder: str, output_plot_file: str, f_min: floa
               help='Path to input npz folder', required=True, type=str)
 @click.option('--output_plot_file', '-o', help='Path to output plot file',
               required=True, type=str, default=None, show_default=True)
-@click.option('--t_min', '-tmin', help='Minimum time to plot in seconds',
+@click.option('--t_min', '-tmin', help='Start of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmax', help='Maximum time to plot in seconds',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted',
               required=False, type=list, default=None, show_default=True)
 @click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized',
               required=False, type=bool, default=False, show_default=True)
-@click.option('--scale_bar', '-sb', help='Scale bar. If true, a scale bar will be added to the plot', required=False, type=bool, default=True, show_default=True)
-@click.option('--re_reference', '-rr', help='Re-reference signals. If -rr_channel not specified, signals will be re-referenced to the average of all channels, unless they will be re-referenced to the given channel. If --ignore_channels is specified, specified channels will not be re referenced or taken into account for avg rereferencing', required=False, type=bool, default=False, show_default=True)
-@click.option('--ignore_channels', '-ic', help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
-              required=False, type=str, default=None, show_default=True)
-@click.option('--rr_channel', '-rrc', help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels',
-              required=False, type=int, default=None, show_default=True)
+@click.option('--scale_bar', '-sb', help='Scale bar. If true, a scale bar will be added to the plot',
+              required=False, type=bool, default=True, show_default=True)
+@click.option('--re_reference',
+              '-rr',
+              help='Re-reference signals. If -rr_channel not specified, signals will be re-referenced to the average of all channels, unless they will be re-referenced to the given channel. If --ignore_channels is specified, specified channels will not be re referenced or taken into account for avg rereferencing',
+              required=False,
+              type=bool,
+              default=False,
+              show_default=True)
+@click.option('--ignore_channels',
+              '-ic',
+              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--rr_channel',
+              '-rrc',
+              help='Channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels',
+              required=False,
+              type=int,
+              default=None,
+              show_default=True)
 @click.pass_context
 @error_handler
-def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float = None, t_max: float = None, channels_list: list = None,
-                normalize: bool = False, scale_bar: bool = True, re_reference: bool = False, ignore_channels: str = None, rr_channel: int = None) -> None:
+def plot_signal(
+        ctx,
+        input_npz_folder: str,
+        output_plot_file: str,
+        t_min: float = None,
+        t_max: float = None,
+        channels_list: list = None,
+        normalize: bool = False,
+        scale_bar: bool = True,
+        re_reference: bool = False,
+        ignore_channels: str = None,
+        rr_channel: int = None) -> None:
     """ Plots signals from NPZ file
 
         Parameters
@@ -482,9 +647,9 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float 
         output_plot_file: str
             path to output plot file. If not specified, the default value is None and the plot will be displayed.
         t_min: float
-            minimum time to plot in seconds. If not specified, the default value is None and the minimum time will be 0 seconds
+            Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
-            maximum time to plot in seconds. If not specified, the default value is None and the maximum time will be the total duration of the signal
+            End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
         channels_list: list
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         normalize: bool
@@ -533,8 +698,13 @@ def plot_signal(ctx, input_npz_folder: str, output_plot_file: str, t_min: float 
               required=False, type=float, default=None, show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted',
               required=False, type=list, default=None, show_default=True)
-@click.option('--plot_type', '-pt', help='Plot type. If "all_channels", then all channels will be plotted in one figure. If "average_of_channels", then average of channels will be plotted in one figure with errorbar',
-              required=True, type=str, default='average_of_channels', show_default=True)
+@click.option('--plot_type',
+              '-pt',
+              help='Plot type. If "all_channels", then all channels will be plotted in one figure. If "average_of_channels", then average of channels will be plotted in one figure with errorbar',
+              required=True,
+              type=str,
+              default='average_of_channels',
+              show_default=True)
 @click.option('--conv_window_size', '-cws', help='Convolution window size in seconds',
               required=False, type=int, default=None, show_default=True)
 @click.pass_context
@@ -578,10 +748,20 @@ def plot_dft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float = N
 
 @cli.command('plot_filter_freq_response',
              help='Plots filter frequency response')
-@click.option('--filter_type', '-ft', help='Filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter)',
-              required=True, type=str, default='LPF', show_default=True)
-@click.option('--freq_cutoff', '-fc', help='Frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values',
-              required=True, type=str, default=None, show_default=True)
+@click.option('--filter_type',
+              '-ft',
+              help='Filter type. LPF (low-pass filter), HPF (high-pass filter), or BPF (band-pass filter)',
+              required=True,
+              type=str,
+              default='LPF',
+              show_default=True)
+@click.option('--freq_cutoff',
+              '-fc',
+              help='Frequency cutoff in Hz. If filter_type is LPF or HPF, then freq_cutoff is a single value. If filter_type is BPF, then freq_cutoff is a list of two values',
+              required=True,
+              type=str,
+              default=None,
+              show_default=True)
 @click.option('--filter_order', '-fo', help='Filter order',
               required=True, type=int, default=4, show_default=True)
 @click.option('--frequency_sampling', '-fs', help='Frequency sampling in Hz',
@@ -630,8 +810,13 @@ def plot_filter_freq_response(ctx, filter_type: str = 'LPF', freq_cutoff: str = 
               required=True, type=str, show_default=True, default='output_npz_pca')
 @click.option('--n_components', '-n', help='Number of components to keep after applying the PCA',
               required=True, type=int, default=None, show_default=True)
-@click.option('--matrix_whitenning', '-mw', help='Matrix whitening boolean. If true, the singular values are divided by n_samples',
-              required=False, type=bool, default=False, show_default=True)
+@click.option('--matrix_whitenning',
+              '-mw',
+              help='Matrix whitening boolean. If true, the singular values are divided by n_samples',
+              required=False,
+              type=bool,
+              default=False,
+              show_default=True)
 @click.option('--channels_list', '-cl', help='List of channels to apply PCA, if None then all of the channels will be applied',
               required=False, type=list, default=None, show_default=True)
 @click.pass_context

@@ -81,7 +81,8 @@ def remove_non_numeric(input_list: list) -> list:
         output_list: list
             processed list
     """
-    # use regex to remove non-numeric characters
+
+    # regex to remove non-numeric characters
     output_list = []
     for item in input_list:
         if isinstance(item, str):
@@ -119,3 +120,27 @@ def convert_string_to_list(string):
     output = np.unique(output)
     output = output.tolist()
     return output
+
+
+def check_freq_bands(freq_bands: list, fs: int) -> list:
+    """ checks frequency bands in the tuple to see if they are valid such as first element is smaller than second element and both of them are smaller than half of sampling frequency
+
+        Parameters
+        ----------
+        freq_bands: tuple
+            frequency bands to be checked
+
+        Returns
+        ----------
+        freq_bands: tuple
+            checked frequency bands
+    """
+    for freq_band in freq_bands:
+        if freq_band[0] > freq_band[1]:
+            raise ValueError(
+                f'Invalid frequency band: {freq_band}. First element should be smaller than second element.')
+        if freq_band[0] > fs / 2 or freq_band[1] > fs / 2:
+            raise ValueError(
+                f'Invalid frequency band: {freq_band}. Both elements should be smaller than half of sampling frequency (fs={fs}Hz).')
+
+    return freq_bands

@@ -157,7 +157,7 @@ def re_reference_npz(input_npz_folder: str, output_npz_folder: str, ignore_chann
 
     print(
         f'Average re-referencing NPZ files in {input_npz_folder} and saving to {output_npz_folder}...')
-    data_all, fs = data_io.load_all_npz_files(input_npz_folder)
+    data_all, fs, _ = data_io.load_all_npz_files(input_npz_folder)
     data_all_rereferenced = re_reference(data_all, ignore_channels, rr_channel)
     data_io.write_separate_npz_files(
         data_all_rereferenced, fs, output_npz_folder)
