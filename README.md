@@ -50,21 +50,25 @@ Where each COMMNAD can be one of the supported commands such as convert_rhd_to_m
 To learn more about the commnads, you can use the following command:
 ```console
 ➜ elecphys --help
-Usage: main.py COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+Usage: main.py [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 
   ElecPhys is a Python package for electrophysiology data analysis. It
   provides tools for data loading, conversion, preprocessing, and
   visualization.
 
 Options:
-  --help  Show this message and exit.
+  -v, --verbose  Verbose mode
+  -d, --debug    Debug mode
+  --help         Show this message and exit.
 
 Commands:
   convert_mat_to_npz            Converts MAT files to NPZ files using MAT...
   convert_rhd_to_mat            Converts RHD files to mat files using RHD...
   dft_numeric_output_from_npz   Computes DFT and saves results as NPZ files
+  freq_bands_power_over_time    Computes signal's power in given...
   frequncy_domain_filter        Filtering in frequency domain using...
   normalize_npz                 Normalizes NPZ files
+  pca_from_npz                  Computes PCA from NPZ files
   plot_avg_stft                 Plots average STFT from NPZ files
   plot_dft                      Plots DFT from NPZ file
   plot_filter_freq_response     Plots filter frequency response
