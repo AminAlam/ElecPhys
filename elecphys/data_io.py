@@ -81,11 +81,11 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
     else:
         ignore_channels = []
     # all elements of channels_list that are not in all_channels_in_folder
-    invalid_channels = [ channel for channel in all_channels_in_folder if channel+1 not in channels_list ]
+    invalid_channels = [ channel for channel in all_channels_in_folder if channel not in channels_list ]
     if len(invalid_channels) > 0:
         ignore_channels.extend(invalid_channels)
     channels_map = all_channels_in_folder
-    
+
     channels_map_new = []
     for channel in channels_map:
         if channel not in ignore_channels:
@@ -97,7 +97,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
         if indx not in ignore_channels:
             files_list_new.append(file_name)
     files_list = files_list_new
-    
+
     num_channels = len(files_list)
     ch_indx = 0
     for npz_file in files_list:
