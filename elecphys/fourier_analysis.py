@@ -427,6 +427,9 @@ def freq_bands_power_over_time(
         ignore_channels = utils.convert_string_to_list(ignore_channels)
 
     data_all, fs, channels_map = data_io.load_all_npz_files(input_npz_folder, ignore_channels, channels_list)
+    # if freq_bands only has one list, we should make sure it is a list of lists
+    if len(freq_bands) == 2 and isinstance(freq_bands[0], int) and isinstance(freq_bands[1], int):
+        freq_bands = [freq_bands]
     freq_bands = [utils.convert_string_to_list(freq_band) for freq_band in freq_bands]
     freq_bands = utils.check_freq_bands(freq_bands, fs)
 
