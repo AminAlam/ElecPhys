@@ -95,11 +95,10 @@ def plot_avg_stft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: i
 
     npz_files = os.listdir(npz_folder_path)
     npz_files = utils.sort_file_names(npz_files)
-
+    channels_list = utils.convert_string_to_list(channels_list)
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files) + 1))
     else:
-        channels_list = utils.convert_string_to_list(channels_list)
         channels_list = sorted(channels_list)
 
     for channel_index, channel in enumerate(channels_list):
@@ -246,11 +245,10 @@ def plot_signals_from_npz(
     npz_files = os.listdir(npz_folder_path)
     # remove non-NPZ files
     npz_files = utils.sort_file_names(npz_files)
-
+    channels_list = utils.convert_string_to_list(channels_list)
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files) + 1))
     else:
-        channels_list = utils.convert_string_to_list(channels_list)
         channels_list = sorted(channels_list)
 
     if len(channels_list) > 20:
@@ -269,29 +267,12 @@ def plot_signals_from_npz(
     else:
         ax = fig.subplots(len(channels_list), 1, sharex=True)
 
-    for row_no, channel_index in enumerate(channels_list):
-        channel_index = channel_index - 1
-        npz_file = npz_files[channel_index]
-        signal_chan, fs = data_io.load_npz(
-            os.path.join(npz_folder_path, npz_file))
-        if normalize:
-            signal_chan = preprocessing.normalize(signal_chan)
-        t = np.linspace(0, len(signal_chan) / fs, len(signal_chan))
-        if t_min is None:
-            t_min = np.min(t)
-        if t_max is None:
-            t_max = np.max(t)
-
-        desired_time_index_low = np.where(
-            np.min(abs(t - t_min)) == abs(t - t_min))[0][0]
-        desired_time_index_high = np.where(
-            np.min(abs(t - t_max)) == abs(t - t_max))[0][0]
-        signal_chan = signal_chan[desired_time_index_low:desired_time_index_high]
-        t = t[desired_time_index_low:desired_time_index_high]
-        if channel_index == 0:
-            data_all = np.zeros((len(channels_list), len(signal_chan)))
-        data_all[row_no, :] = signal_chan
-
+    data_all, fs, channels_map = data_io.load_all_npz_files(npz_folder_path, channels_list=channels_list)
+    t = np.arange(0, data_all.shape[1] / fs, 1 / fs)
+    if t_min is None:
+        t_min = np.min(t)
+    if t_max is None:
+        t_max = np.max(t)
     if _rereference_args is not None:
         ignore_channels = _rereference_args['ignore_channels']
         rr_channel = _rereference_args['rr_channel']
@@ -307,7 +288,7 @@ def plot_signals_from_npz(
         data_all = preprocessing.re_reference(
             data_all, ignore_channels, rr_channel)
 
-    for row_no, channel_index in enumerate(channels_list):
+    for row_no, channel_index in enumerate(channels_map):
         signal_chan = data_all[row_no, :]
         if not scale_bar:
             ax[row_no].plot(t, signal_chan, color='k')
@@ -393,11 +374,10 @@ def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f
     npz_files = os.listdir(npz_folder_path)
     npz_files = utils.keep_npz_files(npz_files)
     npz_files = utils.sort_file_names(npz_files)
-
+    channels_list = utils.convert_string_to_list(channels_list)
     if channels_list is None:
         channels_list = tuple(range(1, len(npz_files) + 1))
     else:
-        channels_list = utils.convert_string_to_list(channels_list)
         channels_list = sorted(channels_list)
 
     if len(channels_list) > 20:

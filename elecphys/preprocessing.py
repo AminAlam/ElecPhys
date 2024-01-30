@@ -142,7 +142,7 @@ def re_reference_npz(input_npz_folder: str, output_npz_folder: str, ignore_chann
             path to input npz folder
         output_npz_folder: str
             path to output npz folder
-        ignore_channels: list
+        ignore_channels: list, str
             list of channels to be ignored. Either a list of channel indexes or a string of channel indexes separated by commas. If None, no channels will be ignored
         rr_channel: int
             channel to be used as reference. If None, average re-referencing will be used
@@ -171,7 +171,7 @@ def re_reference(data: np.ndarray, ignore_channels: [
         ----------
         data: numpy.ndarray
             data to be re-referenced. Shape: (n_channels, n_samples)
-        ignore_channels: list
+        ignore_channels: str, list
             list of channels to be ignored. Either a list of channel indexes or a string of channel indexes separated by commas. If None, no channels will be ignored
         rr_channel: int
             channel to be used as reference. If None, average re-referencing will be used
@@ -181,15 +181,14 @@ def re_reference(data: np.ndarray, ignore_channels: [
         data_rereferenced: numpy.ndarray
             re-referenced data. Shape: (n_channels, n_samples)
     """
+    ignore_channels = utils.convert_string_to_list(ignore_channels)
     if ignore_channels is not None:
-        ignore_channels = utils.convert_string_to_list(ignore_channels)
         ignore_channels = [i - 1 for i in ignore_channels]
         channels_list = [
             i for i in range(
                 data.shape[0]) if i not in ignore_channels]
     else:
         channels_list = [i for i in range(data.shape[0])]
-
     rr_channel = rr_channel - 1 if rr_channel is not None else None
     data_rereferenced = data.copy()
     if rr_channel is not None:

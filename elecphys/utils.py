@@ -107,7 +107,7 @@ def convert_string_to_list(string):
         output: list
             converted list
     """
-    if string is None:
+    if string is None or string == '' or string == 'None':
         return None
     if not isinstance(string, str):
         string = remove_non_numeric(string)
