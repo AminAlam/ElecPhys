@@ -2,6 +2,7 @@ import os
 from setuptools import setup, find_packages
 from distutils.core import Extension
 from pathlib import Path
+import elecphys
 
 MINIMAL_DESCRIPTION = '''ElecPhys: A Python package for electrophysiology data analysis. It provides tools for data loading, analysis, conversion, preprocessing, and visualization.'''
 
@@ -26,7 +27,7 @@ def read_description():
 
 setup(
     name="ElecPhys",
-    version="0.0.55",
+    version=elecphys.__version__,
     author='Amin Alam',
     description='Electrophysiology data processing',
     long_description=read_description(),
