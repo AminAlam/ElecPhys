@@ -403,7 +403,7 @@ def freq_bands_power_over_time(
         ----------
             input_npz_folder: str
                 path to input npz folder containing signal npz files (in time domain)
-            freq_bands: tuple
+            freq_bands: tuple, list
                 tuple or list of frequency bands to calculate power over time for. It should be a tuple or list of lists, where each list contains two elements: the lower and upper frequency bounds of the band (in Hz). For example, freq_bands = [[1, 4], [4, 8], [8, 12]] would calculate power over time for the delta, theta, and alpha bands.
             channels_list: str
                 list of channels to include in analysis
@@ -427,10 +427,8 @@ def freq_bands_power_over_time(
         Returns
         ----------
     """
-    if channels_list is not None:
-        channels_list = utils.convert_string_to_list(channels_list)
-    if ignore_channels is not None:
-        ignore_channels = utils.convert_string_to_list(ignore_channels)
+    channels_list = utils.convert_string_to_list(channels_list)
+    ignore_channels = utils.convert_string_to_list(ignore_channels)
 
     data_all, fs, channels_map = data_io.load_all_npz_files(input_npz_folder, ignore_channels, channels_list)
     # if freq_bands only has one list, we should make sure it is a list of lists

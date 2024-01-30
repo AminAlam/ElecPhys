@@ -200,14 +200,15 @@ class TestCases_2_fourier_analysis(unittest.TestCase):
             os.path.dirname(__file__), 'data', 'plots', 'power_over_time.png')
         
         for freq_bands in [([10, 20]), ([0, 4], [44, 80])]:
-            for channels_list in [None, [1,2,3]]:
-                for ignore_channels in [None, [4,5,6]]:
+            for channels_list in [None, [1,2,3,23]]:
+                for ignore_channels in [None, [4,5,6,11,12]]:
                     for plot_type in ['avg', 'all']:
                         for t_min in [None, 10]:
                             for t_max in [None, 20]:
                                 fourier_analysis.freq_bands_power_over_time(npz_files_folder, freq_bands=freq_bands, channels_list=channels_list, ignore_channels=ignore_channels, output_csv_file=output_csv_file, output_plot_file=output_plot_file, plot_type=plot_type, t_min=t_min, t_max=t_max)
         t_min = 10
         t_max = 20
+        freq_bands = '[[44,80]'
         command_prompt = f'python3 -m elecphys.main freq_bands_power_over_time --input_npz_folder {npz_files_folder} --output_csv_file {output_csv_file} --output_plot_file {output_plot_file} --freq_bands "{freq_bands}" --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --plot_type {plot_type} --t_min {t_min} --t_max {t_max}'
         for _ in range(2):
             os.system(command_prompt)
@@ -339,7 +340,7 @@ class TestCases_3_visualization(unittest.TestCase):
 
         re_reference = True
         for channels_list, ignore_channels in zip(
-                [[1, 2, 3, 4, 5, 6, 7, 12, 15], [1, 2, 3, 4, 5]], [[1, 5], [5]]):
+                [[1, 2, 3, 4, 5, 6, 7, 12, 10, 21, 15], [1, 2, 3, 4, 5]], [[1, 5], [5]]):
             os.remove(output_plot_file)
             command_prompt = f'python3 -m elecphys.main plot_signal --input_npz_folder "{npz_folder_path}" --output_plot_file {output_plot_file} --channels_list "{channels_list}" --ignore_channels "{ignore_channels}" --re_reference {re_reference}'
             for _ in range(2):

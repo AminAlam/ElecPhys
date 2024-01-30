@@ -176,9 +176,9 @@ def normalize_npz(ctx, input_npz_folder: str,
               required=True, type=str, default='output_npz_avg_rereferenced', show_default=True)
 @click.option('--ignore_channels',
               '-ic',
-              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
+              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored (e.g. --ignore_channels "[1,2,3]").',
               required=False,
-              type=list,
+              type=str,
               default=None,
               show_default=True)
 @click.option('--rr_channel',
@@ -191,7 +191,7 @@ def normalize_npz(ctx, input_npz_folder: str,
 @click.pass_context
 @error_handler
 def re_reference_npz(ctx, input_npz_folder: str, output_npz_folder: str = 'output_npz_avg_rereferenced',
-                     ignore_channels: list = None, rr_channel: int = None) -> None:
+                     ignore_channels: str = None, rr_channel: int = None) -> None:
     """ Re-references NPZ files and save them as NPZ files
 
         Parameters
@@ -200,7 +200,7 @@ def re_reference_npz(ctx, input_npz_folder: str, output_npz_folder: str = 'outpu
             path to input npz folder
         output_npz_folder: str
             path to output npz folder. If the folder already exists, it will be overwritten. If not specified, the default value is 'output_npz_avg_rereferenced'
-        ignore_channels: list
+        ignore_channels: str
             list of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored. Either a list of channel indexes or a string of channel indexes separated by commas
         rr_channel: int
             channel to re-reference signals to. If None, signals will be re-referenced to the average of all channels. If not specified, the default value is None
@@ -357,13 +357,18 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
               type=str)
 @click.option('--channels_list',
               '-cl',
-              help='List of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]").',
+              help='List of channels to compute power for. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. --channels_list "[1,2,3]").',
               required=False,
               type=str,
               default=None,
               show_default=True)
-@click.option('--ignore_channels', '-ic', help='List of channels to ignore. If None, then no channels will be ignored',
-              required=False, type=str, default=None, show_default=True)
+@click.option('--ignore_channels',
+              '-ic',
+              help='List of channels to ignore. If None, then no channels will be ignored (e.g. --ignore_channels "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
 @click.option('--window_size', '-w', help='Window size in seconds',
               required=False, type=float, default=1, show_default=True)
 @click.option('--overlap', '-ov', help='Overlap in seconds',
@@ -546,7 +551,7 @@ def plot_avg_stft(
         t_max: float = None,
         db_min: float = None,
         db_max: float = None,
-        channels_list: list = None) -> None:
+        channels_list: str = None) -> None:
     """ Plots average STFT from NPZ files
 
         Parameters
@@ -567,7 +572,7 @@ def plot_avg_stft(
             minimum dB to plot. If not specified, the default value is None and the minimum dB will be the minimum dB of the signal
         db_max: float
             maximum dB to plot. If not specified, the default value is None and the maximum dB will be the maximum dB of the signal
-        channels_list: list
+        channels_list: str
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
 
         Returns
@@ -597,8 +602,13 @@ def plot_avg_stft(
               required=False, type=float, default=None, show_default=True)
 @click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted',
-              required=False, type=list, default=None, show_default=True)
+@click.option('--channels_list',
+              '-cl',
+              help='List of channels to plot, if None then all of the channels will be plotted (e.g. --channels_list "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
 @click.option('--normalize', '-n', help='Normalize signals. If true, each channel will be normalized',
               required=False, type=bool, default=False, show_default=True)
 @click.option('--scale_bar', '-sb', help='Scale bar. If true, a scale bar will be added to the plot',
@@ -612,7 +622,7 @@ def plot_avg_stft(
               show_default=True)
 @click.option('--ignore_channels',
               '-ic',
-              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored',
+              help='List of channels to ignore (e.g EMG, EOG, etc.). If None, then no channels will be ignored (e.g. --ignore_channels "[1,2,3]").',
               required=False,
               type=str,
               default=None,
@@ -632,7 +642,7 @@ def plot_signal(
         output_plot_file: str,
         t_min: float = None,
         t_max: float = None,
-        channels_list: list = None,
+        channels_list: str = None,
         normalize: bool = False,
         scale_bar: bool = True,
         re_reference: bool = False,
@@ -650,7 +660,7 @@ def plot_signal(
             Start of time interval to plot. If not specified, the default value is None and the minimum time will be 0 seconds
         t_max: float
             End of time interval to plot. If not specified, the default value is None and the maximum time will be the total duration of the signal
-        channels_list: list
+        channels_list: str
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         normalize: bool
             normalize signals. If true, each channel will be normalized. If not specified, the default value is False.
@@ -696,8 +706,13 @@ def plot_signal(
               required=False, type=float, default=None, show_default=True)
 @click.option('--f_max', '-fmax', help='Maximum frequency to plot in Hz',
               required=False, type=float, default=None, show_default=True)
-@click.option('--channels_list', '-cl', help='List of channels to plot, if None then all of the channels will be plotted',
-              required=False, type=list, default=None, show_default=True)
+@click.option('--channels_list',
+              '-cl',
+              help='List of channels to plot, if None then all of the channels will be plotted (e.g. --channels_list "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
 @click.option('--plot_type',
               '-pt',
               help='Plot type. If "all_channels", then all channels will be plotted in one figure. If "average_of_channels", then average of channels will be plotted in one figure with errorbar',
@@ -710,7 +725,7 @@ def plot_signal(
 @click.pass_context
 @error_handler
 def plot_dft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float = None, f_max: float = None,
-             channels_list: list = None, plot_type: str = 'average_of_channels', conv_window_size: int = None) -> None:
+             channels_list: str = None, plot_type: str = 'average_of_channels', conv_window_size: int = None) -> None:
     """ Plots DFT from NPZ file
 
         Parameters
@@ -723,7 +738,7 @@ def plot_dft(ctx, input_npz_folder: str, output_plot_file: str, f_min: float = N
             minimum frequency to plot in Hz. If not specified, the default value is None and the minimum frequency will be 0 Hz
         f_max: float
             maximum frequency to plot in Hz. If not specified, the default value is None and the maximum frequency will be the Nyquist frequency
-        channels_list: list
+        channels_list: str
             list of channels to plot. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be plotted.
         plot_type: str
             plot type. If not specified, the default value is 'average_of_channels'. It should be 'all_channels' or 'average_of_channels'
@@ -817,12 +832,17 @@ def plot_filter_freq_response(ctx, filter_type: str = 'LPF', freq_cutoff: str = 
               type=bool,
               default=False,
               show_default=True)
-@click.option('--channels_list', '-cl', help='List of channels to apply PCA, if None then all of the channels will be applied',
-              required=False, type=list, default=None, show_default=True)
+@click.option('--channels_list',
+              '-cl',
+              help='List of channels to apply PCA, if None then all of the channels will be applied (e.g. --channels_list "[1,2,3]").',
+              required=False,
+              type=list,
+              default=None,
+              show_default=True)
 @click.pass_context
 @error_handler
 def pca_from_npz(ctx, input_npz_folder: str, output_npz_folder: str = 'output_npz_pca',
-                 n_components: int = None, matrix_whitenning: bool = False, channels_list: list = None) -> None:
+                 n_components: int = None, matrix_whitenning: bool = False, channels_list: str = None) -> None:
     """ Computes PCA from NPZ files
 
         Parameters
@@ -835,7 +855,7 @@ def pca_from_npz(ctx, input_npz_folder: str, output_npz_folder: str = 'output_np
             number of components to keep after applying the PCA. If not specified, the default value is None
         matrix_whitenning: bool
             matrix whitening boolean. If true, the singular values are divided by n_samples. If not specified, the default value is False
-        channels_list: list
+        channels_list: str
             list of channels to apply PCA. either a string of comma-separated channel numbers or a list of integers. If not specified, the default value is None and all of the channels will be applied.
 
         Returns
