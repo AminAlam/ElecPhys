@@ -4,6 +4,7 @@ from scipy import signal
 from tqdm import tqdm
 import json
 import csv
+from typing import Union
 
 import utils
 import cfc
@@ -84,7 +85,7 @@ def dft_numeric_output_from_npz(
 
 
 def stft_from_array(signal_array, fs: int, window_size: float, overlap: float,
-                    window_type: str = 'hann', nfft: int = None) -> [np.ndarray, np.ndarray, np.ndarray]:
+                    window_type: str = 'hann', nfft: int = None) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """ Computes STFT from 1D array
 
         Parameters
@@ -136,7 +137,7 @@ def stft_from_array(signal_array, fs: int, window_size: float, overlap: float,
 
 
 def dft_from_array(signal_array, fs: int,
-                   nfft: int = None) -> [np.ndarray, np.ndarray]:
+                   nfft: int = None) -> Union[np.ndarray, np.ndarray]:
     """ Computes DFT from 1D array
 
         Parameters
@@ -204,7 +205,7 @@ def butterworth_filtering_from_array(
     elif _args['filter_type'] == 'BPF':
         _args['freq_cutoff'] = utils.convert_string_to_list(
             _args['freq_cutoff'])
-        _args['freq_cutoff'] = [int(i) for i in _args['freq_cutoff']]
+        _args['freq_cutoff'] = [i for i in _args['freq_cutoff']]
         b, a = signal.butter(_args['filter_order'], [
                              _args['freq_cutoff'][0] / (fs / 2), _args['freq_cutoff'][1] / (fs / 2)], btype='bandpass')
     else:
@@ -257,7 +258,7 @@ def butterworth_filtering_from_npz(
 
 
 def calc_freq_response(
-        _args: dict) -> [np.ndarray, np.ndarray, np.ndarray, dict]:
+        _args: dict) -> Union[np.ndarray, np.ndarray, np.ndarray, dict]:
     """ Calculates filter frequency response
 
         Parameters
@@ -385,7 +386,7 @@ def calc_cfc_from_npz(input_npz_folder: str, output_npz_folder: str,
 
 def freq_bands_power_over_time(
         input_npz_folder: str,
-        freq_bands: [
+        freq_bands: Union[
             tuple,
             list] = None,
     channels_list: str = None,
@@ -429,7 +430,6 @@ def freq_bands_power_over_time(
     """
     channels_list = utils.convert_string_to_list(channels_list)
     ignore_channels = utils.convert_string_to_list(ignore_channels)
-
     data_all, fs, channels_map = data_io.load_all_npz_files(input_npz_folder, ignore_channels, channels_list)
     # if freq_bands only has one list, we should make sure it is a list of lists
     if len(freq_bands) == 2 and isinstance(freq_bands[0], int) and isinstance(freq_bands[1], int):
@@ -470,6 +470,8 @@ def freq_bands_power_over_time(
             if 'csv' in output_csv_file:
                 output_csv_file = output_csv_file.replace('.csv', '')
             # save to csv file
+            if not os.path.exists(os.path.dirname(output_csv_file)):
+                os.makedirs(os.path.dirname(output_csv_file))
             with open(f'{output_csv_file}_{freq_band[0]}_{freq_band[1]}.csv', 'w', newline='') as csvfile:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerow(['Channel', 'Time', 'Power'])

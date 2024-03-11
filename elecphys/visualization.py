@@ -7,6 +7,7 @@ import data_io
 import preprocessing
 import utils
 import fourier_analysis
+from typing import Union
 
 
 def plot_stft_from_npz(input_npz_file: str, output_plot_file: str, f_min: int,
@@ -64,8 +65,16 @@ def plot_stft_from_npz(input_npz_file: str, output_plot_file: str, f_min: int,
         output_plot_file)
 
 
-def plot_avg_stft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f_max: int,
-                           t_min: float, t_max: float, db_min: int, db_max: int, channels_list: [str, list] = None) -> None:
+def plot_avg_stft_from_npz(npz_folder_path: str,
+                           output_plot_file: str,
+                           f_min: int,
+                           f_max: int,
+                           t_min: float,
+                           t_max: float,
+                           db_min: int,
+                           db_max: int,
+                           channels_list: Union[str,
+                                                list] = None) -> None:
     """ Plots average STFT from NPZ files (STFT must be saved as NPZ file)
 
         Parameters
@@ -211,7 +220,7 @@ def plot_signals_from_npz(
         output_plot_file: str,
         t_min: float,
         t_max: float,
-        channels_list: [
+        channels_list: Union[
             str,
             list] = None,
     normalize: bool = False,
@@ -287,7 +296,6 @@ def plot_signals_from_npz(
 
         data_all = preprocessing.re_reference(
             data_all, ignore_channels, rr_channel)
-
     for row_no, channel_index in enumerate(channels_map):
         signal_chan = data_all[row_no, :]
         if not scale_bar:
@@ -344,7 +352,7 @@ def plot_signals_from_npz(
 
 
 def plot_dft_from_npz(npz_folder_path: str, output_plot_file: str, f_min: int, f_max: int,
-                      plot_type: str, channels_list: [str, list] = None, conv_window_size: float = None) -> None:
+                      plot_type: str, channels_list: Union[str, list] = None, conv_window_size: float = None) -> None:
     """ Plots DFT from NPZ file (DFT must be saved as NPZ file)
 
         Parameters

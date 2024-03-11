@@ -1,10 +1,11 @@
 import mat73
 import numpy as np
 import os
+from typing import Union
 import utils
 
 
-def load_mat(mat_file) -> [np.ndarray, int]:
+def load_mat(mat_file) -> Union[np.ndarray, int]:
     """ Function that Loads MAT file
 
         Parameters
@@ -25,7 +26,7 @@ def load_mat(mat_file) -> [np.ndarray, int]:
     return data, fs
 
 
-def load_npz(npz_file) -> [np.ndarray, int]:
+def load_npz(npz_file) -> Union[np.ndarray, int]:
     """ Function that Loads NPZ file
 
         Parameters
@@ -43,8 +44,8 @@ def load_npz(npz_file) -> [np.ndarray, int]:
     return data, fs
 
 
-def load_all_npz_files(npz_folder: str, ignore_channels: [
-                       list, str] = None, channels_list: [list, str] = None) -> [np.ndarray, int, list]:
+def load_all_npz_files(npz_folder: str, ignore_channels: Union[
+                       list, str] = None, channels_list: Union[list, str] = None) -> Union[np.ndarray, int, list]:
     """ Function that Loads all NPZ files in a folder
 
         Parameters
@@ -70,21 +71,18 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
         if not file_name.endswith('.npz'):
             files_list.remove(file_name)
     files_list = utils.sort_file_names(files_list)
-    all_channels_in_folder = list(range(0, len(files_list)))
+    all_channels_in_folder = list(range(1, len(files_list) + 1))
     channels_list = utils.convert_string_to_list(channels_list)
     if channels_list is None:
         channels_list = all_channels_in_folder
     ignore_channels = utils.convert_string_to_list(ignore_channels)
-    if ignore_channels is not None:
-        ignore_channels = [i - 1 for i in ignore_channels]
-    else:
+    if ignore_channels is None:
         ignore_channels = []
     # all elements of channels_list that are not in all_channels_in_folder
     invalid_channels = [channel for channel in all_channels_in_folder if channel not in channels_list]
     if len(invalid_channels) > 0:
         ignore_channels.extend(invalid_channels)
     channels_map = all_channels_in_folder
-
     channels_map_new = []
     for channel in channels_map:
         if channel not in ignore_channels:
@@ -93,10 +91,9 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
 
     files_list_new = []
     for indx, file_name in enumerate(files_list):
-        if indx not in ignore_channels:
+        if indx + 1 not in ignore_channels:
             files_list_new.append(file_name)
     files_list = files_list_new
-
     num_channels = len(files_list)
     ch_indx = 0
     for npz_file in files_list:
@@ -111,7 +108,7 @@ def load_all_npz_files(npz_folder: str, ignore_channels: [
     return data_all, fs, channels_map
 
 
-def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:
+def load_npz_stft(npz_file) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
 
         Parameters
@@ -131,7 +128,7 @@ def load_npz_stft(npz_file) -> [np.ndarray, np.ndarray, np.ndarray]:
     return f, t, Zxx
 
 
-def load_npz_dft(npz_file) -> [np.ndarray, np.ndarray]:
+def load_npz_dft(npz_file) -> Union[np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
 
         Parameters
@@ -150,7 +147,7 @@ def load_npz_dft(npz_file) -> [np.ndarray, np.ndarray]:
     return f, Zxx
 
 
-def load_npz_mvl(npz_file) -> [np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def load_npz_mvl(npz_file) -> Union[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """ Function that Loads NPZ file
 
         Parameters

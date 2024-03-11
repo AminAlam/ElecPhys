@@ -116,7 +116,7 @@ def convert_string_to_list(string):
     string = string.replace(']', '')
     string = string.replace(' ', '')
     string = string.split(',')
-    output = list(map(int, string))
+    output = list(map(float, string))
     output = np.unique(output)
     output = output.tolist()
     return output

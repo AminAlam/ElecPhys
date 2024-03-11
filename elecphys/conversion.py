@@ -5,6 +5,9 @@ import preprocessing
 import utils
 import shutil
 from tqdm import tqdm
+import pandas as pd
+import re
+from io import StringIO
 
 
 def convert_rhd_to_mat(
@@ -72,6 +75,65 @@ def convert_mat_to_npz(mat_file: str, output_npz_folder: str,
             data_filtered = preprocessing.apply_notch(
                 data[ch_num, :], {'Q': 60, 'fs': fs, 'f0': notch_filter_freq})
 
+        np.savez(
+            os.path.join(
+                output_npz_folder,
+                f'{ch_name}.npz'),
+            data=data_filtered,
+            fs=fs)
+
+
+def convert_OpenBCI_csv_to_npz(file_path: str, output_npz_folder: str, notch_filter_freq: int) -> None:
+    """ Function that Converts OpenBCI CSV files to NPZ files
+
+        Parameters
+        ----------
+        file_path: str
+            path to OpenBCI csv file
+        output_npz_folder: str
+            path to output npz folder
+        notch_filter_freq: int
+            frequency of notch filter
+
+        Returns
+        ----------
+    """
+
+    if not os.path.exists(output_npz_folder):
+        os.makedirs(output_npz_folder)
+    else:
+        Warning(f'{output_npz_folder} already exists. Files will be overwritten.')
+
+    # read openbci txt file, separate first lines which start with %
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        data = []
+        header = []
+        for line in lines:
+            if line.startswith('%'):
+                header.append(line)
+            else:
+                data.append(line)
+
+    for header_line in header:
+        if 'Sample Rate' in header_line:
+            fs = int(re.findall(r'\d+', header_line)[0])
+        elif 'Number of channels' in header_line:
+            num_channels = int(re.findall(r'\d+', header_line)[0])
+    # convert data to pandas dataframe with columns as the first row
+    data = pd.read_csv(StringIO(''.join(data)), sep=',')
+
+    for ch_no in tqdm(range(num_channels)):
+        ch_name = f' EXG Channel {ch_no}'
+        data_ch = data[ch_name].values
+
+        if notch_filter_freq == 0:
+            data_filtered = data_ch
+        else:
+            data_filtered = preprocessing.apply_notch(
+                data_ch, {'Q': 60, 'fs': fs, 'f0': notch_filter_freq})
+        ch_name = f'Ch{ch_no+1}'
         np.savez(
             os.path.join(
                 output_npz_folder,

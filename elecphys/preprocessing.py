@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from scipy import signal
+from typing import Union
 from tqdm import tqdm
 import utils
 import data_io
@@ -21,7 +22,8 @@ def apply_notch(_signal_chan: np.ndarray, _args: dict) -> np.ndarray:
         _signal_chan: np.ndarray
             signal channel with notch filter applied
     """
-    for f0 in np.arange(_args['f0'], 300, _args['f0']):
+    max_f0 = int(_args['fs'] / 2)
+    for f0 in np.arange(_args['f0'], max_f0, _args['f0']):
         b_notch, a_notch = signal.iirnotch(f0, _args['Q'], _args['fs'])
         _signal_chan = signal.filtfilt(b_notch, a_notch, _signal_chan)
     return _signal_chan
@@ -132,7 +134,7 @@ def normalize(data: np.ndarray) -> np.ndarray:
     return data_normalized
 
 
-def re_reference_npz(input_npz_folder: str, output_npz_folder: str, ignore_channels: [
+def re_reference_npz(input_npz_folder: str, output_npz_folder: str, ignore_channels: Union[
                      list, str] = None, rr_channel: int = None) -> None:
     """ re-references NPZ files
 
@@ -163,7 +165,7 @@ def re_reference_npz(input_npz_folder: str, output_npz_folder: str, ignore_chann
         data_all_rereferenced, fs, output_npz_folder)
 
 
-def re_reference(data: np.ndarray, ignore_channels: [
+def re_reference(data: np.ndarray, ignore_channels: Union[
                  list, str] = None, rr_channel: int = None) -> np.ndarray:
     """ Average re-references data
 
@@ -199,4 +201,5 @@ def re_reference(data: np.ndarray, ignore_channels: [
         reference = np.mean(data[channels_list, :], axis=0).reshape(1, -1)
         data_rereferenced[channels_list, :] = data[channels_list,
                                                    :] - np.repeat(reference, len(channels_list), axis=0)
+        data_rereferenced = np.vstack((data_rereferenced, reference))
     return data_rereferenced

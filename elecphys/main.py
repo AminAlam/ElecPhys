@@ -110,6 +110,61 @@ def convert_mat_to_npz(ctx, mat_file: str, output_npz_folder: str = 'output_npz'
         output_npz_folder,
         notch_filter_freq)
     print('--- Conversion complete.\n\n')
+
+
+@cli.command('convert_OpenBCI_csv_to_npz', help='Converts OpenBCI CSV files to NPZ files')
+@click.option('--file_path', '-f',
+              help='Path to the file containing OpenBCI CSV file', required=True, type=str)
+@click.option('--output_npz_folder', '-o', help='Path to output npz folder',
+              required=True, type=str, default='output_npz', show_default=True)
+@click.option('--sampling_rate', '-sr', help='Sampling rate in Hz',
+              required=True, type=int)
+@click.option('--channels_list',
+              '-cl',
+              help='List of channels to use. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. --channels_list "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--ignore_channels',
+              '-ic',
+              help='List of channels to ignore. If None, then no channels will be ignored (e.g. --ignore_channels "[1,2,3]").',
+              required=False,
+              type=str,
+              default=None,
+              show_default=True)
+@click.option('--notch_filter_freq', '-n', help='Notch filter frequency in Hz',
+              required=False, type=int, default=50, show_default=True)
+@click.pass_context
+@error_handler
+def convert_OpenBCI_csv_to_npz(ctx, file_path: str, output_npz_folder: str = 'output_npz',
+                               sampling_rate: int = 250, channels_list: str = None, ignore_channels: str = None,
+                               notch_filter_freq: int = 50) -> None:
+    """ Converts OpenBCI CSV files to NPZ files
+
+         Parameters
+         ----------
+         file_path: str
+               path to OpenBCI txt file
+         output_npz_folder: str
+               path to output npz folder. If the folder already exists, it will be overwritten. If not specified, the default value is 'output_npz'
+         channels_list: str
+               list of channels to use. If None, then all of the channels will be used. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+         ignore_channels: str
+               list of channels to ignore. If None, then no channels will be ignored. It should be a string of comma-separated channel numbers (e.g. "[1,2,3]"). If not specified, the default value is None
+         notch_filter_freq: int
+               notch filter frequency in Hz. If not specified, the default value is 50. It should be 0 (no filtering), 50 (Hz), or 60 (Hz)
+
+         Returns
+         ----------
+    """
+
+    print('--- Converting OpenBCI CSV files to NPZ files...')
+    conversion.convert_OpenBCI_csv_to_npz(
+        file_path,
+        output_npz_folder,
+        notch_filter_freq)
+    print('--- Conversion complete.\n\n')
 ### Conversion ###
 
 
@@ -375,7 +430,7 @@ def frequncy_domain_filter(ctx, input_npz_folder: str, output_npz_folder: str = 
               required=False, type=float, default=0.5, show_default=True)
 @click.option('--t_min', '-tmin', help='Start of time interval to plot',
               required=False, type=float, default=None, show_default=True)
-@click.option('--t_max', '-tmin', help='End of time interval to plot',
+@click.option('--t_max', '-tmax', help='End of time interval to plot',
               required=False, type=float, default=None, show_default=True)
 @click.option('--output_csv_file',
               '-o',
