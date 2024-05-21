@@ -70,6 +70,8 @@ def load_all_npz_files(npz_folder: str, ignore_channels: Union[
     for file_name in files_list:
         if not file_name.endswith('.npz'):
             files_list.remove(file_name)
+    if len(files_list) == 0:
+        raise ValueError(f'No NPZ files found in {npz_folder}')
     files_list = utils.sort_file_names(files_list)
     all_channels_in_folder = list(range(1, len(files_list) + 1))
     channels_list = utils.convert_string_to_list(channels_list)
