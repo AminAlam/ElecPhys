@@ -67,6 +67,17 @@ def convert_mat_to_npz(mat_file: str, output_npz_folder: str,
     data = mat_file_contents['data']
     fs = mat_file_contents['fs']
 
+    # if fs is not a scalar, take the first element
+    if not np.isscalar(fs):
+        fs = fs[0]
+    
+    # if fs is not an integer and cannot be converted to integer, raise error
+    if not isinstance(fs, int):
+        try:
+            fs = int(fs)
+        except ValueError:
+            raise ValueError('Sampling frequency must be an integer')
+
     for ch_num in tqdm(range(data.shape[0])):
         ch_name = f'Ch{ch_num+1}'
         if notch_filter_freq == 0:
