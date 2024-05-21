@@ -66,10 +66,6 @@ def convert_mat_to_npz(mat_file: str, output_npz_folder: str,
     mat_file_contents = mat73.loadmat(mat_file)
     data = mat_file_contents['data']
     fs = mat_file_contents['fs']
-
-    # if fs is not a scalar, take the first element
-    if not np.isscalar(fs):
-        fs = fs[0]
     
     # if fs is not an integer and cannot be converted to integer, raise error
     if not isinstance(fs, int):
